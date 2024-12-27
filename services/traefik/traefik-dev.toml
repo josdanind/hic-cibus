@@ -1,0 +1,16 @@
+[providers]
+    # Proveedor Docker para Traefik.
+    [providers.docker]
+        # Desactiva la exposición automática de todos los contenedores Docker.
+        exposedByDefault = false
+
+[entryPoints]
+    # Configuración del punto de entrada HTTP.
+    [entryPoints.http]
+        address = ":80"
+
+[api]
+    # Habilita el panel de control de Traefik.
+    dashboard = true
+    # Permite el acceso inseguro al panel de control (sin autenticación).
+    insecure = true

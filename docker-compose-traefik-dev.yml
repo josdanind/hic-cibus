@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  traefik-dev:
+    image: traefik:v3.2.3
+    container_name: traefik-dev
+    restart: unless-stopped
+    ports:
+      - "80:80" # Mapea el puerto 80 del host al puerto 80 del contenedor (HTTP)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Monta el archivo de configuración local de Traefik en el contenedor de Traefik
+      - ./services/traefik/traefik-dev.toml:/etc/traefik/traefik.toml
+    labels:
+      - "traefik.enable=true" # Habilita Traefik para este servicio
+      - "traefik.docker.network=hic-cibus" # Especifica la red Docker que debe usar Traefik
+      - "traefik.http.routers.traefik-dev.entrypoints=http" # Define el entrypoint HTTP para el router
+      - "traefik.http.routers.traefik-dev.rule=Host(`${TRAEFIK_DOMAIN_DEV}`)" # Regla de enrutamiento basada en el dominio
+      - "traefik.http.services.traefik-dev.loadbalancer.server.port=8080" # Configura el puerto del servidor interno al que Traefik debe redirigir el tráfico
+    networks:
+      - hic-cibus # Conecta el servicio a la red Docker llamada hic-cibus
+
+networks:
+  hic-cibus:
+    external: true   # Define una red externa llamada hic-cibus
