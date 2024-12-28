@@ -1,0 +1,30 @@
+# ⚙️ Configuración de Traefik
+
+[providers]
+    # 🐳 Proveedor Docker para Traefik.
+    [providers.docker]
+        # Desactiva la exposición automática de todos los contenedores Docker.
+        exposedByDefault = false
+
+[entryPoints]
+    # 🌐 Punto de entrada HTTP
+    [entryPoints.http]
+        address = ":80" # Escucha en el puerto 80 para tráfico HTTP.
+    # 🌐 Punto de entrada HTTPS
+    [entryPoints.https]
+        address = ":443" # Escucha en el puerto 443 para tráfico HTTPS.
+
+[certificatesResolvers]
+    [certificatesResolvers.letsencrypt]
+        [certificatesResolvers.letsencrypt.acme]
+            # Correo electrónico para notificaciones de Let's Encrypt.
+            email = "josdanind@pm.me"
+            # Ubicación del archivo de almacenamiento para los datos del certificado.
+            storage= "/certificates/acme.json"
+            [certificatesResolvers.letsencrypt.acme.tlsChallenge]
+
+[api]
+    # 📊 Habilita el panel de control de Traefik.
+    dashboard = true
+    # Seguridad del servicio.
+    insecure = false
