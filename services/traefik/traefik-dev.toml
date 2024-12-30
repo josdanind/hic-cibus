@@ -1,0 +1,18 @@
+# ⚙️ Configuración de Traefik
+
+[providers]
+    # 🐳 Proveedor Docker para Traefik.
+    [providers.docker]
+        # Desactiva la exposición automática de todos los contenedores Docker.
+        exposedByDefault = false
+
+[entryPoints]
+    # 🌐 Punto de entrada HTTP
+    [entryPoints.http]
+        address = ":80" # Escucha en el puerto 80 para tráfico HTTP.
+
+[api]
+    # 📊 Habilita el panel de control de Traefik.
+    dashboard = true
+    # ⚠️ Permite acceso inseguro al panel (sin autenticación).
+    insecure = true

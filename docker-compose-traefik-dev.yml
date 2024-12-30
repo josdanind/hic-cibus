@@ -1,0 +1,35 @@
+services:
+  traefik-dev:
+    image: traefik:v3.2.3
+    container_name: traefik-dev
+    restart: unless-stopped
+
+    # 🔗 Puertos expuestos
+    ports:
+      - "80:80" # Mapea el puerto 80 del host al puerto 80 del contenedor (HTTP)
+
+    # 📂 Volúmenes montados
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Acceso al socket de Docker
+      - ./services/traefik/traefik-dev.toml:/etc/traefik/traefik.toml # Archivo de configuración de Traefik
+
+    # 🏷️ Etiquetas para configuración dinámica
+    labels:
+      - "traefik.enable=true" # Habilita Traefik para este servicio
+
+      # ⚙️ Configuración del Servicio Dashboard
+      - "traefik.http.services.dashboard.loadbalancer.server.port=8080" # Puerto interno del servicio
+
+      # 🌐 Router para el Dashboard de Traefik (HTTP)
+      - "traefik.http.routers.dashboard-http.rule=Host(`${TRAEFIK_DEV_DOMAIN}`)" # Regla basada en el dominio
+      - "traefik.http.routers.dashboard-http.entrypoints=http" # EntryPoint HTTP
+      - "traefik.http.routers.dashboard-http.service=api@internal" # Servicio interno asignado al router
+
+    # 🌍 Red asignada al servicio
+    networks:
+      - hic-cibus
+
+# 🌐 Redes utilizadas
+networks:
+  hic-cibus:
+    external: true # Red externa definida previamente

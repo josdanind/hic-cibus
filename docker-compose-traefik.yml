@@ -1,0 +1,52 @@
+services:
+  traefik:
+    image: traefik:v3.2.3
+    container_name: traefik
+    restart: unless-stopped
+
+    # 🔗 Puertos expuestos
+    ports:
+      - "80:80" # Mapea el puerto 80 del host al puerto 80 del contenedor (HTTP)
+      - "443:443" # Mapea el puerto 443 del host al puerto 443 del contenedor (HTTPS)
+
+    # 📂 Volúmenes montados
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Acceso al socket de Docker
+      - ./services/traefik/traefik.toml:/etc/traefik/traefik.toml # Archivo de configuración de Traefik
+      - traefik-public-certificates:/certificates # Almacena los certificados SSL/TLS
+
+    # 🏷️ Etiquetas para la configuración dinámica
+    labels:
+      - "traefik.enable=true" # Habilita Traefik para este servicio
+
+      # ⚙️ Configuración del Servicio Dashboard
+      - "traefik.http.services.dashboard.loadbalancer.server.port=8080" # Puerto interno del servicio
+
+      # 🌐 Router para el Dashboard de Traefik (HTTP)
+      - "traefik.http.routers.dashboard-http.rule=Host(`${TRAEFIK_PROD_DOMAIN}`)" # Regla basada en el dominio
+      - "traefik.http.routers.dashboard-http.entrypoints=http" # Usa el EntryPoint HTTP
+      - "traefik.http.routers.dashboard-http.middlewares=redirect-to-https" # Middleware para redirigir a HTTPS
+
+      # 🌐 Router para el Dashboard de Traefik (HTTPS)
+      - "traefik.http.routers.dashboard-https.rule=Host(`${TRAEFIK_PROD_DOMAIN}`)" # Regla basada en el dominio
+      - "traefik.http.routers.dashboard-https.entrypoints=https" # Usa el EntryPoint HTTPS
+      - "traefik.http.routers.dashboard-https.service=api@internal" # Servicio interno para el Dashboard
+      - "traefik.http.routers.dashboard-https.tls=true" # Habilita TLS
+      - "traefik.http.routers.dashboard-https.tls.certresolver=letsencrypt" # Resolver de certificados SSL/TLS
+      - "traefik.http.routers.dashboard-https.middlewares=auth-basic"
+      - "traefik.http.middlewares.auth-basic.basicauth.users=${TRAEFIK_AUTH_USERS}"
+
+
+      # 📦 Middleware para redirección HTTP a HTTPS
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https" # Redirección a HTTPS
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true" # Redirección permanente
+
+    networks:
+      - hic-cibus
+
+volumes:
+  traefik-public-certificates:
+
+networks:
+  hic-cibus:
+    external: true
