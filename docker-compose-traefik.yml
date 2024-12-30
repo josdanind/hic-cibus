@@ -39,7 +39,6 @@ services:
       # 📦 Middleware para redirección HTTP a HTTPS
       - "traefik.http.middlewares.http-to-https.redirectscheme.scheme=https" # Redirección a HTTPS
       - "traefik.http.middlewares.http-to-https.redirectscheme.permanent=true" # Redirección permanente
-      - "traefik.http.middlewares.http-to-https.redirectscheme.priority=1" # Prioridad de redirección
 
 volumes:
   traefik-public-certificates:
