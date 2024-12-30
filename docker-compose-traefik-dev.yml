@@ -16,15 +16,14 @@ services:
     # 🏷️ Etiquetas para configuración dinámica
     labels:
       - "traefik.enable=true" # Habilita Traefik para este servicio
-      - "traefik.docker.network=hic-cibus" # Red Docker asignada
+
+      # ⚙️ Configuración del Servicio Dashboard
+      - "traefik.http.services.dashboard.loadbalancer.server.port=8080" # Puerto interno del servicio
 
       # 🌐 Router para el Dashboard de Traefik (HTTP)
       - "traefik.http.routers.dashboard-http.rule=Host(`${TRAEFIK_DEV_DOMAIN}`)" # Regla basada en el dominio
       - "traefik.http.routers.dashboard-http.entrypoints=http" # EntryPoint HTTP
-      - "traefik.http.routers.dashboard-http.service=dashboard" # Servicio interno asignado al router
-
-      # ⚙️ Configuración del Servicio Dashboard
-      - "traefik.http.services.dashboard.loadbalancer.server.port=8080" # Puerto interno del servicio
+      - "traefik.http.routers.dashboard-http.service=api@internal" # Servicio interno asignado al router
 
     # 🌍 Red asignada al servicio
     networks:
