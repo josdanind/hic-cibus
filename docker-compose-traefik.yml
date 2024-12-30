@@ -33,10 +33,14 @@ services:
       - "traefik.http.routers.dashboard-https.service=api@internal" # Servicio interno para el Dashboard
       - "traefik.http.routers.dashboard-https.tls=true" # Habilita TLS
       - "traefik.http.routers.dashboard-https.tls.certresolver=letsencrypt" # Resolver de certificados SSL/TLS
+      - "traefik.http.routers.dashboard-https.middlewares=admin-auth"
+      - "traefik.http.middlewares.auth-basic.basicauth.users=${TRAEFIK_AUTH_USERS}"
+
 
       # 📦 Middleware para redirección HTTP a HTTPS
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https" # Redirección a HTTPS
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true" # Redirección permanente
+
     networks:
       - hic-cibus
 
