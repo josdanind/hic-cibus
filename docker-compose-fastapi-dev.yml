@@ -21,6 +21,7 @@ services:
 
       # ⚙️ Configuración del Servicio FastAPI
       - "traefik.http.services.fastapi-dev.loadbalancer.server.port=${PORT}"
+
       # 🌐 Router para FastAPI (HTTP)
       - "traefik.http.routers.fastapi-router.rule=Host(`${API_DEV_DOMAIN}`)"
       - "traefik.http.routers.fastapi-router.entrypoints=http"
