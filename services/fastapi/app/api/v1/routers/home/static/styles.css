@@ -1,0 +1,49 @@
+/* Estilos generales */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f9fafc;
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    border-radius: 10px;
+}
+
+h1 {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+img {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+}
+
+p {
+    font-size: 1em;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Diseño responsivo */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1em;
+    }
+
+    p {
+        font-size: 0.9em;
+    }
+}
