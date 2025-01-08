@@ -1,0 +1,45 @@
+services:
+  fastapi:
+    container_name: fastapi
+    build:
+      context: ./services/fastapi
+    command: uvicorn main:app --host 0.0.0.0 --port ${PORT}
+
+    # 🌍 Variables de entorno directas
+    environment:
+      - PORT=${PORT}
+      - API_DOMAIN=${API_PROD_DOMAIN}
+
+    # 🏷️ Etiquetas para integración con Traefik
+    labels:
+      - traefik.enable=true
+
+      # ⚙️ Configuración del Servicio FastAPI
+      - "traefik.http.services.fastapi.loadbalancer.server.port=${PORT}"
+
+      # 🌐 Router para FastAPI (HTTP)
+      - "traefik.http.routers.fastapi-http.rule=Host(`${API_PROD_DOMAIN}`)"
+      - "traefik.http.routers.fastapi-http.entrypoints=http"
+      - "traefik.http.routers.fastapi-http.middlewares=redirect-to-https"
+
+      # 🌐 Router para FastAPI (HTTPS)
+      - "traefik.http.routers.fastapi-https.rule=Host(`${API_PROD_DOMAIN}`)"
+      - "traefik.http.routers.fastapi-https.entrypoints=https"
+      - "traefik.http.routers.fastapi-https.tls=true"
+      - "traefik.http.routers.fastapi-https.tls.certresolver=letsencrypt"
+
+      # 📦 Middleware para redirección HTTP a HTTPS
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+
+    # 🔄 Política de reinicio
+    restart: unless-stopped
+
+    # 🌐 Red asociada
+    networks:
+      - hic-cibus
+
+# 🌐 Redes utilizadas
+networks:
+  hic-cibus:
+    external: true
