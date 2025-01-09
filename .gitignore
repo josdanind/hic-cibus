@@ -1,8 +1,9 @@
 # Environments
-.idea/
 .env
-.venv/
+
+# Ignore IDE configuration folder and Python virtual environment
 .idea/
+.venv/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
