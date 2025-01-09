@@ -13,6 +13,9 @@
     # 🌐 Punto de entrada HTTPS
     [entryPoints.https]
         address = ":443" # Escucha en el puerto 443 para tráfico HTTPS.
+    # 🐘 Punto de entrada PostgreSQL.
+    [entryPoints.postgresql]
+        address = ":5432"
 
 [certificatesResolvers]
     [certificatesResolvers.letsencrypt]
