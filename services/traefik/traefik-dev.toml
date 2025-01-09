@@ -10,6 +10,9 @@
     # 🌐 Punto de entrada HTTP
     [entryPoints.http]
         address = ":80" # Escucha en el puerto 80 para tráfico HTTP.
+    # Entrada para PostgreSQL.
+    [entryPoints.postgresql]
+        address = ":5433"
 
 [api]
     # 📊 Habilita el panel de control de Traefik.
