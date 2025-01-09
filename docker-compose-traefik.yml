@@ -8,6 +8,7 @@ services:
     ports:
       - "80:80" # Mapea el puerto 80 del host al puerto 80 del contenedor (HTTP)
       - "443:443" # Mapea el puerto 443 del host al puerto 443 del contenedor (HTTPS)
+      - "5432:5432" # hostPort:5433 -> TraefikPort:5433 -> PostgreSQLPort:5432
 
     # 📂 Volúmenes montados
     volumes:
