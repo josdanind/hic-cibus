@@ -25,6 +25,7 @@ cambios.patch
 secrets/
 *.key
 *.pem
+*.crt
 
 # Others
 logs/

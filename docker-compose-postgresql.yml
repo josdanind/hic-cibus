@@ -7,6 +7,9 @@ services:
         # 📂 Volúmenes montados
         volumes:
             - db_postgresql:/var/lib/postgresql/data # Datos de la base de datos
+            - ./services/postgresql/certs:/var/lib/postgresql/certs
+            - ./services/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
+            - ./services/postgresql/pg_hba.conf:/etc/postgresql/pg_hba.conf
 
         # 🏷️ Etiquetas para configuración dinámica con Traefik
         labels:
