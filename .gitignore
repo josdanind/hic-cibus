@@ -1,8 +1,31 @@
-# Environments
-.env
-.venv/
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Virtual environment directories
+venv/
+env/
+.venv/
+.env
+
+cambios.patch
+
+# Editor backups and configurations
+*.swp
+*.swo
+*.bak
+*.orig
+*.tmp
+.idea/
+.vscode/
+*.code-workspace
+
+# Secrets (add your secret file patterns)
+secrets/
+*.key
+*.pem
+
+# Others
+logs/
+*.log
