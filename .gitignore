@@ -18,4 +18,15 @@ cambios.patch
 *.orig
 *.tmp
 .idea/
-.env
+.vscode/
+*.code-workspace
+
+# Secrets (add your secret file patterns)
+secrets/
+*.key
+*.pem
+*.crt
+
+# Others
+logs/
+*.log
