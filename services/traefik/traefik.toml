@@ -10,10 +10,12 @@
     # 🌐 Punto de entrada HTTP
     [entryPoints.http]
         address = ":80" # Escucha en el puerto 80 para tráfico HTTP.
+
     # 🌐 Punto de entrada HTTPS
     [entryPoints.https]
         address = ":443" # Escucha en el puerto 443 para tráfico HTTPS.
-    # 🐘 Punto de entrada PostgreSQL.
+
+    # 🐘 Punto de entrada para PostgreSQL
     [entryPoints.postgresql]
         address = ":5432"
 

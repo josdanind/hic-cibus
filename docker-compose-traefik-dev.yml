@@ -6,8 +6,16 @@ services:
 
     # 🔗 Puertos expuestos
     ports:
-      - "80:80" # hostPort:80 -> TraefikPort:80
-      - "5433:5433" # hostPort:5433 -> TraefikPort:5433 -> PostgreSQLPort:5432
+      # Traefik Port (http)
+      - "80:80"
+
+      # PostgreSQL Ports - development mode
+      - "5433:5433" # PostgreSQL (CRUD DB)
+      - "5500:5500" # PostgreSQL (EMQX DB)
+
+      # EMQX Ports
+      - "1883:1883" # MQTT
+      - "8083:8083" # Websocket
 
     # 📂 Volúmenes montados
     volumes:
@@ -22,9 +30,11 @@ services:
       - "traefik.http.services.dashboard.loadbalancer.server.port=8080" # Puerto interno del servicio
 
       # 🌐 Router para el Dashboard de Traefik (HTTP)
-      - "traefik.http.routers.dashboard-http.rule=Host(`${TRAEFIK_DEV_DOMAIN}`)" # Regla basada en el dominio
+      - "traefik.http.routers.dashboard-http.rule=Host(`${TRAEFIK_DASHBOARD_DOMAIN_DEV}`)" # Regla basada en el dominio
       - "traefik.http.routers.dashboard-http.entrypoints=http" # EntryPoint HTTP
       - "traefik.http.routers.dashboard-http.service=api@internal" # Servicio interno asignado al router
+      - "traefik.http.routers.dashboard-http.middlewares=auth-basic"
+      - "traefik.http.middlewares.auth-basic.basicauth.users=${TRAEFIK_DASHBOARD_AUTH_USERS_DEV}"
 
     # 🌍 Red asignada al servicio
     networks:

@@ -1,0 +1,86 @@
+services:
+  # MQTT Server
+  emqx-dev:
+    image: emqx:5.8.4
+    container_name: emqx-dev
+    restart: unless-stopped
+    depends_on:
+      - emqx_db-dev
+
+    # 📂 Volúmenes montados
+    volumes:
+      - vol-emqx-data:/opt/emqx/data
+      - vol-emqx-log:/opt/emqx/log
+
+    environment:
+      TZ: ${TZ}
+      EMQX_NODE__NAME: ${EMQX_NODE_NAME_DEV}@emqx-dev
+      EMQX_NODE__COOKIE: ${EMQX_NODE_COOKIE_DEV}
+      EMQX_DASHBOARD__DEFAULT_USERNAME: ${EMQX_DASHBOARD_USERNAME_DEV}
+      EMQX_DASHBOARD__DEFAULT_PASSWORD: ${EMQX_DASHBOARD_PASSWORD_DEV}
+
+    # 🌍 Red asignada al servicio
+    networks:
+        - hic-cibus
+
+    labels:
+      traefik.enable: "true"
+
+      # 🛠️ Conexiones MQTT no seguro
+      traefik.tcp.routers.mqtt-router.entrypoints: "mqtt"
+      traefik.tcp.routers.mqtt-router.rule: "HostSNI(`*`)"
+      traefik.tcp.routers.mqtt-router.service: "mqtt-service"
+      traefik.tcp.services.mqtt-service.loadbalancer.server.port: "1883"
+
+      # 🛠️ Conexiones Websocket no seguro
+      traefik.http.routers.ws-router.entrypoints: "websocket"
+      traefik.http.routers.ws-router.rule: "Host(`${EMQX_DOMAIN_DEV}`)"
+      traefik.http.routers.ws-router.service: "ws-service"
+      traefik.http.services.ws-service.loadbalancer.server.port: "8083"
+
+      # Dashboard administrativo de EMQX (HTTP)
+      traefik.http.routers.emqx_dashboard_http-router.entrypoints: "http"
+      traefik.http.routers.emqx_dashboard_http-router.rule: "Host(`${EMQX_DOMAIN_DEV}`)"
+      traefik.http.routers.emqx_dashboard_http-router.service: "emqx_dashboard_http-service"
+      traefik.http.services.emqx_dashboard_http-service.loadbalancer.server.port: "18083"
+
+  # Database
+  emqx_db-dev:
+    image: postgres:17.2-alpine3.21
+    container_name: emqx_db-dev
+    restart: unless-stopped
+
+    # 📂 Volúmenes montados
+    volumes:
+      - mqtt_db-dev:/var/lib/postgresql/data # Datos de la base de datos
+      - ./services/emqx/db/init_dev.sh:/docker-entrypoint-initdb.d/init.sh
+
+    labels:
+          traefik.enable: "true" # Habilitar Traefik para este servicio
+          traefik.tcp.routers.emqx_db-router.entrypoints: "emqx_db" # Punto de entrada para PostgreSQL
+          traefik.tcp.routers.emqx_db-router.rule: "HostSNI(`*`)" # Aceptar conexiones desde cualquier cliente
+          traefik.tcp.routers.emqx_db-router.service: "emqx_db-service" # Servicio asociado al router
+          traefik.tcp.services.emqx_db-service.loadbalancer.server.port: "5432" # Puerto interno del contenedor
+
+    # 🗝️ Variables de entorno
+    environment:
+        TZ: ${TZ}
+        POSTGRES_DB: ${EMQX_DB_DEV}
+        POSTGRES_USER: ${EMQX_DB_USER_DEV}
+        POSTGRES_PASSWORD: ${EMQX_DB_PASSWORD_DEV}
+        MQTT_ADMIN_USER_DEV: ${MQTT_ADMIN_USER_DEV}
+        MQTT_ADMIN_USER_PASSWORD_HASH_DEV: ${MQTT_ADMIN_USER_PASSWORD_HASH_DEV}
+
+    # 🌍 Red asignada al servicio
+    networks:
+        - hic-cibus
+
+# 📂 Volúmenes
+volumes:
+    mqtt_db-dev:
+    vol-emqx-data:
+    vol-emqx-log:
+
+networks:
+    hic-cibus:
+        external: true
