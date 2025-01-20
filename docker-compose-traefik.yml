@@ -6,49 +6,68 @@ services:
 
     # 🔗 Puertos expuestos
     ports:
-      - "80:80" # Mapea el puerto 80 del host al puerto 80 del contenedor (HTTP)
-      - "443:443" # Mapea el puerto 443 del host al puerto 443 del contenedor (HTTPS)
-      - "5432:5432" # hostPort:5433 -> TraefikPort:5433 -> PostgreSQLPort:5432
+      # Traefik (http)
+      - "80:80"
+
+      # Traefik (https)
+      - "443:443"
+
+      # Puertos para las Bases de Datos
+      - "5432:5432" # PostgreSQL (CRUD DB)
+      - "5500:5500" # PostgreSQL (EMQX DB)
+
+      # Puertos EMQX
+      - "1883:1883" # MQTT
+      - "8883:8883" # MQTT seguro
+      - "8083:8083" # Websocket
+      - "8084:8084" # Websocket seguro
+
 
     # 📂 Volúmenes montados
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock # Acceso al socket de Docker
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Acceso al socket de Docker
       - ./services/traefik/traefik.toml:/etc/traefik/traefik.toml:ro # Archivo de configuración de Traefik
-      - ./services/traefik/htpasswd:/etc/traefik/htpasswd:ro
+      - ./services/traefik/htpasswd:/etc/traefik/htpasswd:ro # Archivo para autenticación básica
       - traefik-public-certificates:/certificates # Almacena los certificados SSL/TLS
 
-    # 🏷️ Etiquetas para la configuración dinámica
+    # 🏷️ Etiquetas para Traefik
     labels:
       - "traefik.enable=true" # Habilita Traefik para este servicio
 
-      # ⚙️ Configuración del Servicio Dashboard
+      # Configuración del Servicio Dashboard
       - "traefik.http.services.dashboard.loadbalancer.server.port=8080" # Puerto interno del servicio
 
-      # 🌐 Router para el Dashboard de Traefik (HTTP)
+      # Router para el Dashboard de Traefik (HTTP)
       - "traefik.http.routers.dashboard-http.rule=Host(`${TRAEFIK_DASHBOARD_DOMAIN}`)" # Regla basada en el dominio
       - "traefik.http.routers.dashboard-http.entrypoints=http" # Usa el EntryPoint HTTP
       - "traefik.http.routers.dashboard-http.middlewares=redirect-to-https" # Middleware para redirigir a HTTPS
 
-      # 🌐 Router para el Dashboard de Traefik (HTTPS)
+      # Router para el Dashboard de Traefik (HTTPS)
       - "traefik.http.routers.dashboard-https.rule=Host(`${TRAEFIK_DASHBOARD_DOMAIN}`)" # Regla basada en el dominio
       - "traefik.http.routers.dashboard-https.entrypoints=https" # Usa el EntryPoint HTTPS
       - "traefik.http.routers.dashboard-https.service=api@internal" # Servicio interno para el Dashboard
       - "traefik.http.routers.dashboard-https.tls=true" # Habilita TLS
       - "traefik.http.routers.dashboard-https.tls.certresolver=letsencrypt" # Resolver de certificados SSL/TLS
       - "traefik.http.routers.dashboard-https.middlewares=auth-basic"
+
+      # Middleware de autenticación básica
       - "traefik.http.middlewares.auth-basic.basicauth.usersfile=/etc/traefik/htpasswd"
 
-
-      # 📦 Middleware para redirección HTTP a HTTPS
+      # Middleware para redirección HTTP a HTTPS
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https" # Redirección a HTTPS
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true" # Redirección permanente
 
+    # 🌐 Red asignada al servicio
     networks:
       - hic-cibus
 
+
+# 📂 Volúmenes
 volumes:
   traefik-public-certificates:
 
+
+# 🌐 Redes
 networks:
   hic-cibus:
     external: true

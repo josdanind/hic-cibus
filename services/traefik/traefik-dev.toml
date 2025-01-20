@@ -11,24 +11,24 @@
     [entryPoints.http]
         address = ":80" # Escucha en el puerto 80 para tráfico HTTP.
 
-    # 🐘 Punto de entrada para PostgreSQL
+    # 🐘 Punto de entrada para PostgreSQL.
     [entryPoints.postgresql]
-        address = ":5433"
+        address = ":5432" # Escucha en el puerto 5432 para conexiones PostgreSQL
 
     # 💾 Punto de entrada para la base de datos EMQX
     [entryPoints.emqx_db]
         address = ":5500"
 
-    # 📡 Punto de entrada para MQTT no seguro
+    # 📡 Punto de entrada para MQTT no seguro.
     [entryPoints.mqtt]
-        address = ":1883"
+        address = ":1883" # Escucha en el puerto 1883 para MQTT
 
     # 🌐 Punto de entrada para WebSocket no seguro
     [entryPoints.websocket]
-        address = ":8083"
+        address = ":8083" # Escucha en el puerto 8083 para WebSocket
+
 
 [api]
-    # 📊 Habilita el panel de control de Traefik.
-    dashboard = true
-    # ⚠️ Permite acceso inseguro al panel (sin autenticación).
-    insecure = true
+    # 📊 Configuración del panel de control de Traefik
+    dashboard = true  # Habilita el panel de control
+    insecure = true # Deshabilita acceso inseguro al dashboard

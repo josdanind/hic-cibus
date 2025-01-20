@@ -22,14 +22,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock # Acceso al socket de Docker
       - ./services/traefik/traefik-dev.toml:/etc/traefik/traefik.toml # Archivo de configuración de Traefik
 
-    # 🏷️ Etiquetas para configuración dinámica
+    # 🏷️ Etiquetas para Traefik
     labels:
       - "traefik.enable=true" # Habilita Traefik para este servicio
 
-      # ⚙️ Configuración del Servicio Dashboard
+      # Configuración del Servicio Dashboard
       - "traefik.http.services.dashboard.loadbalancer.server.port=8080" # Puerto interno del servicio
 
-      # 🌐 Router para el Dashboard de Traefik (HTTP)
+      # Router para el Dashboard de Traefik (HTTP)
       - "traefik.http.routers.dashboard-http.rule=Host(`${TRAEFIK_DASHBOARD_DOMAIN_DEV}`)" # Regla basada en el dominio
       - "traefik.http.routers.dashboard-http.entrypoints=http" # EntryPoint HTTP
       - "traefik.http.routers.dashboard-http.service=api@internal" # Servicio interno asignado al router
@@ -39,6 +39,7 @@ services:
     # 🌍 Red asignada al servicio
     networks:
       - hic-cibus
+
 
 # 🌐 Redes utilizadas
 networks:

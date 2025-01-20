@@ -12,17 +12,7 @@ services:
       - vol-emqx-data:/opt/emqx/data
       - vol-emqx-log:/opt/emqx/log
 
-    environment:
-      TZ: ${TZ}
-      EMQX_NODE__NAME: ${EMQX_NODE_NAME_DEV}@emqx-dev
-      EMQX_NODE__COOKIE: ${EMQX_NODE_COOKIE_DEV}
-      EMQX_DASHBOARD__DEFAULT_USERNAME: ${EMQX_DASHBOARD_USERNAME_DEV}
-      EMQX_DASHBOARD__DEFAULT_PASSWORD: ${EMQX_DASHBOARD_PASSWORD_DEV}
-
-    # 🌍 Red asignada al servicio
-    networks:
-        - hic-cibus
-
+    # 🏷️ Etiquetas para Traefik
     labels:
       traefik.enable: "true"
 
@@ -43,6 +33,18 @@ services:
       traefik.http.routers.emqx_dashboard_http-router.rule: "Host(`${EMQX_DOMAIN_DEV}`)"
       traefik.http.routers.emqx_dashboard_http-router.service: "emqx_dashboard_http-service"
       traefik.http.services.emqx_dashboard_http-service.loadbalancer.server.port: "18083"
+
+    # 🗝️ Variables de entorno
+    environment:
+      TZ: ${TZ}
+      EMQX_NODE__NAME: ${EMQX_NODE_NAME_DEV}@emqx-dev
+      EMQX_NODE__COOKIE: ${EMQX_NODE_COOKIE_DEV}
+      EMQX_DASHBOARD__DEFAULT_USERNAME: ${EMQX_DASHBOARD_USERNAME_DEV}
+      EMQX_DASHBOARD__DEFAULT_PASSWORD: ${EMQX_DASHBOARD_PASSWORD_DEV}
+
+    # 🌍 Red asignada al servicio
+    networks:
+        - hic-cibus
 
   # Database
   emqx_db-dev:

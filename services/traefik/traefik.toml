@@ -15,21 +15,41 @@
     [entryPoints.https]
         address = ":443" # Escucha en el puerto 443 para tráfico HTTPS.
 
-    # 🐘 Punto de entrada para PostgreSQL
+    # 🐘 Punto de entrada para PostgreSQL.
     [entryPoints.postgresql]
-        address = ":5432"
+        address = ":5432" # Escucha en el puerto 5432 para conexiones PostgreSQL
+
+    # 💾 Punto de entrada para la base de datos EMQX
+    [entryPoints.emqx_db]
+        address = ":5500"
+
+    # 📡 Punto de entrada para MQTT no seguro.
+    [entryPoints.mqtt]
+        address = ":1883" # Escucha en el puerto 1883 para MQTT
+
+    # 🔒 Punto de entrada para MQTT seguro (SSL/TLS)
+    [entryPoints.mqtt-ssl]
+        address = ":8883"  # Escucha en el puerto 8883 para MQTT con SSL/TLS
+
+    # 🌐 Punto de entrada para WebSocket no seguro
+    [entryPoints.websocket]
+        address = ":8083" # Escucha en el puerto 8083 para WebSocket
+
+    # 🔒 Punto de entrada para WebSocket seguro (SSL/TLS)
+    [entryPoints.websocket-ssl]
+        address = ":8084" # Escucha en el puerto 8084 para WebSocket con SSL/TLS
 
 [certificatesResolvers]
+    # 🛡️ Configuración del resolutor de certificados Let's Encrypt
     [certificatesResolvers.letsencrypt]
         [certificatesResolvers.letsencrypt.acme]
-            # Correo electrónico para notificaciones de Let's Encrypt.
-            email = "josdanind@pm.me"
-            # Ubicación del archivo de almacenamiento para los datos del certificado.
-            storage= "/certificates/acme.json"
+            email = "josdanind@pm.me" # Correo para notificaciones de Let's Encrypt
+            storage= "/certificates/acme.json" # Ruta para almacenar datos del certificado
+
+            # 📄 Configuración para el desafío TLS
             [certificatesResolvers.letsencrypt.acme.tlsChallenge]
 
 [api]
-    # 📊 Habilita el panel de control de Traefik.
-    dashboard = true
-    # Seguridad del servicio.
-    insecure = false
+    # 📊 Configuración del panel de control de Traefik
+    dashboard = true  # Habilita el panel de control
+    insecure = false # Deshabilita acceso inseguro al dashboard
