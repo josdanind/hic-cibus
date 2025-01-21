@@ -42,8 +42,8 @@ services:
       traefik.http.routers.emqx_dashboard_https-router.rule: "Host(`${EMQX_DOMAIN}`)"
       traefik.http.routers.emqx_dashboard_https-router.service: "emqx_dashboard_https-service"
       traefik.http.services.emqx_dashboard_https-service.loadbalancer.server.port: "18083"
-      traefik.http.routers.dashboard-https.tls: true
-      traefik.http.routers.dashboard-https.tls.certresolver: "letsencrypt"
+      traefik.http.routers.emqx_dashboard_https.tls: true
+      traefik.http.routers.emqx_dashboard_https.tls.certresolver: "letsencrypt"
 
     # 🗝️ Variables de entorno
     environment:
