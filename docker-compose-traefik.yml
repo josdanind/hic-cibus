@@ -51,7 +51,8 @@ services:
       - "traefik.http.routers.dashboard-https.middlewares=auth-basic"
 
       # Middleware de autenticación básica
-      - "traefik.http.middlewares.auth-basic.basicauth.usersfile=/etc/traefik/htpasswd"
+      # - "traefik.http.middlewares.auth-basic.basicauth.usersfile=/etc/traefik/htpasswd"
+      - "traefik.http.middlewares.auth-basic.basicauth.users=${TRAEFIK_DASHBOARD_AUTH_USERS}"
 
       # Middleware para redirección HTTP a HTTPS
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https" # Redirección a HTTPS
