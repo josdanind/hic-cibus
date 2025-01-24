@@ -24,6 +24,7 @@ cambios.patch
 # Secrets (add your secret file patterns)
 secrets/
 htpasswd
+usersFile
 *.key
 *.pem
 

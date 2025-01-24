@@ -35,17 +35,17 @@ services:
       traefik.enable: "true" # Habilita Traefik para este servicio
 
       # Router para el Dashboard de Traefik (HTTP)
-      traefik.http.routers.traefik-dashboard-http.entrypoints: "http" # EntryPoint HTTP
-      traefik.http.routers.traefik-dashboard-http.rule: "Host(`${TRAEFIK_DASHBOARD_DOMAIN}`)" # Regla basada en el dominio
-      traefik.http.routers.traefik-dashboard-http.middlewares: "redirect-to-https@file" # Middleware para redirigir a HTTPS
+      traefik.http.routers.traefik_dashboard_http-router.entrypoints: "http" # EntryPoint HTTP
+      traefik.http.routers.traefik_dashboard_http-router.rule: "Host(`${TRAEFIK_DASHBOARD_DOMAIN}`)" # Regla basada en el dominio
+      traefik.http.routers.traefik_dashboard_http-router.middlewares: "redirect-to-https@file" # Middleware para redirigir a HTTPS
 
       # Router para el Dashboard de Traefik (HTTPS)
-      traefik.http.routers.traefik-dashboard-https.entrypoints: "https" # EntryPoint HTTPS
-      traefik.http.routers.traefik-dashboard-https.rule: "Host(`${TRAEFIK_DASHBOARD_DOMAIN}`)" # Regla basada en el dominio
-      traefik.http.routers.traefik-dashboard-https.service: "api@internal" # Servicio interno para el Dashboard
-      traefik.http.routers.traefik-dashboard-https.tls: "true" # Habilita TLS
-      traefik.http.routers.traefik-dashboard-https.tls.certresolver: "letsencrypt" # Certificados SSL/TLS
-      traefik.http.routers.traefik-dashboard-https.middlewares: "auth-basic@file" # Middleware de autenticación básica
+      traefik.http.routers.traefik_dashboard_https-router.entrypoints: "https" # EntryPoint HTTPS
+      traefik.http.routers.traefik_dashboard_https-router.rule: "Host(`${TRAEFIK_DASHBOARD_DOMAIN}`)" # Regla basada en el dominio
+      traefik.http.routers.traefik_dashboard_https-router.service: "api@internal" # Servicio interno para el Dashboard
+      traefik.http.routers.traefik_dashboard_https-router.tls: "true" # Habilita TLS
+      traefik.http.routers.traefik_dashboard_https-router.tls.certresolver: "letsencrypt" # Certificados SSL/TLS
+      traefik.http.routers.traefik_dashboard_https-router.middlewares: "auth-basic@file" # Middleware de autenticación básica
 
     # 🌐 Red asignada al servicio
     networks:
