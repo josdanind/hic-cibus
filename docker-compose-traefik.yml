@@ -55,8 +55,8 @@ services:
       - "traefik.http.middlewares.auth-basic.basicauth.users=${TRAEFIK_DASHBOARD_AUTH_USERS}"
 
       # Middleware para redirección HTTP a HTTPS
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https" # Redirección a HTTPS
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true" # Redirección permanente
+      # - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https" # Redirección a HTTPS
+      # - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true" # Redirección permanente
 
     # 🌐 Red asignada al servicio
     networks:

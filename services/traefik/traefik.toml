@@ -39,6 +39,12 @@
     [entryPoints.websocket-ssl]
         address = ":8084" # Escucha en el puerto 8084 para WebSocket con SSL/TLS
 
+# 🔀 Redirigir tráfico HTTP a HTTPS
+[http.middlewares]
+    [http.middlewares.redirect-to-https.redirectScheme]
+        scheme = "https"
+        permanent = true
+
 [certificatesResolvers]
     # 🛡️ Configuración del resolutor de certificados Let's Encrypt
     [certificatesResolvers.letsencrypt]

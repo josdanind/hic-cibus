@@ -31,19 +31,15 @@ services:
       # Dashboard administrativo de EMQX (HTTP)
       traefik.http.routers.emqx_dashboard_http-router.entrypoints: "http"
       traefik.http.routers.emqx_dashboard_http-router.rule: "Host(`${EMQX_DOMAIN}`)"
-      traefik.http.routers.emqx_dashboard_http.middlewares: redirect-to-https
-
-      # Middleware para redirección HTTP a HTTPS
-      traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: "https"
-      traefik.http.middlewares.redirect-to-https.redirectscheme.permanent: true
+      traefik.http.routers.emqx_dashboard_http-router.middlewares: redirect-to-https
 
       # Dashboard administrativo de EMQX (HTTPS)
       traefik.http.routers.emqx_dashboard_https-router.entrypoints: "https"
       traefik.http.routers.emqx_dashboard_https-router.rule: "Host(`${EMQX_DOMAIN}`)"
+      traefik.http.routers.emqx_dashboard_https-router.tls: true
+      traefik.http.routers.emqx_dashboard_https-router.tls.certresolver: "letsencrypt"
       traefik.http.routers.emqx_dashboard_https-router.service: "emqx_dashboard_https-service"
       traefik.http.services.emqx_dashboard_https-service.loadbalancer.server.port: "18083"
-      traefik.http.routers.emqx_dashboard_https.tls: true
-      traefik.http.routers.emqx_dashboard_https.tls.certresolver: "letsencrypt"
 
     # 🗝️ Variables de entorno
     environment:
