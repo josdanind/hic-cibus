@@ -50,13 +50,13 @@ services:
       - "traefik.http.routers.dashboard-https.tls.certresolver=letsencrypt" # Resolver de certificados SSL/TLS
       - "traefik.http.routers.dashboard-https.middlewares=auth-basic"
 
-      # Middleware de autenticación básica
-      # - "traefik.http.middlewares.auth-basic.basicauth.usersfile=/etc/traefik/htpasswd"
+      # Middlewares
+      # Redirección a HTTPS
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https" # Redirección a HTTPS
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true" # Redirección permanente
+      # Autenticación básica
       - "traefik.http.middlewares.auth-basic.basicauth.users=${TRAEFIK_DASHBOARD_AUTH_USERS}"
-
-      # Middleware para redirección HTTP a HTTPS
-      # - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https" # Redirección a HTTPS
-      # - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true" # Redirección permanente
+      # - "traefik.http.middlewares.auth-basic.basicauth.usersfile=/etc/traefik/htpasswd"
 
     # 🌐 Red asignada al servicio
     networks:
