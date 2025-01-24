@@ -6,6 +6,11 @@
         # Desactiva la exposición automática de todos los contenedores Docker.
         exposedByDefault = false
 
+    # 📁 Proveedor de archivos para la configuración de los middlewares.
+    [providers.file]
+        filename = "/etc/traefik/middlewares.toml"
+        watch = true
+
 [entryPoints]
     # 🌐 Punto de entrada HTTP
     [entryPoints.http]
@@ -26,7 +31,6 @@
     # 🌐 Punto de entrada para WebSocket no seguro
     [entryPoints.websocket]
         address = ":8083" # Escucha en el puerto 8083 para WebSocket
-
 
 [api]
     # 📊 Configuración del panel de control de Traefik

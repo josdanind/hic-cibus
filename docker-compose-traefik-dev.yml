@@ -19,22 +19,19 @@ services:
 
     # 📂 Volúmenes montados
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock # Acceso al socket de Docker
-      - ./services/traefik/traefik-dev.toml:/etc/traefik/traefik.toml # Archivo de configuración de Traefik
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Acceso al socket de Docker
+      - ./services/traefik/traefik-dev.toml:/etc/traefik/traefik.toml:ro # Archivo de configuración de Traefik
+      - ./services/traefik/middlewares/middlewares-dev.toml:/etc/traefik/middlewares.toml # Archivo de configuración de Middlewares
 
     # 🏷️ Etiquetas para Traefik
     labels:
-      - "traefik.enable=true" # Habilita Traefik para este servicio
-
-      # Configuración del Servicio Dashboard
-      - "traefik.http.services.dashboard.loadbalancer.server.port=8080" # Puerto interno del servicio
+      traefik.enable: "true" # Habilita Traefik para este servicio
 
       # Router para el Dashboard de Traefik (HTTP)
-      - "traefik.http.routers.dashboard-http.rule=Host(`${TRAEFIK_DASHBOARD_DOMAIN_DEV}`)" # Regla basada en el dominio
-      - "traefik.http.routers.dashboard-http.entrypoints=http" # EntryPoint HTTP
-      - "traefik.http.routers.dashboard-http.service=api@internal" # Servicio interno asignado al router
-      - "traefik.http.routers.dashboard-http.middlewares=auth-basic"
-      - "traefik.http.middlewares.auth-basic.basicauth.users=${TRAEFIK_DASHBOARD_AUTH_USERS_DEV}"
+      traefik.http.routers.traefik-dashboard-http.entrypoints: "http" # EntryPoint HTTP
+      traefik.http.routers.traefik-dashboard-http.rule: "Host(`${TRAEFIK_DASHBOARD_DOMAIN_DEV}`)" # Regla basada en el dominio
+      traefik.http.routers.traefik-dashboard-http.service: "api@internal" # Servicio interno asignado al router
+      traefik.http.routers.traefik-dashboard-http.middlewares: "auth-basic@file" # Middleware de autenticación básica
 
     # 🌍 Red asignada al servicio
     networks:

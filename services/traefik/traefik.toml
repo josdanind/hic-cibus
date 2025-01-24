@@ -6,6 +6,12 @@
         # Desactiva la exposición automática de todos los contenedores Docker.
         exposedByDefault = false
 
+    # 📁 Proveedor de archivos para la configuración de los middlewares.
+    [providers.file]
+        filename = "/etc/traefik/middlewares.toml"
+        watch = true
+
+
 [entryPoints]
     # 🌐 Punto de entrada HTTP
     [entryPoints.http]

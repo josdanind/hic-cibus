@@ -22,41 +22,30 @@ services:
       - "8083:8083" # Websocket
       - "8084:8084" # Websocket seguro
 
-
     # 📂 Volúmenes montados
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro # Acceso al socket de Docker
-      - ./services/traefik/traefik.toml:/etc/traefik/traefik.toml:ro # Archivo de configuración de Traefik
-      - ./services/traefik/htpasswd:/etc/traefik/htpasswd:ro # Archivo para autenticación básica
-      - traefik-public-certificates:/certificates # Almacena los certificados SSL/TLS
+      - traefik-public-certificates:/certificates  # Certificados SSL/TLS
+      - ./services/traefik/traefik.toml:/etc/traefik/traefik.toml:ro # Configuración principal
+      - ./services/traefik/middlewares/middlewares.toml:/etc/traefik/middlewares.toml # Middlewares
+      - ./services/traefik/auth/usersFile:/etc/traefik/usersFile # Autenticación básica
 
     # 🏷️ Etiquetas para Traefik
     labels:
-      - "traefik.enable=true" # Habilita Traefik para este servicio
-
-      # Configuración del Servicio Dashboard
-      - "traefik.http.services.dashboard.loadbalancer.server.port=8080" # Puerto interno del servicio
+      traefik.enable: "true" # Habilita Traefik para este servicio
 
       # Router para el Dashboard de Traefik (HTTP)
-      - "traefik.http.routers.dashboard-http.rule=Host(`${TRAEFIK_DASHBOARD_DOMAIN}`)" # Regla basada en el dominio
-      - "traefik.http.routers.dashboard-http.entrypoints=http" # Usa el EntryPoint HTTP
-      - "traefik.http.routers.dashboard-http.middlewares=redirect-to-https" # Middleware para redirigir a HTTPS
+      traefik.http.routers.traefik-dashboard-http.entrypoints: "http" # EntryPoint HTTP
+      traefik.http.routers.traefik-dashboard-http.rule: "Host(`${TRAEFIK_DASHBOARD_DOMAIN}`)" # Regla basada en el dominio
+      traefik.http.routers.traefik-dashboard-http.middlewares: "redirect-to-https@file" # Middleware para redirigir a HTTPS
 
       # Router para el Dashboard de Traefik (HTTPS)
-      - "traefik.http.routers.dashboard-https.rule=Host(`${TRAEFIK_DASHBOARD_DOMAIN}`)" # Regla basada en el dominio
-      - "traefik.http.routers.dashboard-https.entrypoints=https" # Usa el EntryPoint HTTPS
-      - "traefik.http.routers.dashboard-https.service=api@internal" # Servicio interno para el Dashboard
-      - "traefik.http.routers.dashboard-https.tls=true" # Habilita TLS
-      - "traefik.http.routers.dashboard-https.tls.certresolver=letsencrypt" # Resolver de certificados SSL/TLS
-      - "traefik.http.routers.dashboard-https.middlewares=auth-basic"
-
-      # Middlewares
-      # Redirección a HTTPS
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https" # Redirección a HTTPS
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true" # Redirección permanente
-      # Autenticación básica
-      - "traefik.http.middlewares.auth-basic.basicauth.users=${TRAEFIK_DASHBOARD_AUTH_USERS}"
-      # - "traefik.http.middlewares.auth-basic.basicauth.usersfile=/etc/traefik/htpasswd"
+      traefik.http.routers.traefik-dashboard-https.entrypoints: "https" # EntryPoint HTTPS
+      traefik.http.routers.traefik-dashboard-https.rule: "Host(`${TRAEFIK_DASHBOARD_DOMAIN}`)" # Regla basada en el dominio
+      traefik.http.routers.traefik-dashboard-https.service: "api@internal" # Servicio interno para el Dashboard
+      traefik.http.routers.traefik-dashboard-https.tls: "true" # Habilita TLS
+      traefik.http.routers.traefik-dashboard-https.tls.certresolver: "letsencrypt" # Certificados SSL/TLS
+      traefik.http.routers.traefik-dashboard-https.middlewares: "auth-basic@file" # Middleware de autenticación básica
 
     # 🌐 Red asignada al servicio
     networks:
