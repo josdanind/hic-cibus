@@ -1,0 +1,99 @@
+services:
+  # 🖥️ Broker MQTT
+  emqx_1:
+    image: emqx:5.8.4
+    container_name: emqx_1
+    restart: unless-stopped
+    depends_on:
+      - emqx_db
+
+    # 📂 Volúmenes montados
+    volumes:
+      - vol-emqx-data:/opt/emqx/data
+      - vol-emqx-log:/opt/emqx/log
+
+    # 🏷️ Etiquetas para Traefik
+    labels:
+      traefik.enable: "true"
+
+      # Conexiones MQTT no seguro
+      traefik.tcp.routers.mqtt-router.entrypoints: "mqtt"
+      traefik.tcp.routers.mqtt-router.rule: "HostSNI(`*`)"
+      traefik.tcp.routers.mqtt-router.service: "mqtt-service"
+      traefik.tcp.services.mqtt-service.loadbalancer.server.port: "1883"
+
+      # Conexiones Websocket no seguro
+      traefik.http.routers.ws-router.entrypoints: "websocket"
+      traefik.http.routers.ws-router.rule: "Host(`${EMQX_DOMAIN}`)"
+      traefik.http.routers.ws-router.service: "ws-service"
+      traefik.http.services.ws-service.loadbalancer.server.port: "8083"
+
+      # Dashboard administrativo de EMQX (HTTP)
+      traefik.http.routers.emqx_dashboard_http-router.entrypoints: "http"
+      traefik.http.routers.emqx_dashboard_http-router.rule: "Host(`${EMQX_DOMAIN}`)"
+      traefik.http.routers.emqx_dashboard_http-router.middlewares: redirect-to-https
+
+      # Dashboard administrativo de EMQX (HTTPS)
+      traefik.http.routers.emqx_dashboard_https-router.entrypoints: "https"
+      traefik.http.routers.emqx_dashboard_https-router.rule: "Host(`${EMQX_DOMAIN}`)"
+      traefik.http.routers.emqx_dashboard_https-router.tls: true
+      traefik.http.routers.emqx_dashboard_https-router.tls.certresolver: "letsencrypt"
+      traefik.http.routers.emqx_dashboard_https-router.service: "emqx_dashboard_https-service"
+      traefik.http.services.emqx_dashboard_https-service.loadbalancer.server.port: "18083"
+
+    # 🗝️ Variables de entorno
+    environment:
+      TZ: ${TZ}
+      EMQX_NODE__NAME: ${EMQX_NODE_NAME}@emqx_1
+      EMQX_NODE__COOKIE: ${EMQX_NODE_COOKIE}
+      EMQX_DASHBOARD__DEFAULT_USERNAME: ${EMQX_DASHBOARD_USERNAME}
+      EMQX_DASHBOARD__DEFAULT_PASSWORD: ${EMQX_DASHBOARD_PASSWORD}
+
+    # 🌐 Red asignada al servicio
+    networks:
+        - hic-cibus
+
+
+  # 🐘 Base de Datos del Broker
+  emqx_db:
+    image: postgres:17.2-alpine3.21
+    container_name: emqx_db
+    restart: unless-stopped
+
+    # 📂 Volúmenes montados
+    volumes:
+      - mqtt_db:/var/lib/postgresql/data # Datos de la base de datos
+      - ./services/emqx/db/init.sh:/docker-entrypoint-initdb.d/init.sh
+
+    # 🏷️ Etiquetas para Traefik
+    labels:
+          traefik.enable: "true" # Habilitar Traefik para este servicio
+          traefik.tcp.routers.emqx_db-router.entrypoints: "emqx_db" # Punto de entrada para PostgreSQL
+          traefik.tcp.routers.emqx_db-router.rule: "HostSNI(`*`)" # Aceptar conexiones desde cualquier cliente
+          traefik.tcp.routers.emqx_db-router.service: "emqx_db-service" # Servicio asociado al router
+          traefik.tcp.services.emqx_db-service.loadbalancer.server.port: "5432" # Puerto interno del contenedor
+
+    # 🗝️ Variables de entorno
+    environment:
+        TZ: ${TZ}
+        POSTGRES_DB: ${EMQX_DB}
+        POSTGRES_USER: ${EMQX_DB_USER}
+        POSTGRES_PASSWORD: ${EMQX_DB_PASSWORD}
+        MQTT_ADMIN_USER: ${MQTT_ADMIN_USER}
+        MQTT_ADMIN_USER_PASSWORD_HASH: ${MQTT_ADMIN_USER_PASSWORD_HASH}
+
+    # 🌐 Red asignada al servicio
+    networks:
+        - hic-cibus
+
+
+# 📂 Volúmenes
+volumes:
+    mqtt_db:
+    vol-emqx-data:
+    vol-emqx-log:
+
+# 🌐 Redes
+networks:
+    hic-cibus:
+        external: true

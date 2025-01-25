@@ -1,0 +1,8 @@
+# Middlewares configuration
+[http.middlewares]
+
+    # Basic Auth Middleware
+    [http.middlewares.auth-basic.basicAuth]
+        users = [
+            "admin:$apr1$hJSQa3Or$LGoUFdcz31ytRZIf4W9XW1"
+        ]
