@@ -1,0 +1,11 @@
+# Configuración de Middlewares
+[http.middlewares]
+
+    # Middleware de autenticación básica
+    [http.middlewares.auth-basic.basicAuth]
+        usersFile = "/etc/traefik/usersFile"
+
+    # Middleware de redirección a HTTPS
+    [http.middlewares.redirect-to-https.redirectScheme]
+        scheme = "https"
+        permanent = true
