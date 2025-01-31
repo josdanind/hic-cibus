@@ -5,7 +5,7 @@ REMOTE_SERVER="tu_usuario@tu_dominio.com"
 # Archivos locales y rutas remotas
 declare -A FILE_PATHS=(
     [".env"]="/home/josdanind/hic-cibus"
-    ["usersFile"]="/home/josdanind/hic-cibus/services/traefik"
+    ["htpasswd"]="/home/josdanind/hic-cibus/services/traefik"
 )
 
 # Función para enviar un archivo al servidor remoto
