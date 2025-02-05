@@ -1,5 +1,14 @@
-# ⚙️ Configuración de Traefik
+# 🚦 Configuración global de Traefik
+# 🌐  Entorno de Producción
+# Este archivo contiene configuraciones estáticas para Traefik en el entrono de producción, incluyendo:
+# - Proveedores de servicios (Docker, archivos, etc.)
+# - Puntos de entrada (HTTP, HTTPS, PostgreSQL, etc.)
+# - Configuraciones de seguridad y autenticación
+# - Configuraciones de logging y certificados TLS
+# - Enrutamiento a middlewares
 
+
+# 🔌 Configuración de los proveedores de Traefik
 [providers]
     # 🐳 Proveedor Docker para Traefik.
     [providers.docker]
@@ -12,6 +21,7 @@
         watch = true
 
 
+# 🚪 Configuración de los puntos de entrada
 [entryPoints]
     # 🌐 Punto de entrada HTTP
     [entryPoints.http]
@@ -45,6 +55,14 @@
     [entryPoints.websocket-ssl]
         address = ":8084" # Escucha en el puerto 8084 para WebSocket con SSL/TLS
 
+
+# 📊 Configuración del panel de control de Traefik
+[api]
+    dashboard = true  # Habilita el panel de control
+    insecure = false # Deshabilita acceso inseguro al dashboard
+
+
+# 🔒 Configuración de los certificados SSL/TLS
 [certificatesResolvers]
     # 🛡️ Configuración del resolutor de certificados Let's Encrypt
     [certificatesResolvers.letsencrypt]
@@ -54,8 +72,3 @@
 
             # 📄 Configuración para el desafío TLS
             [certificatesResolvers.letsencrypt.acme.tlsChallenge]
-
-[api]
-    # 📊 Configuración del panel de control de Traefik
-    dashboard = true  # Habilita el panel de control
-    insecure = false # Deshabilita acceso inseguro al dashboard

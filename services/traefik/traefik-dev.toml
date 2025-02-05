@@ -1,5 +1,11 @@
-# ⚙️ Configuración de Traefik
+# 🚦 Configuración global de Traefik
+# 🌱 Entorno de Desarrollo
+# Este archivo contiene configuraciones estáticas para Traefik en el entorno de desarrollo, incluyendo:
+# - Proveedores de servicios (Docker, archivos, etc.)
+# - Puntos de entrada (HTTP, PostgreSQL, etc.)
 
+
+# 🔌 Configuración de los proveedores de Traefik
 [providers]
     # 🐳 Proveedor Docker para Traefik.
     [providers.docker]
@@ -11,14 +17,16 @@
         filename = "/etc/traefik/middlewares.toml"
         watch = true
 
+
+# 🚪 Configuración de los puntos de entrada
 [entryPoints]
     # 🌐 Punto de entrada HTTP
     [entryPoints.http]
         address = ":80" # Escucha en el puerto 80 para tráfico HTTP.
 
-    # Entrada para PostgreSQL.
+    # 🐘 Punto de entrada para PostgreSQL.
     [entryPoints.postgresql]
-        address = ":5433"
+        address = ":5433" # Escucha en el puerto 5433 para conexiones PostgreSQL
 
     # 💾 Punto de entrada para la base de datos EMQX
     [entryPoints.emqx_db]
@@ -32,7 +40,8 @@
     [entryPoints.websocket]
         address = ":8083" # Escucha en el puerto 8083 para WebSocket
 
+
+# 📊 Configuración del panel de control de Traefik
 [api]
-    # 📊 Configuración del panel de control de Traefik
     dashboard = true  # Habilita el panel de control
     insecure = true # Deshabilita acceso inseguro al dashboard
