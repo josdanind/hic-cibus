@@ -6,7 +6,7 @@ services:
 
         # 📂 Volúmenes montados
         volumes:
-            - db_postgresql:/var/lib/postgresql/data # Datos de la base de datos
+            - postgresql_db:/var/lib/postgresql/data # Datos de la base de datos
 
         # 🏷️ Etiquetas para configuración dinámica con Traefik
         labels:
@@ -27,9 +27,13 @@ services:
         networks:
             - hic-cibus
 
-volumes:
-    db_postgresql:
 
+# 📂 Volúmenes
+volumes:
+    postgresql_db:
+
+
+# 🌐 Redes
 networks:
     hic-cibus:
         external: true

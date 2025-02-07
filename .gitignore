@@ -26,7 +26,6 @@ secrets/
 usersFile
 *.key
 *.pem
-*.crt
 
 # Others
 logs/
