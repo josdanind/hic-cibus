@@ -4,11 +4,11 @@ services:
     build:
       context: ./services/fastapi
       dockerfile: Dockerfile.dev
-    command: uvicorn main:app --host 0.0.0.0 --port ${PORT} --reload
+    command: uvicorn main:app --host 0.0.0.0 --port ${FASTAPI_PORT} --reload
 
     # 🌍 Variables de entorno directas
     environment:
-      - PORT=${PORT}
+      - PORT=${FASTAPI_PORT}
       - API_DOMAIN=${API_DEV_DOMAIN}
 
     # 📂 Montaje de volúmenes
@@ -17,14 +17,15 @@ services:
 
     # 🏷️ Etiquetas para integración con Traefik
     labels:
-      - "traefik.enable=true"
-
-      # ⚙️ Configuración del Servicio FastAPI
-      - "traefik.http.services.fastapi-dev.loadbalancer.server.port=${PORT}"
+      # 🌐 Habilitar Traefik
+      traefik.enable: "true"
 
       # 🌐 Router para FastAPI (HTTP)
-      - "traefik.http.routers.fastapi-router.rule=Host(`${API_DEV_DOMAIN}`)"
-      - "traefik.http.routers.fastapi-router.entrypoints=http"
+      traefik.http.routers.fastapi-router.entrypoints: http
+      traefik.http.routers.fastapi-router.rule: Host(`${API_DEV_DOMAIN}`)
+      traefik.http.routers.fastapi-router.service: fastapi-service
+      traefik.http.services.fastapi-service.loadbalancer.server.port: ${FASTAPI_PORT}
+
 
     # 🔄 Política de reinicio
     restart: unless-stopped
