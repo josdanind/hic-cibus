@@ -26,7 +26,6 @@ services:
       traefik.http.routers.fastapi-router.service: fastapi-service
       traefik.http.services.fastapi-service.loadbalancer.server.port: ${FASTAPI_PORT}
 
-
     # 🔄 Política de reinicio
     restart: unless-stopped
 
