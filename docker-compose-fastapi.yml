@@ -3,34 +3,32 @@ services:
     container_name: fastapi
     build:
       context: ./services/fastapi
-    command: uvicorn main:app --host 0.0.0.0 --port ${PORT}
+    command: uvicorn main:app --host 0.0.0.0 --port ${FASTAPI_PORT}
 
     # 🌍 Variables de entorno directas
     environment:
-      - PORT=${PORT}
+      - PORT=${FASTAPI_PORT}
       - API_DOMAIN=${API_PROD_DOMAIN}
 
     # 🏷️ Etiquetas para integración con Traefik
     labels:
-      - traefik.enable=true
-
-      # ⚙️ Configuración del Servicio FastAPI
-      - "traefik.http.services.fastapi.loadbalancer.server.port=${PORT}"
+      # 🌐 Habilitar Traefik
+      traefik.enable: "true"
 
       # 🌐 Router para FastAPI (HTTP)
-      - "traefik.http.routers.fastapi-http.rule=Host(`${API_PROD_DOMAIN}`)"
-      - "traefik.http.routers.fastapi-http.entrypoints=http"
-      - "traefik.http.routers.fastapi-http.middlewares=redirect-to-https"
+      traefik.http.routers.fastapi_http-router.entrypoints: http
+      traefik.http.routers.fastapi_http-router.rule: Host(`${API_PROD_DOMAIN}`)
+      traefik.http.routers.fastapi_http-router.service: fastapi_http-service
+      traefik.http.services.fastapi_http-service.loadbalancer.server.port: ${FASTAPI_PORT}
+      traefik.http.routers.fastapi_http-router.middlewares: redirect-to-https@file
 
       # 🌐 Router para FastAPI (HTTPS)
-      - "traefik.http.routers.fastapi-https.rule=Host(`${API_PROD_DOMAIN}`)"
-      - "traefik.http.routers.fastapi-https.entrypoints=https"
-      - "traefik.http.routers.fastapi-https.tls=true"
-      - "traefik.http.routers.fastapi-https.tls.certresolver=letsencrypt"
-
-      # 📦 Middleware para redirección HTTP a HTTPS
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+      traefik.http.routers.fastapi_https-router.entrypoints: https
+      traefik.http.routers.fastapi_https-router.rule: Host(`${API_PROD_DOMAIN}`)
+      traefik.http.routers.fastapi_https-router.service: fastapi_https-service
+      traefik.http.services.fastapi_https-service.loadbalancer.server.port: ${FASTAPI_PORT}
+      traefik.http.routers.fastapi_https-router.tls: true
+      traefik.http.routers.fastapi_https-router.tls.certresolver: letsencrypt
 
     # 🔄 Política de reinicio
     restart: unless-stopped

@@ -4,4 +4,5 @@
 <p align="center">
     <em>hic-cibus: Una biblioteca libre y gratuita que recopila y comparte estrategias, manuales y herramientas digitales para documentar, replicar y crear procesos innovadores.</em>
 </p>
+
 ---
