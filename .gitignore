@@ -10,6 +10,7 @@ env/
 .env
 
 cambios.patch
+NOTAS.md
 
 # Editor backups and configurations
 *.swp
@@ -23,7 +24,6 @@ cambios.patch
 
 # Secrets (add your secret file patterns)
 secrets/
-htpasswd
 usersFile
 *.key
 *.pem

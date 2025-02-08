@@ -12,6 +12,16 @@ services:
       # Traefik (https)
       - "443:443"
 
+      # Puertos para las Bases de Datos
+      - "5432:5432" # PostgreSQL (CRUD DB)
+      - "5500:5500" # PostgreSQL (EMQX DB)
+
+      # Puertos EMQX
+      - "1883:1883" # MQTT
+      - "8883:8883" # MQTT seguro
+      - "8083:8083" # Websocket
+      - "8084:8084" # Websocket seguro
+
     # 📂 Volúmenes montados
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro # Acceso al socket de Docker

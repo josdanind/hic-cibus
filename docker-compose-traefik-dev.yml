@@ -9,6 +9,14 @@ services:
       # Traefik Port (http)
       - "80:80"
 
+      # PostgreSQL Ports - development mode
+      - "5433:5433" # PostgreSQL (CRUD DB)
+      - "5500:5500" # PostgreSQL (EMQX DB)
+
+      # EMQX Ports
+      - "1883:1883" # MQTT
+      - "8083:8083" # Websocket
+
     # 📂 Volúmenes montados
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro # Acceso al socket de Docker
