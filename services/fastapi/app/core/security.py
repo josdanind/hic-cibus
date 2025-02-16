@@ -10,32 +10,71 @@ import jwt
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# Función para crear el token de acceso
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
+    """
+    Genera un token de acceso JWT.
+
+    - **Parámetros**:
+        - `payload` (dict): Datos que se incluirán en el token.
+        - `expires_delta` (timedelta | None): Tiempo de expiración del token.
+          Si no se proporciona, usa el valor por defecto de la configuración.
+
+    - **Retorna**:
+        - `str`: Token JWT generado.
+    """
+
     to_encode = data.copy()
-    time = datetime.now(timezone.utc)
+    current_time = datetime.now(timezone.utc)
 
-    if expires_delta:
-        expire = time + expires_delta
-    else:
-        expire = time + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire_time = current_time + (expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES))
 
-    to_encode.update({"exp": expire, "iat": time})
+    to_encode.update({
+        "exp": expire_time,
+        "iat": current_time
+    })
 
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
-    return encoded_jwt
-
-# Función para hashear una contraseña
 def get_password_hash(password: str) -> str:
+    """
+    Hashea una contraseña utilizando bcrypt.
+
+    - **Parámetros**:
+        - `password` (str): Contraseña en texto plano.
+
+    - **Retorna**:
+        - `str`: Contraseña hasheada.
+    """
+
     return pwd_context.hash(password)
 
-# Función para verificar una contraseña
 def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """
+    Verifica si una contraseña en texto plano coincide con su versión hasheada.
+
+    - **Parámetros**:
+        - `plain_password` (str): Contraseña en texto plano.
+        - `hashed_password` (str): Contraseña hasheada.
+
+    - **Retorna**:
+        - `bool`: `True` si la contraseña es válida, `False` en caso contrario.
+    """
+
     return pwd_context.verify(plain_password, hashed_password)
 
-# Función para decodificar un token
-def decode_token(token: str) -> dict:
+def decode_jwt(token: str) -> dict:
+    """
+    Decodifica un token JWT y retorna su contenido.
+
+    - **Parámetros**:
+        - `token` (str): Token JWT a decodificar.
+
+    - **Retorna**:
+        - `dict`: Contenido del token si es válido.
+        - `dict`: `{"error": "Token expirado"}` si el token ha expirado.
+        - `dict`: `{"error": "Token inválido"}` si el token es inválido.
+    """
+
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         return payload

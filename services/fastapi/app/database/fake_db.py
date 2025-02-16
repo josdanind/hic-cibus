@@ -1,8 +1,8 @@
-# Seguridad
+# Core de la aplicación
 from app.core.security import get_password_hash
 from app.core.config import settings
 
-# Schemas
+# Schemas de la aplicación
 from app.schemas.auth import UserInDB
 
 # Datos de usuario según el entorno
