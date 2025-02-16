@@ -7,8 +7,19 @@ services:
 
     # 🌍 Variables de entorno directas
     environment:
+      - ENVIRONMENT=production
       - PORT=${FASTAPI_PORT}
       - API_DOMAIN=${API_PROD_DOMAIN}
+      # JWT
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_DAYS=${ACCESS_TOKEN_EXPIRE_DAYS}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      # Usuario simulado
+      - FASTAPI_DUMMY_USER=${FASTAPI_DUMMY_USERNAME}
+      - FASTAPI_DUMMY_PASSWORD=${FASTAPI_DUMMY_PASSWORD}
+      - FASTAPI_DUMMY_FULLNAME=${FASTAPI_DUMMY_FULLNAME}
+      - FASTAPI_DUMMY_EMAIL=${FASTAPI_DUMMY_EMAIL}
 
     # 🏷️ Etiquetas para integración con Traefik
     labels:
