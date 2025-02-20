@@ -7,7 +7,7 @@
 
 ---
 
-## 🛡️ **Rama:**  `infra/dockerTraefik/base`
+## 🛡️ **Rama:**  `infra/docker-traefik/traefik`
 
 Esta rama contiene la configuración base para integrar Docker y Traefik, proporcionando un proxy inverso para gestionar los servicios en dos entornos diferenciados: Desarrollo y Producción. Además, la API de Traefik está habilitada para monitoreo y control de las configuraciones de tráfico.
 
@@ -24,6 +24,12 @@ En otras palabras, aquí se propone una arquitectura Docker donde uno de los con
 ```
 services/                           # Directorio para los servicios.
 └── traefik/                        # Configuración específica de Traefik
+    ├── auth/                       # Configuración de autenticación
+    │   ├── README.md               # Documentación de autenticación
+    │   ├── usersFile.example       # Ejemplo de archivo de usuarios
+    ├── middlewares/                # Configuración de middlewares
+    │   ├── middlewares-dev.toml    # Middlewares para entorno de desarrollo
+    │   ├── middlewares.toml        # Middlewares para entorno de producción
     ├── traefik-dev.toml            # Configuración de Traefik para entorno de desarrollo
     ├── traefik.toml                # Configuración principal de Traefik
 
@@ -34,6 +40,10 @@ services/                           # Directorio para los servicios.
 ├── docker-compose-traefik.yml      # Docker Compose para producción
 ├── LICENSE                         # Licencia del proyecto
 ├── README.md                       # Documentación de la rama
+├── scripts/                        # Directorio para scripts
+│   ├── send_files_to_server.sh     # Script para enviar archivos al servidor
+├── docs/                           # Documentación
+│   ├── droplet_config.md           # Configuración inicial de un Droplet en DigitalOcean
 ```
 
 ### 📚 Descripción General
