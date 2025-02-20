@@ -1,0 +1,54 @@
+services:
+  fastapi:
+    container_name: fastapi
+    build:
+      context: ./services/fastapi
+    command: uvicorn main:app --host 0.0.0.0 --port ${FASTAPI_PORT}
+
+    # 🌍 Variables de entorno directas
+    environment:
+      - ENVIRONMENT=production
+      - PORT=${FASTAPI_PORT}
+      - API_DOMAIN=${API_PROD_DOMAIN}
+      # JWT
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_DAYS=${ACCESS_TOKEN_EXPIRE_DAYS}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      # Usuario simulado
+      - FASTAPI_DUMMY_USER=${FASTAPI_DUMMY_USERNAME}
+      - FASTAPI_DUMMY_PASSWORD=${FASTAPI_DUMMY_PASSWORD}
+      - FASTAPI_DUMMY_FULLNAME=${FASTAPI_DUMMY_FULLNAME}
+      - FASTAPI_DUMMY_EMAIL=${FASTAPI_DUMMY_EMAIL}
+
+    # 🏷️ Etiquetas para integración con Traefik
+    labels:
+      # 🌐 Habilitar Traefik
+      traefik.enable: "true"
+
+      # 🌐 Router para FastAPI (HTTP)
+      traefik.http.routers.fastapi_http-router.entrypoints: http
+      traefik.http.routers.fastapi_http-router.rule: Host(`${API_PROD_DOMAIN}`)
+      traefik.http.routers.fastapi_http-router.service: fastapi_http-service
+      traefik.http.services.fastapi_http-service.loadbalancer.server.port: ${FASTAPI_PORT}
+      traefik.http.routers.fastapi_http-router.middlewares: redirect-to-https@file
+
+      # 🌐 Router para FastAPI (HTTPS)
+      traefik.http.routers.fastapi_https-router.entrypoints: https
+      traefik.http.routers.fastapi_https-router.rule: Host(`${API_PROD_DOMAIN}`)
+      traefik.http.routers.fastapi_https-router.service: fastapi_https-service
+      traefik.http.services.fastapi_https-service.loadbalancer.server.port: ${FASTAPI_PORT}
+      traefik.http.routers.fastapi_https-router.tls: true
+      traefik.http.routers.fastapi_https-router.tls.certresolver: letsencrypt
+
+    # 🔄 Política de reinicio
+    restart: unless-stopped
+
+    # 🌐 Red asociada
+    networks:
+      - hic-cibus
+
+# 🌐 Redes utilizadas
+networks:
+  hic-cibus:
+    external: true
