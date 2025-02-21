@@ -7,63 +7,9 @@
 
 ---
 
-## 🛡️ **Rama:**  `infra/docker-traefik/traefik`
+## 🛡️ **Rama:**  `infra/docker-traefik/postgresql`
 
-Esta rama contiene la configuración base para integrar Docker y Traefik, proporcionando un proxy inverso para gestionar los servicios en dos entornos diferenciados: Desarrollo y Producción. Además, la API de Traefik está habilitada para monitoreo y control de las configuraciones de tráfico.
+Esta rama configura un servicio Docker con PostgreSQL integrado con Traefik como proxy inverso. Está lista para entornos de Desarrollo y Producción
 
-En otras palabras, aquí se propone una arquitectura Docker donde uno de los contenedores principales es Traefik. Este contenedor se encarga de enrutar las peticiones HTML usando subdominios, redirigiendo el tráfico a los contenedores correspondientes de Docker. Así, cada servicio puede operar de manera independiente y coordinada bajo el mismo dominio.
-
-#### Ejemplo:
-
-- **Dominio Completo:** `mi_api.tu_dominio.com`
-- **Sub Dominio:** `mi_api`
-- **Función:** Traefik enruta las solicitudes HTTP/HTTPS al contenedor de la API correspondiente, identificado por el subdominio `mi_api`.
-
-### 📂 **Estructura de la Arquitectura**
-
-```
-services/                           # Directorio para los servicios.
-└── traefik/                        # Configuración específica de Traefik
-    ├── auth/                       # Configuración de autenticación
-    │   ├── README.md               # Documentación de autenticación
-    │   ├── usersFile.example       # Ejemplo de archivo de usuarios
-    ├── middlewares/                # Configuración de middlewares
-    │   ├── middlewares-dev.toml    # Middlewares para entorno de desarrollo
-    │   ├── middlewares.toml        # Middlewares para entorno de producción
-    ├── traefik-dev.toml            # Configuración de Traefik para entorno de desarrollo
-    ├── traefik.toml                # Configuración principal de Traefik
-
-├── .env                            # Variables de entorno
-├── .env.example                    # Ejemplo de archivo de variables de entorno
-├── .gitignore                      # Archivos ignorados en Git
-├── docker-compose-traefik-dev.yml  # Docker Compose para entorno de desarrollo
-├── docker-compose-traefik.yml      # Docker Compose para producción
-├── LICENSE                         # Licencia del proyecto
-├── README.md                       # Documentación de la rama
-├── scripts/                        # Directorio para scripts
-│   ├── send_files_to_server.sh     # Script para enviar archivos al servidor
-├── docs/                           # Documentación
-│   ├── droplet_config.md           # Configuración inicial de un Droplet en DigitalOcean
-```
-
-### 📚 Descripción General
-
-#### Configuraciones estáticas de Traefik:
-
-- Utilizar `traefik-dev.toml` para el entorno de desarrollo.
-- Utilizar `traefik.toml` para el entorno de producción.
-
-#### Configuraciones de Docker y Traefik (routers, middlewares, servicions):
-
-- Utilizar `docker-compose-traefik-dev.yml` para el entorno de desarrollo.
-- Utilizar `docker-compose-traefik.yml` para el entorno de producción.
-
-#### API de Traefik
-
-- Habilitada en ambos entornos para monitoreo y control.
-- Acceso a la API a través del Dashboard de Traefik.
-  - `traefik-dev.tu_dominio.com` Entorno de desarrollo.
-  - `traefik.tu_dominio.com` Entorno de producción.
-
-### 🚀 Instrucciones de Uso
+> Con esta configuración, tendrás una base de datos PostgreSQL lista para funcionar de forma sencilla. 🚀
 ---
