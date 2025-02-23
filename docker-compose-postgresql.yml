@@ -1,5 +1,5 @@
 services:
-    postgresql-dev:
+    postgresql:
         image: postgres:17.2
         container_name: postgresql
         restart: unless-stopped
