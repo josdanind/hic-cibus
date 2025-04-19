@@ -54,24 +54,18 @@ DATABASES: dict[str, DatabaseConfigSchema] = {
 
 def initialize_databases(databases: dict[str, DatabaseConfigSchema] = DATABASES) -> None:
     """
-    Inicializa todas las bases de datos definidas y crea sus tablas si aún no existen.
+    Inicializa las tablas de todas las bases de datos definidas.
 
-    Este procedimiento recorre cada entrada del diccionario `databases`, accede al motor
-    de conexión y a la lista de tablas asociadas, y crea las estructuras necesarias en
-    la base de datos correspondiente.
+    Este procedimiento recorre cada configuración de base de datos definida en `DATABASES`,
+    extrae los modelos registrados y crea sus tablas en la base de datos correspondiente si
+    aún no existen.
 
-    También imprime un resumen visual en consola usando Rich.
+    Además, imprime un resumen visual en la consola con la lista de bases de datos
+    inicializadas y sus URL de conexión utilizando la librería Rich.
 
     Args:
-        databases (dict): Diccionario con la configuración de las bases de datos.
-            Cada entrada debe tener la siguiente estructura:
-                {
-                    "nombre_base_datos": {
-                        "tables": List[Table],  # Tablas derivadas de modelos SQLModel
-                        "engine": Engine        # Instancia del motor de conexión
-                    },
-                    ...
-                }
+        databases (dict[str, DatabaseConfigSchema], opcional): Diccionario de configuraciones
+        de bases de datos. Por defecto, se usa `DATABASES`.
 
     Returns:
         None
