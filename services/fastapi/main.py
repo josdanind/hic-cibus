@@ -17,7 +17,7 @@ async def lifespan(app: FastAPI):
     Esta función se ejecuta cuando la aplicación FastAPI inicia y termina.
     """
     # Inicialización de la base de datos
-    initialize_databases()
+    await initialize_databases()
     yield
 
 

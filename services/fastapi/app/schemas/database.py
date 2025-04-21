@@ -4,19 +4,20 @@
 from typing import Type
 from pydantic import BaseModel, field_validator
 from sqlmodel import SQLModel
-from sqlalchemy.engine import Engine
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 
 class DatabaseConfig(BaseModel):
     models: dict[str, Type[SQLModel]]
-    engine: Engine
+    engine: AsyncEngine
 
-    @field_validator('engine')
+    @field_validator("engine")
     @classmethod
-    def check_engine_instance(cls, v: Engine) -> Engine:
-        if not isinstance(v, Engine):
+    def engine_must_be_async(cls, v: AsyncEngine):
+        if not isinstance(v, AsyncEngine):
             raise TypeError(
-                f"Invalid type for 'engine': expected sqlalchemy.engine.Engine, got {type(v).__name__}"
+                f"'engine' debe ser sqlalchemy.ext.asyncio.AsyncEngine, "
+                f"recibido {type(v).__name__}"
             )
         return v
 

@@ -38,7 +38,7 @@ class Settings(BaseSettings):
         port = self.BOT_AUTH_DB_PORT
         name = self.BOT_AUTH_DB_NAME
 
-        return f"postgresql://{user}:{password}@{host}:{port}/{name}"
+        return f"postgresql+asyncpg://{user}:{password}@{host}:{port}/{name}"
 
 # Instancia global de configuración
 settings = Settings()
