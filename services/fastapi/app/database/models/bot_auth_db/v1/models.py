@@ -3,16 +3,20 @@ from __future__ import annotations
 
 # Librería estándar
 from datetime import datetime, timezone
-from enum import Enum as PyEnum
-import re
 
 # ORMs
-from sqlmodel import SQLModel, Field, Relationship, Column, field_validator
-from sqlalchemy.dialects.postgresql import JSON, ENUM
+from sqlmodel import SQLModel, Field, Relationship, Column
+from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy import UniqueConstraint, func
 
 from app.utils.regex import E164_PHONE_RE, TELEGRAM_USERNAME_RE, EMAIL_RE
 
+# ───────────────────────────────────────────────
+# 📚 Catálogos Puros
+# ───────────────────────────────────────────────
+# ---------------------------------------------------------------------------
 # 1. Role
+# ---------------------------------------------------------------------------
 class Role(SQLModel, table=True):
     """
     Define los roles que pueden asignarse a empleados dentro de una empresa.
@@ -34,7 +38,6 @@ class Role(SQLModel, table=True):
     name: str = Field(
         max_length=50,
         unique=True,
-        index=True,
         description="Ej: 'Responsable de ventas'"
     )
 
@@ -46,12 +49,312 @@ class Role(SQLModel, table=True):
 
     # 🔗 Relación con `Employee` (un rol puede tener muchos empleados asignados)
     employees: list[Employee] = Relationship(
-        back_populates="role"
-        # passive_deletes="all"
+        back_populates="role",
+        passive_deletes="all"
     )
 
 
-# 2. Employee
+# ---------------------------------------------------------------------------
+# 2. BotUserPermission
+# ---------------------------------------------------------------------------
+class BotUserPermission(SQLModel, table=True):
+    """
+    🔐 Define un conjunto de permisos que puede tener un usuario de bot.
+
+    Ejemplos: viewer, editor, admin, owner.
+    """
+    __tablename__ = "bot_user_permissions"
+
+    # 🔑 Identificador
+    id: int | None = Field(default=None, primary_key=True)
+
+    # Campos de información
+    name: str = Field(
+        max_length=50,
+        unique=True,
+        description="Nombre del permiso (ej: 'viewer', 'admin')"
+    )
+    description: str | None = Field(
+        default=None,
+        description="Descripción del permiso y sus alcances"
+    )
+
+    # Relación con `BotUser` (Cada permiso puede ser asignado a varios usuarios)
+    users: list[BotUser] = Relationship(
+        back_populates="permission",
+        passive_deletes="all"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 3. BotEnvironment
+# ---------------------------------------------------------------------------
+class BotEnvironment(SQLModel, table=True):
+    """🌐 Entorno donde se ejecuta un :class:`Bot` (producción, desarrollo, etc.)."""
+
+    __tablename__ = "bot_environments"
+
+    # 🔑 Identificador único del entorno
+    id: int | None = Field(default=None, primary_key=True)
+
+    # 📛 Nombre del entorno
+    name: str = Field(
+        max_length=50,
+        unique=True,
+        description="Nombre único del entorno (ej: 'producción', 'desarrollo')"
+    )
+    description: str | None = Field(
+        default=None,
+        description="Descripción detallada del entorno (uso, restricciones, etc.)"
+    )
+
+    # Relaciones
+    bots: list[Bot] = Relationship(
+        back_populates="environment",
+        passive_deletes="all"
+    )
+
+# ---------------------------------------------------------------------------
+# 4. BotStatus
+# ---------------------------------------------------------------------------
+class BotStatus(SQLModel, table=True):
+    """
+    ⚙️ Representa el estado operativo de un bot.
+
+    Ejemplos comunes: 'operativo', 'en mantenimiento', 'apagado', 'en espera'.
+    """
+    __tablename__ = "bot_statuses"
+
+    # 🔑 Identificador
+    id: int | None = Field(default=None, primary_key=True)
+
+    # 📛 Nombre del estado
+    name: str = Field(
+        max_length=50,
+        unique=True,
+        description="Nombre único del estado del bot (ej: 'operativo', 'apagado')"
+    )
+    description: str | None = Field(
+        default=None,
+        description="Detalles adicionales sobre el estado"
+    )
+
+    # 🔗 Relación con bots que tienen este estado
+    bots: list[Bot] = Relationship(
+        back_populates="status",
+        passive_deletes="all"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 5. BotModelStatus
+# ---------------------------------------------------------------------------
+class BotModelStatus(SQLModel, table=True):
+    """
+    ⚙️ Representa el estado actual de un modelo de bot.
+
+    Ejemplos comunes: 'en desarrollo', 'en producción', 'obsoleto'.
+    """
+    __tablename__ = "bot_model_statuses"
+
+    # 🔑 Identificador
+    id: int | None = Field(default=None, primary_key=True)
+
+    # 📛 Nombre del estado
+    name: str = Field(
+        max_length=50,
+        unique=True,
+        description="Nombre del estado (ej: 'producción', 'desarrollo', 'obsoleto')"
+    )
+    # 📝 Descripción extendida (opcional)
+    description: str | None = Field(
+        default=None,
+        description="Detalles adicionales del estado del modelo"
+    )
+
+    # 🔗 Relaciones con `BotModel` (Cada estado puede tener varios modelos de bot)
+    bot_models: list[BotModel] = Relationship(
+        back_populates="status",
+        passive_deletes="all"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 6. PaymentStatus
+# ---------------------------------------------------------------------------
+class PaymentStatus(SQLModel, table=True):
+    """Estado de un pago (pendiente, completado, cancelado…)."""
+
+    __tablename__ = "payment_statuses"
+    
+    # 🔑 Identificador
+    id: int | None = Field(default=None, primary_key=True)
+    
+    # 📛 Nombre del estado
+    name: str = Field(
+        max_length=50,
+        unique=True
+    )
+    description: str | None = Field(default=None)
+
+    # Relación con `SubscriptionPayment` (Cada estado puede tener varios pagos asociados)
+    payments: list[SubscriptionPayment] = Relationship(
+        back_populates="status",
+        passive_deletes="all"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 7. SubscriptionStatus
+# ---------------------------------------------------------------------------
+class SubscriptionStatus(SQLModel, table=True):
+    """
+    📦 Representa un estado posible para una suscripción de bot
+
+    📌 Ejemplo:
+    - Activa
+    - Suspendida
+    - Cancelada
+    """
+    __tablename__ = "subscription_statuses"
+
+    # 🔑 Identificador único del estado
+    id: int | None = Field(default=None, primary_key=True)
+
+    # 🏷️ Nombre único del estado
+    name: str = Field(
+        max_length=50,
+        unique=True,
+        description="Nombre único del estado (ej: 'activa', 'cancelada')"
+    )
+
+    # 📝 Descripción opcional del estado
+    description: str | None = Field(
+        default=None,
+        max_length=255,
+        description="Descripción adicional sobre el estado de suscripción"
+    )
+
+    # Relación con `Subscription` (Cada estado puede tener varias suscripciones)
+    subscriptions: list[Subscription] = Relationship(
+        back_populates="status",
+        passive_deletes="all"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 8. SubscriptionPeriod
+# ---------------------------------------------------------------------------
+class SubscriptionPeriod(SQLModel, table=True):
+    """
+    📆 Representa la periodicidad de facturación de una suscripción.
+
+    Ejemplos: 'mensual', 'trimestral', 'anual'.
+    """
+    __tablename__ = "subscription_periods"
+
+    # 🔑 Identificador
+    id: int | None = Field(default=None, primary_key=True)
+
+    # 🏷️ Nombre único del período
+    name: str = Field(
+        max_length=50,
+        unique=True,
+        description="Nombre único del período (ej: 'mensual', 'anual')"
+    )
+
+    # 📝 Descripción opcional
+    description: str | None = Field(
+        default=None,
+        description="Descripción extendida del período de suscripción"
+    )
+
+    # Relación con `Subscription` (Cada período de facturación puede tener varias suscripciones)
+    subscriptions: list[Subscription] = Relationship(
+        back_populates="period",
+        passive_deletes="all"
+    )
+
+
+# ───────────────────────────────────────────────
+# 🔗 Tabla de unión M‑N
+# ───────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# 9. BotCategoryLink
+# ---------------------------------------------------------------------------
+class BotCategoryLink(SQLModel, table=True):
+    """
+    🔗 Tabla de relación entre bots y categorías.
+
+    Permite asignar múltiples categorías a un bot y viceversa.
+    """
+    __tablename__ = "bot_category_link"
+
+    # 🔑 Clave compuesta (bot + categoría)
+    bot_id: int = Field(
+        primary_key=True,
+        foreign_key="bots.id",
+        ondelete="CASCADE",
+        description="ID del bot asociado a esta categoría"
+    )
+    category_id: int = Field(
+        primary_key=True,
+        foreign_key="bot_categories.id",
+        ondelete="CASCADE",
+        description="ID de la categoría asociada al bot"
+    )
+
+
+# ───────────────────────────────────────────────
+# 🔗 Catálogo Dependiente de unión
+# ───────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# 10. BotCategory
+# ---------------------------------------------------------------------------
+class BotCategory(SQLModel, table=True):
+    """
+    🗂️ Representa una categoría funcional a la que puede pertenecer un bot.
+
+    Ejemplos: 'monitoreo', 'ventas', 'atención al cliente', 'agricultura'.
+    """
+    __tablename__ = "bot_categories"
+
+    # 🔑 Identificador único de la categoría
+    id: int | None = Field(default=None, primary_key=True)
+
+    # 📛 Nombre único de la categoría
+    name: str = Field(
+        max_length=50,
+        unique=True,
+        description="Nombre único de la categoría (ej: 'monitoreo')"
+    )
+    description: str | None = Field(
+        default=None,
+        description="Descripción general de la categoría"
+    )
+
+    # 🔗 Relación con bots (muchos a muchos)
+    bots: list[Bot] = Relationship(
+        back_populates="categories",
+        link_model=BotCategoryLink,
+        cascade_delete=True
+    )
+
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column_kwargs={"server_default": func.now()}
+    )
+    updated_at: datetime = Field(
+        sa_column_kwargs={"server_default": func.now(), "onupdate": func.now()}
+    )
+
+
+# ───────────────────────────────────────────────
+# 🗄️ Núcleo de la base de datos
+# ───────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# 11. Employee
+# ---------------------------------------------------------------------------
 class Employee(SQLModel, table=True):
     """
     📌 Representa a una persona empleada en una empresa.
@@ -89,14 +392,12 @@ class Employee(SQLModel, table=True):
         max_length=15,
         regex=E164_PHONE_RE,
         unique=True,
-        index=True,
         description="Teléfono móvil del empleado"
     )
     email: str = Field(
         max_length=50,
         regex=EMAIL_RE,
         unique=True,
-        index=True,
         description="Correo electrónico del empleado"
     )
     position: str | None = Field(
@@ -113,29 +414,43 @@ class Employee(SQLModel, table=True):
     )
     role: Role | None = Relationship(back_populates="employees")
 
+    # 🔗 Relación con `Company` (Cada empleado pertenece a una única empresa)
+    company_id: int = Field(
+        foreign_key="companies.id",
+        ondelete="CASCADE",
+        description="ID de la empresa a la que pertenece el empleado"
+    )
+    company: Company = Relationship(back_populates="employees")
+
     # 🔗 Relación con `CompanyContact` (Cada empleado es un contacto de la empresa)
     company_contact: CompanyContact | None = Relationship(
         back_populates="employee",
-        cascade_delete=True,
-        sa_relationship_kwargs={"uselist": False}
+        sa_relationship_kwargs={"uselist": False},
+        cascade_delete=True
     )
 
     # 🔗 Relación con `BotUser` (Cada empleado puede ser un usuario de bot)
     bot_user: BotUser | None = Relationship(
         back_populates="employee",
-        cascade_delete=True,
-        sa_relationship_kwargs={"uselist": False}
+        sa_relationship_kwargs={"uselist": False},
+        cascade_delete=True
     )
 
-    # 🕓 Auditoría
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=False)
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=False)
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column_kwargs={"server_default": func.now()}
+    )
+    updated_at: datetime = Field(
+        sa_column_kwargs={"server_default": func.now(), "onupdate": func.now()},
+    )
 
 
-# 3. Company
+# ---------------------------------------------------------------------------
+# 12. Company
+# ---------------------------------------------------------------------------
 class Company(SQLModel, table=True):
     """
-    Representa una empresa que utiliza bots.
+    Empresa cliente que contrata bots y gestiona empleados.
 
     Incluye información como contacto, estado, ubicación y relaciones con contactos,
     usuarios de bot y suscripciones.
@@ -168,7 +483,6 @@ class Company(SQLModel, table=True):
     name: str = Field(
         max_length=50,
         unique=True,
-        index=True,
         description="Nombre único de la empresa"
     )
     description: str | None = Field(
@@ -190,7 +504,6 @@ class Company(SQLModel, table=True):
         max_length=50,
         regex=EMAIL_RE,
         unique=True,
-        index=True,
         description="Correo electrónico de la empresa"
     )
     website: str | None = Field(
@@ -206,14 +519,8 @@ class Company(SQLModel, table=True):
     zip_code: str | None = Field(default=None, max_length=20)
     address: str | None = Field(default=None, max_length=255)
 
-    # 🔗 Relación con `CompanyContact` (Cada empresa puede tener varios contactos)
-    contacts: list[CompanyContact] = Relationship(
-        back_populates="company",
-        cascade_delete=True
-    )
-
-    # 🔗 Relación con `BotUser` (Cada empresa puede tener varios usuarios de bot)
-    bot_users: list[BotUser] = Relationship(
+    # 🔗 Relación con `Employee` (Una empresa tiene varios empleados)\
+    employees: list[Employee] = Relationship(
         back_populates="company",
         cascade_delete=True
     )
@@ -225,17 +532,20 @@ class Company(SQLModel, table=True):
     )
 
     # 📆 Auditoría
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=False)
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=False)
+    created_at: datetime = Field(
+        sa_column_kwargs={"server_default": func.now()}
+    )
+    updated_at: datetime = Field(
+        sa_column_kwargs={"server_default": func.now(), "onupdate": func.now()}
+    )
 
 
-# 4. CompanyContact
+# ---------------------------------------------------------------------------
+# 13. CompanyContact
+# ---------------------------------------------------------------------------
 class CompanyContact(SQLModel, table=True):
-    """
-    Representa un contacto de una empresa. Este modelo permite asigna un contacto
-    a un empleado específico y almacenar información adicional como notas y si es
-    el contacto principal de la empresa.
-    """
+    """Empleado designado como contacto para una :class:`Company`."""
+
     __tablename__ = "company_contacts"
 
     # 🔑 Identificador único del contacto
@@ -263,18 +573,226 @@ class CompanyContact(SQLModel, table=True):
         sa_relationship_kwargs={"uselist": False}
     )
 
-    # 🔗 Relación con `Company` (Cada contacto pertenece a una única empresa)
-    company_id: int = Field(
-        foreign_key="companies.id",
+
+# ---------------------------------------------------------------------------
+# 14. BotModel
+# ---------------------------------------------------------------------------
+class BotModel(SQLModel, table=True):
+    """
+    🤖 Representa un modelo funcional de bot.
+
+    Ejemplos: 'Tlaloc V1.0', 'Quetzalcoatl V2.1'.
+    Incluye su versión, descripción y estado de desarrollo.
+    """
+    __tablename__ = "bot_models"
+
+    # 🔑 Identificador
+    id: int | None = Field(default=None, primary_key=True)
+
+    # 📛 Información del modelo
+    name: str = Field(
+        max_length=50,
+        unique=True,
+        description="Nombre único del modelo (ej: 'Tlaloc V1.0')"
+    )
+    description: str | None = Field(
+        default=None,
+        description="Descripción funcional del modelo de bot"
+    )
+    version: str = Field(
+        max_length=50,
+        description="Versión del modelo (ej: 'v1.0', '2.3.1')"
+    )
+
+    # 🔗 Relación con `BotModelStatus` (Cada modelo tiene un único estado)
+    status_id: int | None = Field(
+        default=None,
+        foreign_key="bot_model_statuses.id",
+        ondelete="SET NULL",
+        description="Estado actual del modelo de bot"
+    )
+    status: BotModelStatus = Relationship(back_populates="bot_models")
+
+    # Relación con `Bot` (Cada modelo tiene varios bots)
+    bots: list[Bot] = Relationship(
+        back_populates="bot_model",
+        cascade_delete=True
+    )
+
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column_kwargs={"server_default": func.now()}
+    )
+    updated_at: datetime = Field(
+        sa_column_kwargs={"server_default": func.now(), "onupdate": func.now()}
+    )
+
+
+# ---------------------------------------------------------------------------
+# 15. Bot
+# ---------------------------------------------------------------------------
+class Bot(SQLModel, table=True):
+    """
+    🤖 Representa un bot dentro del sistema, vinculado a una empresa y un modelo de operación.
+
+    Cada bot cuenta con su URL de API, configuración activa y relaciones con usuarios y suscripciones.
+    """
+    __tablename__ = "bots"
+
+    # 🔑 Identificador
+    id: int | None = Field(default=None, primary_key=True)
+
+    # 📛 Información general
+    name: str = Field(
+        max_length=50,
+        unique=True,
+        description="Nombre único del bot (ej: 'Tlaloc', 'Quetzalcoatl')"
+    )
+    description: str | None = Field(
+        default=None,
+        description="Descripción funcional del bot"
+    )
+    api_url: str = Field(
+        max_length=255,
+        unique=True,
+        description="URL base para acceder a la API del bot"
+    )
+    is_active: bool = Field(
+        default=True,
+        index=True,
+        description="Estado de activación del bot"
+    )
+    last_ping: datetime | None = Field(
+        default=None,
+        description="Última vez que el bot respondió a una verificación (ping)"
+    )
+    request_per_minute: int = Field(
+        default=0,
+        index=True,
+        description="Número máximo de solicitudes permitidas por minuto"
+    )
+    data: dict | None = Field(
+        default=None,
+        sa_column=Column(JSON),
+        description="Datos adicionales del bot en formato JSON (configuración, estado, etc.)"
+    )
+
+    # 🔗 Relaciones con BotCredential (Cada bot tiene un único conjunto de credenciales)
+    credentials: BotCredential | None = Relationship(
+        back_populates="bot",
+        cascade_delete=True,
+        sa_relationship_kwargs={"uselist": False}
+    )
+
+    # 🔗 Relación con `BotModel` (Cada bot tiene un único modelo)
+    bot_model_id: int = Field(
+        foreign_key="bot_models.id",
         ondelete="CASCADE",
-        description="Empresa a la que pertenece el contacto"
+        description="ID del modelo de bot asociado"
     )
-    company: Company = Relationship(
-        back_populates="contacts"
+    bot_model: BotModel = Relationship(back_populates="bots")
+
+    # 🔗 Relación con `BotStatus` (Cada bot tiene un único estado)
+    status_id: int | None = Field(
+        default=None,
+        foreign_key="bot_statuses.id",
+        ondelete="SET NULL",
+        index=True,
+        description="Estado actual del bot (ej: activo, en mantenimiento)"
+    )
+    status: BotStatus = Relationship(back_populates="bots")
+
+    # 🔗 Relación con `BotEnvironment` (Cada bot corre en un único entorno)
+    environment_id: int | None = Field(
+        default=None,
+        foreign_key="bot_environments.id",
+        ondelete="SET NULL",
+        description="Entorno en el que corre el bot (ej: producción, desarrollo)"
+    )
+    environment: BotEnvironment = Relationship(back_populates="bots")
+
+    # 🔗 Relación con `BotCategory` (Cada bot puede tener varias categorías)
+    categories: list[BotCategory] = Relationship(
+        back_populates="bots",
+        link_model=BotCategoryLink,
+        cascade_delete=True
+    )
+
+    # 🔗 Relación con `Subscription` (Cada bot puede estar vinculado a varias empresas)
+    company_subscriptions: list[Subscription] = Relationship(
+        back_populates="bot",
+        cascade_delete=True
+    )
+
+    # 🔗 Relación con `UserBotLink` (Cada bot puede tener varios enlaces a usuarios)
+    user_links: list[UserBotLink] = Relationship(
+        back_populates="bot",
+        cascade_delete=True
+    )
+
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column_kwargs={"server_default": func.now()}
+    )
+    updated_at: datetime = Field(
+        sa_column_kwargs={"server_default": func.now(), "onupdate": func.now()}
     )
 
 
-# 5. BotUser
+# ---------------------------------------------------------------------------
+# 16. BotCredential
+# ---------------------------------------------------------------------------
+class BotCredential(SQLModel, table=True):
+    """
+    🔐 Almacena las credenciales de autenticación de un bot.
+
+    Incluye contraseñas cifradas y tokens para comunicación segura entre servicios.
+    """
+    __tablename__ = "bot_credentials"
+
+    # 🔑 Identificador
+    id: int | None = Field(default=None, primary_key=True)
+
+    # 🔒 Credenciales cifradas
+    hashed_password: str = Field(
+        max_length=255,
+        description="Contraseña cifrada para autenticación interna del bot"
+    )
+    hashed_telegram_bot_token: str | None = Field(
+        default=None,
+        max_length=255,
+        description="Token cifrado del bot de Telegram (opcional)"
+    )
+    hashed_api_access_token: str | None = Field(
+        default=None,
+        max_length=255,
+        description="Token cifrado para acceso externo vía API"
+    )
+
+    # 🔗 Relación 1:1 con `Bot`
+    bot_id: int = Field(
+        foreign_key="bots.id",
+        unique=True,
+        ondelete="CASCADE",
+        description="ID del bot al que pertenecen estas credenciales"
+    )
+    bot: Bot | None = Relationship(
+        back_populates="credentials",
+        sa_relationship_kwargs={"uselist": False}
+    )
+
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column_kwargs={"server_default": func.now()}
+    )
+    updated_at: datetime = Field(
+        sa_column_kwargs={"server_default": func.now(), "onupdate": func.now()}
+    )
+
+
+# ---------------------------------------------------------------------------
+# 17. BotUser
+# ---------------------------------------------------------------------------
 class BotUser (SQLModel, table=True):
     """
     🤖 Representa a un usuario (empleado de una empresa) que interactúa con un bot.
@@ -291,14 +809,12 @@ class BotUser (SQLModel, table=True):
         max_length=50,
         regex=TELEGRAM_USERNAME_RE,
         unique=True,
-        index=True,
         description="Nombre de usuario único en Telegram (sin @)"
     )
 
     telegram_user_id: int | None = Field(
         default=None,
         unique=True,
-        index=True,
         description="ID numérico único asignado por Telegram"
     )
     is_active: bool = Field(
@@ -325,18 +841,8 @@ class BotUser (SQLModel, table=True):
         ondelete="SET NULL",
         description="Permisos asignados al usuario"
     )
-    permissions: BotUserPermission = Relationship(
+    permission: BotUserPermission = Relationship(
         back_populates="users"
-    )
-
-    # 🔗 Relación con `Company` (Cada usuario pertenece a una única empresa)
-    company_id: int = Field(
-        foreign_key="companies.id",
-        ondelete="CASCADE",
-        description="Empresa a la que pertenece el usuario"
-    )
-    company: Company = Relationship(
-        back_populates="bot_users"
     )
 
     # 🔗 Relación con `UserBotLink` (Un usuario puede acceder a varios bots)
@@ -346,38 +852,12 @@ class BotUser (SQLModel, table=True):
     )
 
 
-# 6. BotUserPermission
-class BotUserPermission(SQLModel, table=True):
-    """
-    🔐 Define un conjunto de permisos que puede tener un usuario de bot.
-
-    Ejemplos: viewer, editor, admin, owner.
-    """
-    __tablename__ = "bot_user_permissions"
-
-    # 🔑 Identificador
-    id: int | None = Field(default=None, primary_key=True)
-
-    # Campos de información
-    name: str = Field(
-        max_length=50,
-        unique=True,
-        index=True,
-        description="Nombre del permiso (ej: 'viewer', 'admin')"
-    )
-    description: str | None = Field(
-        default=None,
-        description="Descripción del permiso y sus alcances"
-    )
-
-    # Relación con `BotUser` (Cada permiso puede ser asignado a varios usuarios)
-    users: list[BotUser] = Relationship(
-        back_populates="permissions"
-        # passive_deletes="all"
-    )
-
-
-# 7. UserBotLink
+# ───────────────────────────────────────────────
+# 🔗 Tabla de unión M‑N
+# ───────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# 18. UserBotLink
+# ---------------------------------------------------------------------------
 class UserBotLink(SQLModel, table=True):
     """
     🔗 Representa el acceso de un usuario a un bot específico.
@@ -411,230 +891,36 @@ class UserBotLink(SQLModel, table=True):
     )
 
     # ✅ Control de acceso
-    can_access: bool = Field(default=True)
-    granted_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    revoked_at: datetime | None = Field(default=None)
-
-
-# 8. BotCategoryLink
-class BotCategoryLink(SQLModel, table=True):
-    """
-    🔗 Tabla de relación entre bots y categorías.
-
-    Permite asignar múltiples categorías a un bot y viceversa.
-    """
-    __tablename__ = "bot_category_link"
-
-    # 🔑 Clave compuesta (bot + categoría)
-    bot_id: int = Field(
-        foreign_key="bots.id",
-        primary_key=True,
-        ondelete="CASCADE",
-        description="ID del bot asociado a esta categoría"
+    can_access: bool = Field(
+        default=True,
+        description="¿El usuario tiene acceso activo?"
     )
-    category_id: int = Field(
-        foreign_key="bot_categories.id",
-        primary_key=True,
-        ondelete="CASCADE",
-        description="ID de la categoría asociada al bot"
+    granted_at: datetime = Field(
+        sa_column_kwargs={"server_default": func.now()},
+        description="Fecha-hora en que se otorgó el acceso",
     )
-
-# 9. BotModelStatus
-class BotModelStatus(SQLModel, table=True):
-    """
-    ⚙️ Representa el estado actual de un modelo de bot.
-
-    Ejemplos comunes: 'en desarrollo', 'en producción', 'obsoleto'.
-    """
-    __tablename__ = "bot_model_statuses"
-
-    # 🔑 Identificador
-    id: int | None = Field(default=None, primary_key=True)
-
-    # 📛 Nombre del estado
-    name: str = Field(
-        max_length=50,
-        unique=True,
-        index=True,
-        description="Nombre del estado (ej: 'producción', 'desarrollo', 'obsoleto')"
-    )
-    # 📝 Descripción extendida (opcional)
-    description: str | None = Field(
+    revoked_at: datetime | None = Field(
         default=None,
-        description="Detalles adicionales del estado del modelo"
-    )
-
-    # 🔗 Relaciones con `BotModel` (Cada estado puede tener varios modelos de bot)
-    bot_models: list[BotModel] = Relationship(
-        back_populates="status"
-        # passive_deletes="all"
+        description="Fecha-hora en que se revocó el acceso (NULL = vigente)",
     )
 
 
-# 10. BotModel
-class BotModel(SQLModel, table=True):
-    """
-    🤖 Representa un modelo funcional de bot.
-
-    Ejemplos: 'Tlaloc V1.0', 'Quetzalcoatl V2.1'.
-    Incluye su versión, descripción y estado de desarrollo.
-    """
-    __tablename__ = "bot_models"
-
-    # 🔑 Identificador
-    id: int | None = Field(default=None, primary_key=True)
-
-    # 📛 Información del modelo
-    name: str = Field(
-        max_length=50,
-        unique=True,
-        index=True,
-        description="Nombre único del modelo (ej: 'Tlaloc V1.0')"
-    )
-    description: str | None = Field(
-        default=None,
-        description="Descripción funcional del modelo de bot"
-    )
-    version: str = Field(
-        max_length=50,
-        description="Versión del modelo (ej: 'v1.0', '2.3.1')"
-    )
-
-    # 🔗 Relación con `BotModelStatus` (Cada modelo tiene un único estado)
-    status_id: int | None = Field(
-        default=None,
-        foreign_key="bot_model_statuses.id",
-        ondelete="SET NULL",
-        description="Estado actual del modelo de bot"
-    )
-    status: BotModelStatus = Relationship(back_populates="bot_models")
-
-    # Relación con `Bot` (Cada modelo tiene varios bots)
-    bots: list[Bot] = Relationship(
-        back_populates="bot_model",
-        cascade_delete=True
-    )
-
-    # 📆 Auditoría
-    created_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
-        description="Fecha de creación del modelo"
-    )
-    updated_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
-        description="Fecha de última modificación"
-    )
-
-# 11. BotStatus
-class BotStatus(SQLModel, table=True):
-    """
-    ⚙️ Representa el estado operativo de un bot.
-
-    Ejemplos comunes: 'operativo', 'en mantenimiento', 'apagado', 'en espera'.
-    """
-    __tablename__ = "bot_statuses"
-
-    # 🔑 Identificador
-    id: int | None = Field(default=None, primary_key=True)
-
-    # 📛 Nombre del estado
-    name: str = Field(
-        max_length=50,
-        unique=True,
-        index=True,
-        description="Nombre único del estado del bot (ej: 'operativo', 'apagado')"
-    )
-    description: str | None = Field(
-        default=None,
-        description="Detalles adicionales sobre el estado"
-    )
-
-    # 🔗 Relación con bots que tienen este estado
-    bots: list[Bot] = Relationship(
-        back_populates="status"
-        # passive_deletes="all"
-    )
-
-
-# 12. BotEnvironment
-class BotEnvironment(SQLModel, table=True):
-    """
-    🌐 Representa el entorno de ejecución de un bot.
-
-    Ejemplos comunes: 'producción', 'desarrollo', 'staging'.
-    """
-    __tablename__ = "bot_environments"
-
-    # 🔑 Identificador único del entorno
-    id: int | None = Field(default=None, primary_key=True)
-
-    # 📛 Nombre del entorno
-    name: str = Field(
-        max_length=50,
-        unique=True,
-        index=True,
-        description="Nombre único del entorno (ej: 'producción', 'desarrollo')"
-    )
-    description: str | None = Field(
-        default=None,
-        description="Descripción detallada del entorno (uso, restricciones, etc.)"
-    )
-
-    # Relaciones
-    bots: list[Bot] = Relationship(
-        back_populates="environment"
-        # passive_deletes="all"
-    )
-
-
-# 13. BotCategory
-class BotCategory(SQLModel, table=True):
-    """
-    🗂️ Representa una categoría funcional a la que puede pertenecer un bot.
-
-    Ejemplos: 'monitoreo', 'ventas', 'atención al cliente', 'agricultura'.
-    """
-    __tablename__ = "bot_categories"
-
-    # 🔑 Identificador único de la categoría
-    id: int | None = Field(default=None, primary_key=True)
-
-    # 📛 Nombre único de la categoría
-    name: str = Field(
-        max_length=50,
-        unique=True,
-        index=True,
-        description="Nombre único de la categoría (ej: 'monitoreo')"
-    )
-    description: str | None = Field(
-        default=None,
-        description="Descripción general de la categoría"
-    )
-
-    # 🔗 Relación con bots (muchos a muchos)
-    bots: list[Bot] = Relationship(
-        back_populates="categories",
-        link_model=BotCategoryLink,
-        cascade_delete=True
-    )
-
-    # 📆 Auditoría
-    created_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
-        description="Fecha de creación del registro"
-    )
-    updated_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
-        description="Fecha de última modificación del registro"
-    )
-
-# 14. Subscription
+# ───────────────────────────────────────────────
+# 🔄 Transaccionales
+# ───────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# 19. Subscription
+# ---------------------------------------------------------------------------
 class Subscription(SQLModel, table=True):
     """
     🔄 Representa una suscripción activa o histórica a un bot por parte de una empresa.
     Permite gestionar el estado de la suscripción, fechas de pago y detalles de la empresa.
     """
     __tablename__ = "subscriptions"
+    __table_args__ = (
+        # Definición de un índice único compuesto por bot_id y company_id
+        UniqueConstraint("bot_id", "company_id", name="uq_bot_company"),
+    )
 
     # 🔑 Identificador único de la suscripción
     id: int | None = Field(default=None, primary_key=True)
@@ -716,33 +1002,17 @@ class Subscription(SQLModel, table=True):
     )
 
     # 📆 Auditoría
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=False)
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), nullable=False)
-
-# 15. PaymentStatus
-class PaymentStatus(SQLModel, table=True):
-    """
-    Representa los diferentes estados de un pago.
-
-    📌 Ejemplo:
-    - Pendiente
-    - Completado
-    - Fallido
-    - Cancelado
-    """
-    __tablename__ = "payment_statuses"
-
-    id: int | None = Field(default=None, primary_key=True)
-    name: str = Field(max_length=50, unique=True, index=True)
-    description: str | None = Field(default=None)
-
-    # Relación con `SubscriptionPayment` (Cada estado puede tener varios pagos asociados)
-    payments: list[SubscriptionPayment] = Relationship(
-        back_populates="status"
-        # passive_deletes="all"
+    created_at: datetime = Field(
+        sa_column_kwargs={"server_default": func.now()}
+    )
+    updated_at: datetime = Field(
+        sa_column_kwargs={"server_default": func.now(), "onupdate": func.now()}
     )
 
-# 16. SubscriptionPayment
+
+# ---------------------------------------------------------------------------
+# 20. SubscriptionPayment
+# ---------------------------------------------------------------------------
 class SubscriptionPayment(SQLModel, table=True):
     """
     💰 Representa un pago asociado a una suscripción de bot.
@@ -772,7 +1042,6 @@ class SubscriptionPayment(SQLModel, table=True):
     transaction_id: str = Field(
         max_length=100,
         unique=True,
-        index=True,
         description="Identificador único de la transacción, generado por la pasarela de pagos"
     )
 
@@ -789,235 +1058,6 @@ class SubscriptionPayment(SQLModel, table=True):
     subscription_id: int  = Field(
         foreign_key="subscriptions.id",
         ondelete="CASCADE",
-        index=True,
         description="ID de la suscripción a la que pertenece el pago"
     )
     subscription: Subscription = Relationship(back_populates="payments")
-
-
-# 17. SubscriptionStatus
-class SubscriptionStatus(SQLModel, table=True):
-    """
-    📦 Representa un estado posible para una suscripción de bot
-
-    📌 Ejemplo:
-    - Activa
-    - Suspendida
-    - Cancelada
-    """
-    __tablename__ = "subscription_statuses"
-
-    # 🔑 Identificador único del estado
-    id: int | None = Field(default=None, primary_key=True)
-
-    # 🏷️ Nombre único del estado
-    name: str = Field(
-        max_length=50,
-        unique=True,
-        index=True,
-        description="Nombre único del estado (ej: 'activa', 'cancelada')"
-    )
-
-    # 📝 Descripción opcional del estado
-    description: str | None = Field(
-        default=None,
-        max_length=255,
-        description="Descripción adicional sobre el estado de suscripción"
-    )
-
-    # Relación con `Subscription` (Cada estado puede tener varias suscripciones)
-    subscriptions: list[Subscription] = Relationship(
-        back_populates="status"
-        # passive_deletes="all"
-    )
-
-# 18. SubscriptionPeriod
-class SubscriptionPeriod(SQLModel, table=True):
-    """
-    📆 Representa la periodicidad de facturación de una suscripción.
-
-    Ejemplos: 'mensual', 'trimestral', 'anual'.
-    """
-    __tablename__ = "subscription_periods"
-
-    # 🔑 Identificador
-    id: int | None = Field(default=None, primary_key=True)
-
-    # 🏷️ Nombre único del período
-    name: str = Field(
-        max_length=50,
-        unique=True,
-        index=True,
-        description="Nombre único del período (ej: 'mensual', 'anual')"
-    )
-
-    # 📝 Descripción opcional
-    description: str | None = Field(
-        default=None,
-        description="Descripción extendida del período de suscripción"
-    )
-
-    # Relación con `Subscription` (Cada período de facturación puede tener varias suscripciones)
-    subscriptions: list[Subscription] = Relationship(
-        back_populates="period"
-        # passive_deletes="all"
-    )
-
-
-#19. Bot
-class Bot(SQLModel, table=True):
-    """
-    🤖 Representa un bot dentro del sistema, vinculado a una empresa y un modelo de operación.
-
-    Cada bot cuenta con su URL de API, configuración activa y relaciones con usuarios y suscripciones.
-    """
-    __tablename__ = "bots"
-
-    # 🔑 Identificador
-    id: int | None = Field(default=None, primary_key=True)
-
-    # 📛 Información general
-    name: str = Field(
-        max_length=50,
-        unique=True,
-        index=True,
-        description="Nombre único del bot (ej: 'Tlaloc', 'Quetzalcoatl')"
-    )
-    description: str | None = Field(
-        default=None,
-        description="Descripción funcional del bot"
-    )
-    api_url: str = Field(
-        max_length=255,
-        unique=True,
-        description="URL base para acceder a la API del bot"
-    )
-    is_active: bool = Field(
-        default=True,
-        index=True,
-        description="Estado de activación del bot"
-    )
-    last_ping: datetime | None = Field(
-        default=None,
-        description="Última vez que el bot respondió a una verificación (ping)"
-    )
-    request_per_minute: int = Field(
-        default=0,
-        index=True,
-        description="Número máximo de solicitudes permitidas por minuto"
-    )
-    data: dict | None = Field(
-        default=None,
-        sa_column=Column(JSON),
-        description="Datos adicionales del bot en formato JSON (configuración, estado, etc.)"
-    )
-
-    # 🔗 Relaciones con BotCredential (Cada bot tiene un único conjunto de credenciales)
-    credentials: BotCredential | None = Relationship(
-        back_populates="bot",
-        cascade_delete=True,
-        sa_relationship_kwargs={"uselist": False}
-    )
-
-    # 🔗 Relación con `BotModel` (Cada bot tiene un único modelo)
-    bot_model_id: int = Field(
-        foreign_key="bot_models.id",
-        index=True,
-        ondelete="CASCADE",
-        description="ID del modelo de bot asociado"
-    )
-    bot_model: BotModel = Relationship(back_populates="bots")
-
-    # 🔗 Relación con `BotStatus` (Cada bot tiene un único estado)
-    status_id: int | None = Field(
-        default=None,
-        foreign_key="bot_statuses.id",
-        index=True,
-        ondelete="SET NULL",
-        description="Estado actual del bot (ej: activo, en mantenimiento)"
-    )
-    status: BotStatus = Relationship(back_populates="bots")
-
-    # 🔗 Relación con `BotEnvironment` (Cada bot corre en un único entorno)
-    environment_id: int | None = Field(
-        default=None,
-        foreign_key="bot_environments.id",
-        ondelete="SET NULL",
-        description="Entorno en el que corre el bot (ej: producción, desarrollo)"
-    )
-    environment: BotEnvironment = Relationship(back_populates="bots")
-
-    # 🔗 Relación con `BotCategory` (Cada bot puede tener varias categorías)
-    categories: list[BotCategory] = Relationship(
-        back_populates="bots",
-        link_model=BotCategoryLink,
-        cascade_delete=True
-    )
-
-    # 🔗 Relación con `Subscription` (Cada bot puede estar vinculado a varias empresas)
-    company_subscriptions: list[Subscription] = Relationship(
-        back_populates="bot",
-        cascade_delete=True
-    )
-
-    # 🔗 Relación con `UserBotLink` (Cada bot puede tener varios enlaces a usuarios)
-    user_links: list[UserBotLink] = Relationship(
-        back_populates="bot",
-        cascade_delete=True
-    )
-
-    # 📆 Auditoría
-    created_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
-        description="Fecha de creación del bot"
-    )
-    updated_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
-        description="Fecha de la última actualización del bot"
-    )
-
-
-# 20. BotCredential
-class BotCredential(SQLModel, table=True):
-    """
-    🔐 Almacena las credenciales de autenticación de un bot.
-
-    Incluye contraseñas cifradas y tokens para comunicación segura entre servicios.
-    """
-    __tablename__ = "bot_credentials"
-
-    # 🔑 Identificador
-    id: int | None = Field(default=None, primary_key=True)
-
-    # 🔒 Credenciales cifradas
-    hashed_password: str = Field(
-        max_length=255,
-        description="Contraseña cifrada para autenticación interna del bot"
-    )
-    hashed_telegram_bot_token: str | None = Field(
-        default=None,
-        max_length=255,
-        description="Token cifrado del bot de Telegram (opcional)"
-    )
-    hashed_api_access_token: str | None = Field(
-        default=None,
-        max_length=255,
-        description="Token cifrado para acceso externo vía API"
-    )
-
-    # 🔗 Relación 1:1 con `Bot`
-    bot_id: int = Field(
-        foreign_key="bots.id",
-        unique=True,
-        index=True,
-        ondelete="CASCADE",
-        description="ID del bot al que pertenecen estas credenciales"
-    )
-    bot: Bot | None = Relationship(
-        back_populates="credentials",
-        sa_relationship_kwargs={"uselist": False}
-    )
-
-    # 📆 Auditoría
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

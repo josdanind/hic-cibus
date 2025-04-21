@@ -1,23 +1,33 @@
-from .models import (
-    BotModelStatus,
-    BotStatus,
-    BotEnvironment,
-    BotCategory,
-    BotModel,
-    Bot,
-    BotCredential,
-    BotCategoryLink
-)
+from .models import *
 
 models = {
-    "BotModelStatus": BotModelStatus,       # base para BotModel
-    "BotStatus": BotStatus,                 # base para Bot
-    "BotEnvironment": BotEnvironment,       # base para Bot
-    "BotCategory": BotCategory,             # base para BotCategoryLink
-    "BotModel": BotModel,                   # depende de BotModelStatus
-    "Bot": Bot,                             # depende de BotModel, BotStatus, BotEnvironment
-    "BotCredential": BotCredential,         # depende de Bot
-    "BotCategoryLink": BotCategoryLink      # depende de Bot y BotCategory
+    # 📚 Catálogos base (sin dependencias o usadas por otras)
+    "Role": Role,
+    "BotUserPermission": BotUserPermission,
+    "BotModelStatus": BotModelStatus,
+    "BotStatus": BotStatus,
+    "BotEnvironment": BotEnvironment,
+    "BotCategory": BotCategory,
+    "SubscriptionStatus": SubscriptionStatus,
+    "SubscriptionPeriod": SubscriptionPeriod,
+    "PaymentStatus": PaymentStatus,
+
+    # 🗄 Núcleo (con relaciones controladas por FKs previas)
+    "Employee": Employee,                 # → Role
+    "Company": Company,                   # independiente
+    "CompanyContact": CompanyContact,     # → Employee
+    "BotModel": BotModel,                 # → BotModelStatus
+    "Bot": Bot,                           # → BotModel, BotStatus, BotEnvironment
+    "BotCredential": BotCredential,       # → Bot
+    "BotUser": BotUser,                   # → Employee, BotUserPermission
+
+    # 🔗 Tablas de relación M:N (requieren entidades anteriores)
+    "BotCategoryLink": BotCategoryLink,   # → Bot, BotCategory
+    "UserBotLink": UserBotLink,           # → BotUser, Bot
+
+    # 🔄 Entidades transaccionales
+    "Subscription": Subscription,         # → Bot, Company, SubscriptionStatus, SubscriptionPeriod
+    "SubscriptionPayment": SubscriptionPayment,  # → Subscription, PaymentStatus
 }
 
 __all__ = ["models"]
