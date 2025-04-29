@@ -23,7 +23,7 @@ CREATE TABLE person_data (
 -- ╰──────────────────────────────────────────────────────╯
 
 -- Usuarios de la plataforma (CRUD)
-CREATE TABLE crud_user (
+CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     telegram_username VARCHAR(50) UNIQUE NOT NULL,
     hashed_password VARCHAR(100) NOT NULL,
@@ -50,8 +50,8 @@ CREATE TABLE roles (
 -- ╰──────────────────────────────────────────────────────╯
 
 -- Relación muchos a muchos entre usuarios y roles
-CREATE TABLE role_user_link (
-    crud_user_id INTEGER REFERENCES crud_user(id) ON DELETE CASCADE,
+CREATE TABLE user_role_link (
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     role_id INTEGER REFERENCES roles(id) ON DELETE CASCADE,
-    PRIMARY KEY (crud_user_id, role_id)
+    PRIMARY KEY (user_id, role_id)
 );
