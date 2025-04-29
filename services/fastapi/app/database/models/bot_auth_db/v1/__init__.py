@@ -30,4 +30,4 @@ models = {
     "SubscriptionPayment": SubscriptionPayment,  # → Subscription, PaymentStatus
 }
 
-__all__ = ["models"]
+__all__ = ["models", "metadata"]

@@ -5,11 +5,12 @@ from typing import Type
 from pydantic import BaseModel, field_validator
 from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import AsyncEngine
-
+from sqlalchemy import MetaData
 
 class DatabaseConfig(BaseModel):
     models: dict[str, Type[SQLModel]]
     engine: AsyncEngine
+    metadata: MetaData
 
     @field_validator("engine")
     @classmethod

@@ -29,6 +29,12 @@ services:
       - BOT_AUTH_DB_USER=${BOT_AUTH_DB_USER_DEV}
       - BOT_AUTH_DB_PASSWORD=${BOT_AUTH_DB_PASSWORD_DEV}
       - BOT_AUTH_DB_NAME=${BOT_AUTH_DB_NAME_DEV}
+      # Base de datos para la autenticación de usuarios
+      - USER_AUTH_DB_HOST=${USER_AUTH_DB_HOST_DEV}
+      - USER_AUTH_DB_PORT=${USER_AUTH_DB_PORT_DEV}
+      - USER_AUTH_DB_USER=${USER_AUTH_DB_USER_DEV}
+      - USER_AUTH_DB_PASSWORD=${USER_AUTH_DB_PASSWORD_DEV}
+      - USER_AUTH_DB_NAME=${USER_AUTH_DB_NAME_DEV}
 
     # 📂 Montaje de volúmenes
     volumes:

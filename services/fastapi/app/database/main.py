@@ -20,15 +20,22 @@ from app.core.config import settings
 from app.schemas.database import DatabaseConfig as DatabaseConfigSchema
 
 # Librerías de terceros
-from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-# Modelos
-from app.database.models.bot_auth_db import models as bot_auth_models
-
 # Utilidades de la app
 from app.utils.rich_format import print_panel
+
+# ────────────────────────────────────────────────
+# 🗄️ Modelos de la base de datos
+# ────────────────────────────────────────────────
+# dockerAutenticación de Bots
+from app.database.models.bot_auth_db import models as bot_auth_models
+from app.database.models.bot_auth_db import metadata as bot_auth_metadata
+
+# Autenticación de Usuarios
+from app.database.models.user_auth_db import models as user_auth_models
+from app.database.models.user_auth_db import metadata as user_auth_metadata
 
 # ────────────────────────────────────────────────
 # 🛠️ Utilidades para configuración de motores DB
@@ -44,10 +51,17 @@ def create_async_db_engine(db_url: str, echo: bool = True):
 # Cada clave representa una base de datos y contiene:
 # - models: modelos SQLModel asociados.
 # - engine: motor de conexión a la base de datos.
+# - metadata: metadatos de la base de datos.
 DATABASES: dict[str, DatabaseConfigSchema] = {
     "bot_auth_db": DatabaseConfigSchema(
         models=bot_auth_models,
         engine=create_async_db_engine(settings.BOT_AUTH_DB_URL),
+        metadata=bot_auth_metadata,
+    ),
+    "user_auth_db": DatabaseConfigSchema(
+        models=user_auth_models,
+        engine=create_async_db_engine(settings.USER_AUTH_DB_URL),
+        metadata=user_auth_metadata,
     ),
 }
 
@@ -76,13 +90,13 @@ async def initialize_databases(databases: dict[str, DatabaseConfigSchema] = DATA
 
     # Inicialización de la base de datos
     for db_name, config in databases.items():
-        tables = [model.__table__ for model in config.models.values()]
         engine = config.engine
+        metadata = config.metadata
 
         async with engine.begin() as conn:
             await conn.run_sync(
-                lambda sync_conn: SQLModel.metadata.create_all(
-                    sync_conn, tables=tables
+                lambda sync_conn: metadata.create_all(
+                    sync_conn
                 )
             )
 
@@ -95,22 +109,33 @@ async def initialize_databases(databases: dict[str, DatabaseConfigSchema] = DATA
             style="check arrow",
         )
 
+
 # ─────────────────────────────────────────────
 # 🗄️ Sesiones de base de datos
 # ─────────────────────────────────────────────
-# Session para la base de datos bot_auth_db
-bot_auth_db_session = async_sessionmaker(
-    bind=DATABASES["bot_auth_db"].engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
-)
+SESSIONS = {
+    "bot_auth_db": async_sessionmaker(
+        bind=DATABASES["bot_auth_db"].engine,
+        class_=AsyncSession,
+        expire_on_commit=False,
+    ),
+    "user_auth_db": async_sessionmaker(
+        bind=DATABASES["user_auth_db"].engine,
+        class_=AsyncSession,
+        expire_on_commit=False,
+    )
+}
 
-async def get_bot_auth_db_session() -> AsyncGenerator[AsyncSession, None]:
+async def get_bot_auth_session() -> AsyncGenerator[AsyncSession, None]:
     """
-    Obtiene una sesión de base de datos asincrónica para bot_auth_db.
+    Sesión asincrónica para la base de datos 'bot_auth_db'
+    """
+    async with SESSIONS["bot_auth_db"]() as session:
+        yield session
 
-    Returns:
-        AsyncSession: Sesión de base de datos asincrónica.
+async def get_user_auth_session() -> AsyncGenerator[AsyncSession, None]:
     """
-    async with bot_auth_db_session() as session:
+    Sesión asincrónica para la base de datos 'user_auth_db'
+    """
+    async with SESSIONS["user_auth_db"]() as session:
         yield session

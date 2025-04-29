@@ -7,9 +7,12 @@ from datetime import datetime, timezone
 # ORMs
 from sqlmodel import SQLModel, Field, Relationship, Column
 from sqlalchemy.dialects.postgresql import JSON
-from sqlalchemy import UniqueConstraint, func
+from sqlalchemy import UniqueConstraint, func, MetaData
 
+# Utilidades de la aplicación
 from app.utils.regex import E164_PHONE_RE, TELEGRAM_USERNAME_RE, EMAIL_RE
+
+metadata = MetaData()
 
 # ───────────────────────────────────────────────
 # 📚 Catálogos Puros
@@ -30,6 +33,7 @@ class Role(SQLModel, table=True):
     rol puede ser compartido por múltiples empleados.
     """
     __tablename__ = "roles"
+    metadata = metadata
 
     # 🔑 Identificador único del rol
     id: int | None = Field(default=None, primary_key=True)
@@ -64,6 +68,7 @@ class BotUserPermission(SQLModel, table=True):
     Ejemplos: viewer, editor, admin, owner.
     """
     __tablename__ = "bot_user_permissions"
+    metadata = metadata
 
     # 🔑 Identificador
     id: int | None = Field(default=None, primary_key=True)
@@ -93,6 +98,7 @@ class BotEnvironment(SQLModel, table=True):
     """🌐 Entorno donde se ejecuta un :class:`Bot` (producción, desarrollo, etc.)."""
 
     __tablename__ = "bot_environments"
+    metadata = metadata
 
     # 🔑 Identificador único del entorno
     id: int | None = Field(default=None, primary_key=True)
@@ -124,6 +130,7 @@ class BotStatus(SQLModel, table=True):
     Ejemplos comunes: 'operativo', 'en mantenimiento', 'apagado', 'en espera'.
     """
     __tablename__ = "bot_statuses"
+    metadata = metadata
 
     # 🔑 Identificador
     id: int | None = Field(default=None, primary_key=True)
@@ -156,6 +163,7 @@ class BotModelStatus(SQLModel, table=True):
     Ejemplos comunes: 'en desarrollo', 'en producción', 'obsoleto'.
     """
     __tablename__ = "bot_model_statuses"
+    metadata = metadata
 
     # 🔑 Identificador
     id: int | None = Field(default=None, primary_key=True)
@@ -186,10 +194,11 @@ class PaymentStatus(SQLModel, table=True):
     """Estado de un pago (pendiente, completado, cancelado…)."""
 
     __tablename__ = "payment_statuses"
-    
+    metadata = metadata
+
     # 🔑 Identificador
     id: int | None = Field(default=None, primary_key=True)
-    
+
     # 📛 Nombre del estado
     name: str = Field(
         max_length=50,
@@ -217,6 +226,7 @@ class SubscriptionStatus(SQLModel, table=True):
     - Cancelada
     """
     __tablename__ = "subscription_statuses"
+    metadata = metadata
 
     # 🔑 Identificador único del estado
     id: int | None = Field(default=None, primary_key=True)
@@ -252,6 +262,7 @@ class SubscriptionPeriod(SQLModel, table=True):
     Ejemplos: 'mensual', 'trimestral', 'anual'.
     """
     __tablename__ = "subscription_periods"
+    metadata = metadata
 
     # 🔑 Identificador
     id: int | None = Field(default=None, primary_key=True)
@@ -289,6 +300,7 @@ class BotCategoryLink(SQLModel, table=True):
     Permite asignar múltiples categorías a un bot y viceversa.
     """
     __tablename__ = "bot_category_link"
+    metadata = metadata
 
     # 🔑 Clave compuesta (bot + categoría)
     bot_id: int = Field(
@@ -318,6 +330,7 @@ class BotCategory(SQLModel, table=True):
     Ejemplos: 'monitoreo', 'ventas', 'atención al cliente', 'agricultura'.
     """
     __tablename__ = "bot_categories"
+    metadata = metadata
 
     # 🔑 Identificador único de la categoría
     id: int | None = Field(default=None, primary_key=True)
@@ -363,6 +376,7 @@ class Employee(SQLModel, table=True):
     Además, cada empleado puede ser un contacto de una empresa o un usuario de bot.
     """
     __tablename__ = "employees"
+    metadata = metadata
 
     # 🔑 Identificador único del empleado
     id: int | None = Field(default=None, primary_key=True)
@@ -475,6 +489,7 @@ class Company(SQLModel, table=True):
         - Múltiples suscripciones (`Subscription`).
     """
     __tablename__ = "companies"
+    metadata = metadata
 
     # 🔑 Identificador único de la empresa
     id: int | None = Field(default=None, primary_key=True)
@@ -547,6 +562,7 @@ class CompanyContact(SQLModel, table=True):
     """Empleado designado como contacto para una :class:`Company`."""
 
     __tablename__ = "company_contacts"
+    metadata = metadata
 
     # 🔑 Identificador único del contacto
     id: int | None = Field(default=None, primary_key=True)
@@ -585,6 +601,7 @@ class BotModel(SQLModel, table=True):
     Incluye su versión, descripción y estado de desarrollo.
     """
     __tablename__ = "bot_models"
+    metadata = metadata
 
     # 🔑 Identificador
     id: int | None = Field(default=None, primary_key=True)
@@ -638,6 +655,7 @@ class Bot(SQLModel, table=True):
     Cada bot cuenta con su URL de API, configuración activa y relaciones con usuarios y suscripciones.
     """
     __tablename__ = "bots"
+    metadata = metadata
 
     # 🔑 Identificador
     id: int | None = Field(default=None, primary_key=True)
@@ -749,6 +767,7 @@ class BotCredential(SQLModel, table=True):
     Incluye contraseñas cifradas y tokens para comunicación segura entre servicios.
     """
     __tablename__ = "bot_credentials"
+    metadata = metadata
 
     # 🔑 Identificador
     id: int | None = Field(default=None, primary_key=True)
@@ -800,6 +819,7 @@ class BotUser (SQLModel, table=True):
     Cada bot user está vinculado a un empleado, una empresa y puede tener permisos específicos.    
     """
     __tablename__ = "bot_users"
+    metadata = metadata
 
     # 🔑 Identificador
     id: int | None = Field(default=None, primary_key=True)
@@ -866,6 +886,7 @@ class UserBotLink(SQLModel, table=True):
     así como su historial de acceso y revocación.
     """
     __tablename__ = "user_bot_link"
+    metadata = metadata
 
     # 🔑 Claves compuestas
     # 🔗 Relación con `BotUser` (Cada enlace pertenece a un único usuario de bot)
@@ -917,6 +938,7 @@ class Subscription(SQLModel, table=True):
     Permite gestionar el estado de la suscripción, fechas de pago y detalles de la empresa.
     """
     __tablename__ = "subscriptions"
+    metadata = metadata
     __table_args__ = (
         # Definición de un índice único compuesto por bot_id y company_id
         UniqueConstraint("bot_id", "company_id", name="uq_bot_company"),
@@ -1021,6 +1043,7 @@ class SubscriptionPayment(SQLModel, table=True):
     método de pago y su identificación transaccional.
     """
     __tablename__ = "subscription_payments"
+    metadata = metadata
 
     # 🔑 Identificador
     id: int | None = Field(default=None, primary_key=True)

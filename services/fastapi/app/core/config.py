@@ -15,6 +15,13 @@ class Settings(BaseSettings):
     BOT_AUTH_DB_PASSWORD: str
     BOT_AUTH_DB_NAME: str
 
+    # Configuración de la base de datos para la autenticación de Usuarios
+    USER_AUTH_DB_HOST: str
+    USER_AUTH_DB_PORT: int
+    USER_AUTH_DB_USER: str
+    USER_AUTH_DB_PASSWORD: str
+    USER_AUTH_DB_NAME: str
+
     # Configuración de seguridad y autenticación JWT
     SECRET_KEY: str
     ALGORITHM: str
@@ -37,6 +44,16 @@ class Settings(BaseSettings):
         host = self.BOT_AUTH_DB_HOST
         port = self.BOT_AUTH_DB_PORT
         name = self.BOT_AUTH_DB_NAME
+
+        return f"postgresql+asyncpg://{user}:{password}@{host}:{port}/{name}"
+
+    @computed_field
+    def USER_AUTH_DB_URL(self) -> str:
+        user = self.USER_AUTH_DB_USER
+        password = self.USER_AUTH_DB_PASSWORD
+        host = self.USER_AUTH_DB_HOST
+        port = self.USER_AUTH_DB_PORT
+        name = self.USER_AUTH_DB_NAME
 
         return f"postgresql+asyncpg://{user}:{password}@{host}:{port}/{name}"
 
