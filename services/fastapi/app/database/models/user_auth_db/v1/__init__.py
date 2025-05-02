@@ -1,10 +1,11 @@
 from .models import *
 
 models = {
-    "PersonData": PersonData,
-    "Role": Role,
-    "User": User,
-    "UserRoleLink": UserRoleLink,
+    "JobPosition": JobPosition,
+    "AccessRole": AccessRole,
+    "Employee": Employee,
+    "CrudUser": CrudUser,
+    "BotUser": BotUser,
 }
 
 __all__ = ["models", "metadata"]

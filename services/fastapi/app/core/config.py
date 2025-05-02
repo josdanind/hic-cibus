@@ -29,13 +29,21 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int
 
     # Autenticación de Bots
-    BOT_API_KEY_EXPIRATION: int
+    BOT_API_KEY_EXPIRATION: int  # ⚠️ No se está usando
 
     # Usuario simulado para pruebas
     FASTAPI_DUMMY_USER: str
     FASTAPI_DUMMY_PASSWORD: str
     FASTAPI_DUMMY_FULLNAME: str
     FASTAPI_DUMMY_EMAIL: str
+
+    # Usuario CRUD
+    TELEGRAM_USERNAME: str
+    FIRST_NAME: str
+    LAST_NAME: str
+    MOBILE_PHONE: str
+    EMAIL: str
+    PASSWORD: str
 
     @computed_field
     def BOT_AUTH_DB_URL(self) -> str:

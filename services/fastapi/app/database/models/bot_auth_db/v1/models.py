@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 # ORMs
 from sqlmodel import SQLModel, Field, Relationship, Column
-from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy import UniqueConstraint, func, MetaData
 
 # Utilidades de la aplicación
@@ -59,15 +59,15 @@ class Role(SQLModel, table=True):
 
 
 # ---------------------------------------------------------------------------
-# 2. BotUserPermission
+# 2. BotAccessRole
 # ---------------------------------------------------------------------------
-class BotUserPermission(SQLModel, table=True):
+class BotAccessRole(SQLModel, table=True):
     """
     🔐 Define un conjunto de permisos que puede tener un usuario de bot.
 
     Ejemplos: viewer, editor, admin, owner.
     """
-    __tablename__ = "bot_user_permissions"
+    __tablename__ = "bot_access_roles"
     metadata = metadata
 
     # 🔑 Identificador
@@ -77,6 +77,7 @@ class BotUserPermission(SQLModel, table=True):
     name: str = Field(
         max_length=50,
         unique=True,
+        index=True,
         description="Nombre del permiso (ej: 'viewer', 'admin')"
     )
     description: str | None = Field(
@@ -86,7 +87,7 @@ class BotUserPermission(SQLModel, table=True):
 
     # Relación con `BotUser` (Cada permiso puede ser asignado a varios usuarios)
     users: list[BotUser] = Relationship(
-        back_populates="permission",
+        back_populates="access_role",
         passive_deletes="all"
     )
 
@@ -107,6 +108,7 @@ class BotEnvironment(SQLModel, table=True):
     name: str = Field(
         max_length=50,
         unique=True,
+        index=True,
         description="Nombre único del entorno (ej: 'producción', 'desarrollo')"
     )
     description: str | None = Field(
@@ -139,6 +141,7 @@ class BotStatus(SQLModel, table=True):
     name: str = Field(
         max_length=50,
         unique=True,
+        index=True,
         description="Nombre único del estado del bot (ej: 'operativo', 'apagado')"
     )
     description: str | None = Field(
@@ -202,7 +205,8 @@ class PaymentStatus(SQLModel, table=True):
     # 📛 Nombre del estado
     name: str = Field(
         max_length=50,
-        unique=True
+        unique=True,
+        index=True
     )
     description: str | None = Field(default=None)
 
@@ -235,6 +239,7 @@ class SubscriptionStatus(SQLModel, table=True):
     name: str = Field(
         max_length=50,
         unique=True,
+        index=True,
         description="Nombre único del estado (ej: 'activa', 'cancelada')"
     )
 
@@ -271,6 +276,7 @@ class SubscriptionPeriod(SQLModel, table=True):
     name: str = Field(
         max_length=50,
         unique=True,
+        index=True,
         description="Nombre único del período (ej: 'mensual', 'anual')"
     )
 
@@ -339,6 +345,7 @@ class BotCategory(SQLModel, table=True):
     name: str = Field(
         max_length=50,
         unique=True,
+        index=True,
         description="Nombre único de la categoría (ej: 'monitoreo')"
     )
     description: str | None = Field(
@@ -498,6 +505,7 @@ class Company(SQLModel, table=True):
     name: str = Field(
         max_length=50,
         unique=True,
+        index=True,
         description="Nombre único de la empresa"
     )
     description: str | None = Field(
@@ -506,6 +514,7 @@ class Company(SQLModel, table=True):
     )
     is_active: bool = Field(
         default=True,
+        nullable=False,
         index=True,
         description="Indica si la empresa está activa"
     )
@@ -602,6 +611,9 @@ class BotModel(SQLModel, table=True):
     """
     __tablename__ = "bot_models"
     metadata = metadata
+    __table_args__ = (
+    UniqueConstraint("name","version", name="uq_botmodel_name_version"),
+    )
 
     # 🔑 Identificador
     id: int | None = Field(default=None, primary_key=True)
@@ -609,7 +621,7 @@ class BotModel(SQLModel, table=True):
     # 📛 Información del modelo
     name: str = Field(
         max_length=50,
-        unique=True,
+        index=True,
         description="Nombre único del modelo (ej: 'Tlaloc V1.0')"
     )
     description: str | None = Field(
@@ -626,6 +638,7 @@ class BotModel(SQLModel, table=True):
         default=None,
         foreign_key="bot_model_statuses.id",
         ondelete="SET NULL",
+        index=True,
         description="Estado actual del modelo de bot"
     )
     status: BotModelStatus = Relationship(back_populates="bot_models")
@@ -664,6 +677,7 @@ class Bot(SQLModel, table=True):
     name: str = Field(
         max_length=50,
         unique=True,
+        index=True,
         description="Nombre único del bot (ej: 'Tlaloc', 'Quetzalcoatl')"
     )
     description: str | None = Field(
@@ -691,7 +705,7 @@ class Bot(SQLModel, table=True):
     )
     data: dict | None = Field(
         default=None,
-        sa_column=Column(JSON),
+        sa_column=Column(JSONB),
         description="Datos adicionales del bot en formato JSON (configuración, estado, etc.)"
     )
 
@@ -706,6 +720,7 @@ class Bot(SQLModel, table=True):
     bot_model_id: int = Field(
         foreign_key="bot_models.id",
         ondelete="CASCADE",
+        index=True,
         description="ID del modelo de bot asociado"
     )
     bot_model: BotModel = Relationship(back_populates="bots")
@@ -793,6 +808,7 @@ class BotCredential(SQLModel, table=True):
         foreign_key="bots.id",
         unique=True,
         ondelete="CASCADE",
+        index=True,
         description="ID del bot al que pertenecen estas credenciales"
     )
     bot: Bot | None = Relationship(
@@ -812,7 +828,7 @@ class BotCredential(SQLModel, table=True):
 # ---------------------------------------------------------------------------
 # 17. BotUser
 # ---------------------------------------------------------------------------
-class BotUser (SQLModel, table=True):
+class BotUser(SQLModel, table=True):
     """
     🤖 Representa a un usuario (empleado de una empresa) que interactúa con un bot.
 
@@ -829,16 +845,19 @@ class BotUser (SQLModel, table=True):
         max_length=50,
         regex=TELEGRAM_USERNAME_RE,
         unique=True,
+        index=True,
         description="Nombre de usuario único en Telegram (sin @)"
     )
 
     telegram_user_id: int | None = Field(
         default=None,
         unique=True,
+        index=True,
         description="ID numérico único asignado por Telegram"
     )
     is_active: bool = Field(
         default=True,
+        index=True,
         description="Indica si el usuario está activo en la plataforma"
     )
 
@@ -847,6 +866,7 @@ class BotUser (SQLModel, table=True):
         foreign_key="employees.id",
         ondelete="CASCADE",
         unique=True,
+        index=True,
         description="Empleado asociado a este usuario de bot"
     )
     employee: Employee = Relationship(
@@ -855,13 +875,14 @@ class BotUser (SQLModel, table=True):
     )
 
     # 🔗 Relación con `BotUserPermission` (Cada usuario se le asigna un único permiso)
-    permissions_id: int | None = Field(
+    bot_access_role_id: int | None = Field(
         default=None,
-        foreign_key="bot_user_permissions.id",
+        foreign_key="bot_access_roles.id",
         ondelete="SET NULL",
+        index=True,
         description="Permisos asignados al usuario"
     )
-    permission: BotUserPermission = Relationship(
+    access_role: BotAccessRole = Relationship(
         back_populates="users"
     )
 
@@ -894,6 +915,7 @@ class UserBotLink(SQLModel, table=True):
         foreign_key="bot_users.id",
         primary_key=True,
         ondelete="CASCADE",
+        index=True,
         description="ID del usuario que tiene acceso al bot"
     )
     user: BotUser = Relationship(
@@ -905,6 +927,7 @@ class UserBotLink(SQLModel, table=True):
         foreign_key="bots.id",
         primary_key=True,
         ondelete="CASCADE",
+        index=True,
         description="ID del bot al que el usuario tiene acceso"
     )
     bot: Bot = Relationship(
@@ -955,27 +978,22 @@ class Subscription(SQLModel, table=True):
     )
     max_users: int = Field(
         default=1,
-        index=True,
         description="Número máximo de usuarios permitidos en esta suscripción"
     )
     start_date: datetime | None = Field(
         default=None,
-        index=True,
         description="Fecha de inicio de la suscripción"
     )
     end_date: datetime | None = Field(
         default=None,
-        index=True,
         description="Fecha de finalización de la suscripción"
     )
     next_payment_date: datetime | None = Field(
         default=None,
-        index=True,
         description="Fecha del siguiente pago programado"
     )
     last_payment_date: datetime | None = Field(
         default=None,
-        index=True,
         description="Fecha del último pago realizado"
     )
     notes: str | None = Field(
@@ -987,6 +1005,7 @@ class Subscription(SQLModel, table=True):
     bot_id: int = Field(
         foreign_key="bots.id",
         ondelete="CASCADE",
+        index=True,
         description="ID del bot asociado a la suscripción"
     )
     bot: Bot = Relationship(back_populates="company_subscriptions")
@@ -995,6 +1014,7 @@ class Subscription(SQLModel, table=True):
     company_id: int = Field(
         foreign_key="companies.id",
         ondelete="CASCADE",
+        index=True,
         description="ID de la empresa que posee esta suscripción"
     )
     company: Company = Relationship(back_populates="bot_subscriptions")
@@ -1004,6 +1024,7 @@ class Subscription(SQLModel, table=True):
         default=None,
         foreign_key="subscription_statuses.id",
         ondelete="SET NULL",
+        index=True,
         description="Estado actual de la suscripción"
     )
     status: SubscriptionStatus | None = Relationship(back_populates="subscriptions")
@@ -1065,6 +1086,7 @@ class SubscriptionPayment(SQLModel, table=True):
     transaction_id: str = Field(
         max_length=100,
         unique=True,
+        index=True,
         description="Identificador único de la transacción, generado por la pasarela de pagos"
     )
 
@@ -1073,6 +1095,7 @@ class SubscriptionPayment(SQLModel, table=True):
         default=None,
         foreign_key="payment_statuses.id",
         ondelete="SET NULL",
+        index=True,
         description="Estado actual del pago (ej: pendiente, completado)"
     )
     status: PaymentStatus | None = Relationship(back_populates="payments")
@@ -1081,6 +1104,7 @@ class SubscriptionPayment(SQLModel, table=True):
     subscription_id: int  = Field(
         foreign_key="subscriptions.id",
         ondelete="CASCADE",
+        index=True,
         description="ID de la suscripción a la que pertenece el pago"
     )
     subscription: Subscription = Relationship(back_populates="payments")
