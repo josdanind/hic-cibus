@@ -2,56 +2,78 @@
 \c user_auth_db;
 
 -- ╭──────────────────────────────────────────────────────╮
--- │ 📚 1. Datos Personales                               │
+-- │ 💼 1. Job Positions                                  │
 -- ╰──────────────────────────────────────────────────────╯
-
--- Información personal de usuarios
-CREATE TABLE person_data (
+CREATE TABLE job_positions (
     id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE,
+    description TEXT
+);
+
+
+-- ╭──────────────────────────────────────────────────────╮
+-- │ 🛡️ 2. Access Roles                                   │
+-- ╰──────────────────────────────────────────────────────╯
+CREATE TABLE access_roles (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE,
+    description TEXT
+);
+-- Índices para acelerar búsquedas
+CREATE INDEX idx_access_roles_name ON access_roles (name);
+
+
+-- ╭──────────────────────────────────────────────────────╮
+-- │ 👥 3. Employees                                      │
+-- ╰──────────────────────────────────────────────────────╯
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    telegram_username VARCHAR(50) NOT NULL UNIQUE,
+    telegram_chat_id BIGINT UNIQUE,
     first_name VARCHAR(50) NOT NULL,
     middle_name VARCHAR(50),
     last_name VARCHAR(50) NOT NULL,
     second_last_name VARCHAR(50),
-    mobile_phone VARCHAR(15) UNIQUE NOT NULL,
-    email VARCHAR(50) UNIQUE NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+    mobile_phone VARCHAR(15) NOT NULL UNIQUE,
+    email VARCHAR(50) NOT NULL UNIQUE,
+    job_position_id INTEGER REFERENCES job_positions(id) ON DELETE SET NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
+-- Índices para acelerar búsquedas
+CREATE INDEX idx_employees_last_name ON employees (last_name);
+CREATE INDEX idx_employees_telegram_username ON employees (telegram_username);
+CREATE INDEX idx_employees_telegram_chat_id ON employees (telegram_chat_id);
+CREATE INDEX idx_employees_email ON employees (email);
+
 
 -- ╭──────────────────────────────────────────────────────╮
--- │ 🔒 2. Usuarios del sistema (CRUD Users)              │
+-- │ 👤 4. Crud Users                                     │
 -- ╰──────────────────────────────────────────────────────╯
-
--- Usuarios de la plataforma (CRUD)
-CREATE TABLE users (
+CREATE TABLE crud_users (
     id SERIAL PRIMARY KEY,
-    telegram_username VARCHAR(50) UNIQUE NOT NULL,
     hashed_password VARCHAR(100) NOT NULL,
-    is_active BOOLEAN DEFAULT TRUE,
+    is_active BOOLEAN NOT NULL DEFAULT true,
     data JSONB,
-    person_id INTEGER UNIQUE NOT NULL REFERENCES person_data(id) ON DELETE CASCADE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+    access_role_id INTEGER REFERENCES access_roles(id) ON DELETE SET NULL,
+    employee_id INTEGER NOT NULL UNIQUE REFERENCES employees(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
+-- Índices para acelerar búsquedas
+CREATE INDEX idx_crud_users_is_active ON crud_users (is_active);
 
 -- ╭──────────────────────────────────────────────────────╮
--- │ 🛡️ 3. Roles de usuarios                              │
+-- │ 🤖 5. Bot Users                                      │
 -- ╰──────────────────────────────────────────────────────╯
-
--- Roles que pueden asignarse a usuarios (CRUD Users)
-CREATE TABLE roles (
+CREATE TABLE bot_users (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL,
-    description TEXT
+    is_active BOOLEAN NOT NULL DEFAULT true,
+    data JSONB,
+    access_role_id INTEGER REFERENCES access_roles(id) ON DELETE SET NULL,
+    employee_id INTEGER NOT NULL UNIQUE REFERENCES employees(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
-
--- ╭──────────────────────────────────────────────────────╮
--- │ 🔗 4. Relación M:N entre usuarios y roles            │
--- ╰──────────────────────────────────────────────────────╯
-
--- Relación muchos a muchos entre usuarios y roles
-CREATE TABLE user_role_link (
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    role_id INTEGER REFERENCES roles(id) ON DELETE CASCADE,
-    PRIMARY KEY (user_id, role_id)
-);
+-- Índices para acelerar búsquedas
+CREATE INDEX idx_bot_users_is_active ON bot_users (is_active);
