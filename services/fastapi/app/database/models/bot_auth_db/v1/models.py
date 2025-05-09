@@ -1,8 +1,9 @@
 # Habilita anotaciones de tipo diferido para evitar problemas de dependencias circulares.
-from __future__ import annotations
+# from __future__ import annotations
 
 # Librería estándar
 from datetime import datetime, timezone
+from typing import Optional
 
 # ORMs
 from sqlmodel import SQLModel, Field, Relationship, Column
@@ -52,7 +53,7 @@ class Role(SQLModel, table=True):
     )
 
     # 🔗 Relación con `Employee` (un rol puede tener muchos empleados asignados)
-    employees: list[Employee] = Relationship(
+    employees: list["Employee"] = Relationship(
         back_populates="role",
         passive_deletes="all"
     )
@@ -85,8 +86,8 @@ class BotAccessRole(SQLModel, table=True):
         description="Descripción del permiso y sus alcances"
     )
 
-    # Relación con `BotUser` (Cada permiso puede ser asignado a varios usuarios)
-    users: list[BotUser] = Relationship(
+    #  🔗  Relación con `BotUser` (Cada permiso puede ser asignado a varios usuarios)
+    users: list["BotUser"] = Relationship(
         back_populates="access_role",
         passive_deletes="all"
     )
@@ -116,8 +117,8 @@ class BotEnvironment(SQLModel, table=True):
         description="Descripción detallada del entorno (uso, restricciones, etc.)"
     )
 
-    # Relaciones
-    bots: list[Bot] = Relationship(
+    #  🔗  Relaciones
+    bots: list["Bot"] = Relationship(
         back_populates="environment",
         passive_deletes="all"
     )
@@ -150,7 +151,7 @@ class BotStatus(SQLModel, table=True):
     )
 
     # 🔗 Relación con bots que tienen este estado
-    bots: list[Bot] = Relationship(
+    bots: list["Bot"] = Relationship(
         back_populates="status",
         passive_deletes="all"
     )
@@ -184,7 +185,7 @@ class BotModelStatus(SQLModel, table=True):
     )
 
     # 🔗 Relaciones con `BotModel` (Cada estado puede tener varios modelos de bot)
-    bot_models: list[BotModel] = Relationship(
+    bot_models: list["BotModel"] = Relationship(
         back_populates="status",
         passive_deletes="all"
     )
@@ -210,8 +211,8 @@ class PaymentStatus(SQLModel, table=True):
     )
     description: str | None = Field(default=None)
 
-    # Relación con `SubscriptionPayment` (Cada estado puede tener varios pagos asociados)
-    payments: list[SubscriptionPayment] = Relationship(
+    # 🔗 Relación con `SubscriptionPayment` (Cada estado puede tener varios pagos asociados)
+    payments: list["SubscriptionPayment"] = Relationship(
         back_populates="status",
         passive_deletes="all"
     )
@@ -250,8 +251,8 @@ class SubscriptionStatus(SQLModel, table=True):
         description="Descripción adicional sobre el estado de suscripción"
     )
 
-    # Relación con `Subscription` (Cada estado puede tener varias suscripciones)
-    subscriptions: list[Subscription] = Relationship(
+    # 🔗 Relación con `Subscription` (Cada estado puede tener varias suscripciones)
+    subscriptions: list["Subscription"] = Relationship(
         back_populates="status",
         passive_deletes="all"
     )
@@ -286,8 +287,8 @@ class SubscriptionPeriod(SQLModel, table=True):
         description="Descripción extendida del período de suscripción"
     )
 
-    # Relación con `Subscription` (Cada período de facturación puede tener varias suscripciones)
-    subscriptions: list[Subscription] = Relationship(
+    # 🔗 Relación con `Subscription` (Cada período de facturación puede tener varias suscripciones)
+    subscriptions: list["Subscription"] = Relationship(
         back_populates="period",
         passive_deletes="all"
     )
@@ -354,10 +355,9 @@ class BotCategory(SQLModel, table=True):
     )
 
     # 🔗 Relación con bots (muchos a muchos)
-    bots: list[Bot] = Relationship(
+    bots: list["Bot"] = Relationship(
         back_populates="categories",
         link_model=BotCategoryLink,
-        cascade_delete=True
     )
 
     # 📆 Auditoría
@@ -433,7 +433,7 @@ class Employee(SQLModel, table=True):
         foreign_key="roles.id",
         ondelete="SET NULL"
     )
-    role: Role | None = Relationship(back_populates="employees")
+    role: Optional[Role] = Relationship(back_populates="employees")
 
     # 🔗 Relación con `Company` (Cada empleado pertenece a una única empresa)
     company_id: int = Field(
@@ -441,17 +441,17 @@ class Employee(SQLModel, table=True):
         ondelete="CASCADE",
         description="ID de la empresa a la que pertenece el empleado"
     )
-    company: Company = Relationship(back_populates="employees")
+    company: "Company" = Relationship(back_populates="employees")
 
     # 🔗 Relación con `CompanyContact` (Cada empleado es un contacto de la empresa)
-    company_contact: CompanyContact | None = Relationship(
+    company_contact: Optional["CompanyContact"]= Relationship(
         back_populates="employee",
         sa_relationship_kwargs={"uselist": False},
         cascade_delete=True
     )
 
     # 🔗 Relación con `BotUser` (Cada empleado puede ser un usuario de bot)
-    bot_user: BotUser | None = Relationship(
+    bot_user: Optional["BotUser"]  = Relationship(
         back_populates="employee",
         sa_relationship_kwargs={"uselist": False},
         cascade_delete=True
@@ -550,7 +550,7 @@ class Company(SQLModel, table=True):
     )
 
     # 🔗 Relaciones con `Subscription` (Cada empresa puede tener varias suscripciones a bots)
-    bot_subscriptions: list[Subscription] = Relationship(
+    bot_subscriptions: list["Subscription"] = Relationship(
         back_populates="company",
         cascade_delete=True
     )
@@ -644,7 +644,7 @@ class BotModel(SQLModel, table=True):
     status: BotModelStatus = Relationship(back_populates="bot_models")
 
     # Relación con `Bot` (Cada modelo tiene varios bots)
-    bots: list[Bot] = Relationship(
+    bots: list["Bot"] = Relationship(
         back_populates="bot_model",
         cascade_delete=True
     )
@@ -710,7 +710,7 @@ class Bot(SQLModel, table=True):
     )
 
     # 🔗 Relaciones con BotCredential (Cada bot tiene un único conjunto de credenciales)
-    credentials: BotCredential | None = Relationship(
+    credentials: Optional["BotCredential"] = Relationship(
         back_populates="bot",
         cascade_delete=True,
         sa_relationship_kwargs={"uselist": False}
@@ -748,17 +748,16 @@ class Bot(SQLModel, table=True):
     categories: list[BotCategory] = Relationship(
         back_populates="bots",
         link_model=BotCategoryLink,
-        cascade_delete=True
     )
 
     # 🔗 Relación con `Subscription` (Cada bot puede estar vinculado a varias empresas)
-    company_subscriptions: list[Subscription] = Relationship(
+    company_subscriptions: list["Subscription"] = Relationship(
         back_populates="bot",
         cascade_delete=True
     )
 
     # 🔗 Relación con `UserBotLink` (Cada bot puede tener varios enlaces a usuarios)
-    user_links: list[UserBotLink] = Relationship(
+    user_links: list["UserBotLink"] = Relationship(
         back_populates="bot",
         cascade_delete=True
     )
@@ -887,7 +886,7 @@ class BotUser(SQLModel, table=True):
     )
 
     # 🔗 Relación con `UserBotLink` (Un usuario puede acceder a varios bots)
-    bot_links: list[UserBotLink] = Relationship(
+    bot_links: list["UserBotLink"] = Relationship(
         back_populates="user",
         cascade_delete=True
     )
@@ -1027,7 +1026,7 @@ class Subscription(SQLModel, table=True):
         index=True,
         description="Estado actual de la suscripción"
     )
-    status: SubscriptionStatus | None = Relationship(back_populates="subscriptions")
+    status: Optional[SubscriptionStatus] = Relationship(back_populates="subscriptions")
 
     # 🔗 Relación con `SubscriptionPeriod` (Cada suscripción tiene un único período de facturación)
     subscription_period_id: int | None = Field(
@@ -1039,7 +1038,7 @@ class Subscription(SQLModel, table=True):
     period: SubscriptionPeriod | None = Relationship(back_populates="subscriptions")
 
     # 🔗 Relación con `SubscriptionPayment` (Las suscripción tienen varios pagos)
-    payments: list[SubscriptionPayment] = Relationship(
+    payments: list["SubscriptionPayment"] = Relationship(
         back_populates="subscription",
         cascade_delete=True,
     )
@@ -1098,7 +1097,7 @@ class SubscriptionPayment(SQLModel, table=True):
         index=True,
         description="Estado actual del pago (ej: pendiente, completado)"
     )
-    status: PaymentStatus | None = Relationship(back_populates="payments")
+    status: Optional[PaymentStatus] = Relationship(back_populates="payments")
 
     # 🔗 Relación con `Subscription` (Cada pago pertenece a una única suscripción)
     subscription_id: int  = Field(

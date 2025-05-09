@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from app.api.v1.routers import router, home_static_dir
 
 # Base de datos
-from app.database import initialize_databases
+from app.database import initialize_databases, create_crud_user
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -18,9 +18,9 @@ async def lifespan(app: FastAPI):
     """
     # Inicialización de la base de datos
     await initialize_databases()
+    await create_crud_user()
+
     yield
-
-
 
 app = FastAPI(
     title="Plantila de FastAPI",

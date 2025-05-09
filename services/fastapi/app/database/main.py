@@ -13,57 +13,26 @@ usando la librería Rich a través del módulo rich_format.
 # Librerías estándar
 from typing import AsyncGenerator
 
-# Variables de entorno
-from app.core.config import settings
+# 🧩 Librerías de terceros
+from sqlmodel.ext.asyncio.session import AsyncSession
 
-# Schemas
+# 🧱 Modelos y esquemas
+from app.database.models.user_auth_db.v1.models import UserAuthEmployee
 from app.schemas.database import DatabaseConfig as DatabaseConfigSchema
 
-# Librerías de terceros
-from sqlmodel.ext.asyncio.session import AsyncSession
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-
-# Utilidades de la app
+# 🛠️ Utilidades, librerías y configuraciones
 from app.utils.rich_format import print_panel
+from app.core.config import settings
+from app.libraries.CRUDManager import CRUDManager
+from .config import DATABASES
 
-# ────────────────────────────────────────────────
-# 🗄️ Modelos de la base de datos
-# ────────────────────────────────────────────────
-# dockerAutenticación de Bots
-from app.database.models.bot_auth_db import models as bot_auth_models
-from app.database.models.bot_auth_db import metadata as bot_auth_metadata
 
-# Autenticación de Usuarios
-from app.database.models.user_auth_db import models as user_auth_models
-from app.database.models.user_auth_db import metadata as user_auth_metadata
+# ─────────────────────────────
+# 🧭 Instancia de gestores CRUD
+# ─────────────────────────────
+user_auth_crud = CRUDManager(DATABASES["user_auth_db"].session)
+bot_auth_crud = CRUDManager(DATABASES["bot_auth_db"].session)
 
-# ────────────────────────────────────────────────
-# 🛠️ Utilidades para configuración de motores DB
-# ────────────────────────────────────────────────
-def create_async_db_engine(db_url: str, echo: bool = True):
-    """Crea una instancia de motor SQLModel asincrónico."""
-    return create_async_engine(db_url, echo=echo)
-
-# ───────────────────────────────────────────────────
-# 🗄️ Configuración de las bases de datos del sistema
-# ───────────────────────────────────────────────────
-# Configuración de las bases de datos del sistema.
-# Cada clave representa una base de datos y contiene:
-# - models: modelos SQLModel asociados.
-# - engine: motor de conexión a la base de datos.
-# - metadata: metadatos de la base de datos.
-DATABASES: dict[str, DatabaseConfigSchema] = {
-    "bot_auth_db": DatabaseConfigSchema(
-        models=bot_auth_models,
-        engine=create_async_db_engine(settings.BOT_AUTH_DB_URL),
-        metadata=bot_auth_metadata,
-    ),
-    "user_auth_db": DatabaseConfigSchema(
-        models=user_auth_models,
-        engine=create_async_db_engine(settings.USER_AUTH_DB_URL),
-        metadata=user_auth_metadata,
-    ),
-}
 
 # ────────────────────────────────────────
 # 🚀 Inicialización de las bases de datos
@@ -90,7 +59,7 @@ async def initialize_databases(databases: dict[str, DatabaseConfigSchema] = DATA
 
     # Inicialización de la base de datos
     for db_name, config in databases.items():
-        engine = config.engine
+        engine = config._engine
         metadata = config.metadata
 
         async with engine.begin() as conn:
@@ -113,29 +82,31 @@ async def initialize_databases(databases: dict[str, DatabaseConfigSchema] = DATA
 # ─────────────────────────────────────────────
 # 🗄️ Sesiones de base de datos
 # ─────────────────────────────────────────────
-SESSIONS = {
-    "bot_auth_db": async_sessionmaker(
-        bind=DATABASES["bot_auth_db"].engine,
-        class_=AsyncSession,
-        expire_on_commit=False,
-    ),
-    "user_auth_db": async_sessionmaker(
-        bind=DATABASES["user_auth_db"].engine,
-        class_=AsyncSession,
-        expire_on_commit=False,
-    )
-}
-
 async def get_bot_auth_session() -> AsyncGenerator[AsyncSession, None]:
     """
     Sesión asincrónica para la base de datos 'bot_auth_db'
     """
-    async with SESSIONS["bot_auth_db"]() as session:
+    async with DATABASES["bot_auth_db"].session() as session:
         yield session
 
 async def get_user_auth_session() -> AsyncGenerator[AsyncSession, None]:
     """
     Sesión asincrónica para la base de datos 'user_auth_db'
     """
-    async with SESSIONS["user_auth_db"]() as session:
+    async with DATABASES["user_auth_db"].session() as session:
         yield session
+
+
+# ───────────────────────────────────────────────────
+# 👤 Crea usuario administrador
+# ───────────────────────────────────────────────────
+async def create_crud_user():
+    employee_model = UserAuthEmployee(
+        telegram_username = settings.TELEGRAM_USERNAME,
+        first_name = settings.FIRST_NAME,
+        last_name = settings.LAST_NAME,
+        mobile_phone = settings.MOBILE_PHONE,
+        email = settings.EMAIL
+    )
+
+    print(employee_model)

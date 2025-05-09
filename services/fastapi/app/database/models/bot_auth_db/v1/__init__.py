@@ -1,9 +1,38 @@
-from .models import *
+from .models import (
+    Role,
+    BotAccessRole,
+    BotModelStatus,
+    BotStatus,
+    BotEnvironment,
+    BotCategory,
+    SubscriptionStatus,
+    SubscriptionPeriod,
+    PaymentStatus
+)
+
+from .models import (
+    Employee, 
+    Company,
+    CompanyContact,
+    BotModel,
+    Bot,
+    BotCredential,
+    BotUser
+)
+
+from .models import (
+    BotCategoryLink,
+    UserBotLink,
+    Subscription,
+    SubscriptionPayment
+)
+
+from .models import metadata 
 
 models = {
     # 📚 Catálogos base (sin dependencias o usadas por otras)
     "Role": Role,
-    "BotUserPermission": BotUserPermission,
+    "BotAccessRole": BotAccessRole,
     "BotModelStatus": BotModelStatus,
     "BotStatus": BotStatus,
     "BotEnvironment": BotEnvironment,
