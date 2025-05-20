@@ -7,6 +7,7 @@ services:
         # 📂 Volúmenes montados
         volumes:
             - postgresql_db:/var/lib/postgresql/data # Datos de la base de datos
+            - ./services/postgresql:/docker-entrypoint-initdb.d # Inicialización de la base de datos
 
         # 🏷️ Etiquetas para configuración dinámica con Traefik
         labels:
@@ -28,7 +29,6 @@ services:
             # Bases de datos para autenticación
             BOT_AUTH_DB: ${BOT_AUTH_DB}
             BOT_AUTH_USER: ${USER_AUTH_DB}
-
 
         # 🌍 Red asignada al servicio
         networks:
