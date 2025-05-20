@@ -3,14 +3,40 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Virtual environment directories
-venv/
-env/
-.venv/
+# Environments
 .env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
+# Parches y cambios
 cambios.patch
 NOTAS.md
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
 
 # Editor backups and configurations
 *.swp
