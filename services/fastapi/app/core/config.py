@@ -14,15 +14,6 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_DAYS: int
     ACCESS_TOKEN_EXPIRE_MINUTES: int
 
-    # Autenticación de Bots
-    BOT_API_KEY_EXPIRATION: int  # ⚠️ No se está usando
-
-    # Usuario simulado para pruebas
-    FASTAPI_DUMMY_USER: str       # ⚠️ Obsoleto
-    FASTAPI_DUMMY_PASSWORD: str   # ⚠️ Obsoleto
-    FASTAPI_DUMMY_FULLNAME: str   # ⚠️ Obsoleto
-    FASTAPI_DUMMY_EMAIL: str      # ⚠️ Obsoleto
-
     # Usuario CRUD
     TELEGRAM_USERNAME: str
     FIRST_NAME: str

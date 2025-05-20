@@ -8,13 +8,13 @@ from .models import (
 
 from .models import metadata
 
-models = {
-    "JobPosition": UserAuthJobPosition,
-    "AccessRole": UserAuthAccessRole,
-    "Employee": UserAuthEmployee,
-    "CrudUser": UserAuthCrudUser,
-    "BotUser": UserAuthBotUser,
-}
+class CrudModelTypes:
+    JopPosition: type = UserAuthJobPosition
+    AccessRole: type = UserAuthAccessRole
+    Employee: type = UserAuthEmployee
+    CrudUser: type = UserAuthCrudUser
+    BotUser: type = UserAuthBotUser
 
-__all__ = ["models", "metadata"]
+
+__all__ = ["metadata", "CrudModelTypes"]
 

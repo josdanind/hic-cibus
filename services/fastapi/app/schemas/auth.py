@@ -1,6 +1,7 @@
 # Librerías de terceros
 from pydantic import BaseModel
 
+
 class Token(BaseModel):
     """
     Esquema para la respuesta de autenticación con JWT.
@@ -10,7 +11,7 @@ class Token(BaseModel):
     """
 
     access_token: str
-    token_type: str
+    token_type: str = "bearer"
 
 class TokenData(BaseModel):
     """

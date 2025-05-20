@@ -17,7 +17,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
     - **Parámetros**:
         - `payload` (dict): Datos que se incluirán en el token.
         - `expires_delta` (timedelta | None): Tiempo de expiración del token.
-          Si no se proporciona, usa el valor por defecto de la configuración.
+        Si no se proporciona, usa el valor por defecto de la configuración.
 
     - **Retorna**:
         - `str`: Token JWT generado.

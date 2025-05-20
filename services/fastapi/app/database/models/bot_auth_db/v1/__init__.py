@@ -11,7 +11,7 @@ from .models import (
 )
 
 from .models import (
-    Employee, 
+    Employee,
     Company,
     CompanyContact,
     BotModel,
@@ -27,36 +27,39 @@ from .models import (
     SubscriptionPayment
 )
 
-from .models import metadata 
+from .models import metadata
 
-models = {
+class BotModelTypes:
+    """
+    Namespace para acceder a los tipos de modelos de la aplicación.
+    Permite el tipado estático y el acceso directo a las clases de los modelos.
+    """
     # 📚 Catálogos base (sin dependencias o usadas por otras)
-    "Role": Role,
-    "BotAccessRole": BotAccessRole,
-    "BotModelStatus": BotModelStatus,
-    "BotStatus": BotStatus,
-    "BotEnvironment": BotEnvironment,
-    "BotCategory": BotCategory,
-    "SubscriptionStatus": SubscriptionStatus,
-    "SubscriptionPeriod": SubscriptionPeriod,
-    "PaymentStatus": PaymentStatus,
+    Role: type = Role
+    BotAccessRole: type = BotAccessRole
+    BotModelStatus: type = BotModelStatus
+    BotStatus: type = BotStatus
+    BotEnvironment: type = BotEnvironment
+    BotCategory: type = BotCategory
+    SubscriptionStatus: type = SubscriptionStatus
+    SubscriptionPeriod: type = SubscriptionPeriod
+    PaymentStatus: type = PaymentStatus
 
     # 🗄 Núcleo (con relaciones controladas por FKs previas)
-    "Employee": Employee,                 # → Role
-    "Company": Company,                   # independiente
-    "CompanyContact": CompanyContact,     # → Employee
-    "BotModel": BotModel,                 # → BotModelStatus
-    "Bot": Bot,                           # → BotModel, BotStatus, BotEnvironment
-    "BotCredential": BotCredential,       # → Bot
-    "BotUser": BotUser,                   # → Employee, BotUserPermission
+    Employee: type = Employee                 # → Role
+    Company: type = Company                   # independiente
+    CompanyContact: type = CompanyContact     # → Employee
+    BotModel: type = BotModel                 # → BotModelStatus
+    Bot: type = Bot                           # → BotModel, BotStatus, BotEnvironment
+    BotCredential: type = BotCredential       # → Bot
+    BotUser: type = BotUser                   # → Employee, BotAccessRole (asumo que BotUserPermission era un typo por BotAccessRole o similar)
 
     # 🔗 Tablas de relación M:N (requieren entidades anteriores)
-    "BotCategoryLink": BotCategoryLink,   # → Bot, BotCategory
-    "UserBotLink": UserBotLink,           # → BotUser, Bot
+    BotCategoryLink: type = BotCategoryLink   # → Bot, BotCategory
+    UserBotLink: type = UserBotLink           # → BotUser, Bot
 
     # 🔄 Entidades transaccionales
-    "Subscription": Subscription,         # → Bot, Company, SubscriptionStatus, SubscriptionPeriod
-    "SubscriptionPayment": SubscriptionPayment,  # → Subscription, PaymentStatus
-}
+    Subscription: type = Subscription         # → Bot, Company, SubscriptionStatus, SubscriptionPeriod
+    SubscriptionPayment: type = SubscriptionPayment # → Subscription, PaymentStatus
 
-__all__ = ["models", "metadata"]
+__all__ = ["metadata", "BotModelTypes"]

@@ -1,1 +1,1 @@
-from .v1 import models, metadata
+from .v1 import metadata, BotModelTypes

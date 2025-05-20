@@ -2,11 +2,13 @@
 # 📦 Importaciones
 # ────────────────
 # Librería estándar
-from typing import Type
+from typing import Type, Any, Sequence
 
 # Librerías de terceros
 from sqlmodel import SQLModel, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import strategy_options
+from sqlalchemy.sql.selectable import Select
 
 # ────────────────────────────────────────────────
 # 📚 Gestor CRUD genérico para modelos SQLModel
@@ -23,42 +25,46 @@ class CRUDManager:
     async def get(
         self,
         model: Type[SQLModel],
-        filters: dict | None = None
+        filters: dict | None = None,
+        load_options: Sequence[strategy_options.LoaderOption] | None = None
     ) -> SQLModel | list[SQLModel] | None:
         """
         Obtiene un registro o una lista de registros según la condición dada.
         """
-        async with self.session() as session:
-            stmt = select(model)
+        stmt: Select = select(model)
 
-            if filters:
-                for key, value in filters.items():
-                    column = getattr(model, key, None)
-                    if column is None:
-                        raise ValueError(
-                            f"El campo '{key}' no existe en el modelo '{model.__name__}'"
-                        )
-                    stmt = stmt.where(column == value)
+        if filters:
+            for key, value in filters.items():
+                column = getattr(model, key, None)
+                if column is None:
+                    raise ValueError(
+                        f"El campo '{key}' no existe en el modelo '{model.__name__}'"
+                    )
+                stmt = stmt.where(column == value)
 
-            result = await session.execute(stmt)
+        if load_options:
+            stmt = stmt.options(*load_options)
 
-            if filters and (self.single_result_keys & filters.keys()):
-                return result.scalar_one_or_none()
+        result = await self.session.execute(stmt)
 
-            return result.scalars().all()
+        if filters and (self.single_result_keys & filters.keys()):
+            return result.scalar_one_or_none()
 
-    async def create(
+        return result.scalars().all()
+
+    async def add(
         self,
-        model: Type[SQLModel],
-        data: dict
+        model: SQLModel,
     ) -> SQLModel:
         """
         Crea un nuevo registro en la base de datos.
         """
-        async with self.session() as session:
-            db_model = model(**data)
-            session.add(db_model)
-            await session.commit()
-            await session.refresh(db_model)
+        self.session.add(model)
 
-            return db_model
+        try:
+            await self.session.commit()
+            await self.session.refresh(model)
+            return model
+        except:
+            await self.session.rollback()
+            raise

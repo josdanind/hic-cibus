@@ -1,8 +1,5 @@
-# Habilita anotaciones de tipo diferido para evitar problemas de dependencias circulares.
-# from __future__ import annotations
-
 # Librería estándar
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Optional
 
 # ORMs
