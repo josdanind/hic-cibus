@@ -20,6 +20,8 @@ services:
         # 🗝️ Variables de entorno
         environment:
             TZ: America/Bogota
+
+            # Credenciales del usuario predeterminado
             POSTGRES_USER: ${POSTGRES_USER_DEV}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_DEV}
             POSTGRES_DB: ${POSTGRES_DB_DEV}
