@@ -28,7 +28,7 @@ services:
 
             # Bases de datos para autenticación
             BOT_AUTH_DB: ${BOT_AUTH_DB}
-            BOT_AUTH_USER: ${USER_AUTH_DB}
+            USER_AUTH_DB: ${USER_AUTH_DB}
 
         # 🌍 Red asignada al servicio
         networks:
