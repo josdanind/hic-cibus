@@ -72,3 +72,106 @@ services/                           # Directorio para los servicios de Tlaloc (a
 
 ### 🚀 Instrucciones de Uso
 ---
+
+Para poner en marcha la configuración de Traefik para tu aplicación Tlaloc, sigue estos pasos:
+
+#### 1. Configuración de Variables de Entorno
+
+Primero, necesitas preparar tu archivo de variables de entorno.
+
+* **Copia el archivo de ejemplo:** Duplica el archivo `.env.example` y renómbralo a `.env` en la raíz del proyecto:
+
+    ```bash
+    cp .env.example .env
+    ```
+
+* **Edita el archivo `.env`:** Abre el nuevo archivo `.env` y diligencia las variables de entorno según tu configuración deseada:
+
+    * Asegúrate de configurar `TZ` para tu zona horaria (`America/Bogota` por defecto).
+
+    * Para el **entorno de desarrollo**, verifica que `TRAEFIK_DASHBOARD_DOMAIN_DEV` apunte al dominio deseado (por ejemplo, `traefik-dev.hic-cibus.com`). Recuerda añadir la entrada `127.0.0.1 traefik-dev.hic-cibus.com` en tu archivo `/etc/hosts` (Linux) o `C:\Windows\System32\drivers\etc\hosts` (Windows) para que funcione localmente.
+
+    * Para el **entorno de producción**, actualiza `TRAEFIK_DASHBOARD_DOMAIN` con tu dominio real (por ejemplo, `traefik.tu_dominio.com`).
+
+    **Ejemplo de `.env` (tras la edición):**
+
+    ```ini
+    # ============================================================================
+    #                                🌐 .env File
+    # ============================================================================
+    # Este archivo define las variables de entorno para la configuración de
+    # servicios en Docker Compose, específicamente relacionados con el proxy
+    # inverso Traefik y el servidor EMQX.
+    #
+    # 🚨 IMPORTANTE:
+    # 1. En entornos de producción, sustituye "hic-cibus.com" por tu dominio real.
+    # 2. En entornos de desarrollo, incluye las siguientes entradas en el archivo:
+    #    - Linux: `/etc/hosts`
+    #    - Windows: `C:\Windows\System32\drivers\etc\hosts`
+    #
+    #    127.0.0.1 traefik-dev.hic-cibus.com
+    #
+    # 3. Si deseas usar un dominio personalizado, reemplaza "hic-cibus.com" con
+    #    tu propio dominio en todas las variables correspondientes.
+    # ============================================================================
+    # ************************
+    # 🌍 Configuración General
+    # ************************
+    # Zona horaria
+    TZ="America/Bogota"
+
+
+    # ***************************
+    # 🛠️ CONFIGURACIÓN DE TRAEFIK
+    # ***************************
+    # =========================================================
+    # 🌱 Desarrollo - docker-compose-traefik-dev.yml
+    # =========================================================
+    # Credenciales para el dashboard de Traefik en desarrollo (usuario: admin, contraseña: admin).
+    # Dominio para acceder al dashboard de Traefik en desarrollo.
+    TRAEFIK_DASHBOARD_DOMAIN_DEV="traefik-dev.tu_dominio.com" # <--- ¡IMPORTANTE! Cambia esto si usas un dominio distinto
+
+    # ===========================================
+    # 🌐 Producción - docker-compose-traefik.yml
+    # ===========================================
+    # Dominio para acceder al dashboard de Traefik en producción.
+    TRAEFIK_DASHBOARD_DOMAIN="traefik.tu_dominio.com" # <--- ¡IMPORTANTE! Asegúrate de que este sea tu dominio real en producción
+
+    # El archivo `usersFile` con las credenciales de producción debe almacenarse en:
+    # `./services/traefik/auth/usersFile`.
+    # Puedes agregar varios usuarios generando sus hashes con `htpasswd -nb <usuario> <contraseña>`.
+
+
+    # 📌 NOTA:
+    # En producción, asegúrate de que el dominio está correctamente configurado en tu DNS.
+    # Mantén las credenciales en secreto para garantizar la seguridad del sistema.
+    ```
+
+#### 2. Despliegue con Docker Compose
+
+Una vez configurado tu archivo `.env`, puedes levantar los servicios de Traefik según el entorno:
+
+* **Para Desarrollo:**
+    Utiliza el archivo `docker-compose-traefik-dev.yml` para el entorno de desarrollo. Esto levantará Traefik con la configuración adecuada para tu trabajo local.
+
+    ```bash
+    docker compose -f docker-compose-traefik-dev.yml up -d
+    ```
+
+* **Para Producción:**
+    Utiliza el archivo `docker-compose-traefik.yml` para el entorno de producción. Este archivo está optimizado para despliegues en servidores.
+
+    ```bash
+    docker compose -f docker-compose-traefik.yml up -d
+    ```
+
+#### 3. Verificación en el Navegador
+
+Después de levantar los servicios, puedes verificar que Traefik está funcionando correctamente:
+
+* **Accede al Dashboard de Traefik:**
+    Abre tu navegador y navega a la URL configurada para el dashboard de Traefik:
+    * **Desarrollo:** `http://traefik-dev.tu_dominio.com:8080/dashboard/` (reemplaza `tu_dominio.com` con el dominio que configuraste en el `.env` y añadiste en tu archivo `hosts`).
+    * **Producción:** `http://traefik.tu_dominio.com:8080/dashboard/` (reemplaza `tu_dominio.com` con tu dominio real).
+
+    Deberías ver el panel de control de Traefik, mostrando los *routers* y *servicios* activos. Esto confirmará que Traefik está en ejecución y listo para enrutar el tráfico a los servicios de Tlaloc cuando se desplieguen.
