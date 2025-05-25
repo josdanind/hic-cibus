@@ -7,7 +7,7 @@
 
 ---
 
-## 🛡️ **Rama:**  `infra/docker-traefik/postgresql`
+## 🛡️ **Rama:**  `tlaloc/postgresql`
 
 Esta rama configura un servicio Docker con PostgreSQL integrado con Traefik como proxy inverso. Está lista para entornos de Desarrollo y Producción
 
