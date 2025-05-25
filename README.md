@@ -202,7 +202,7 @@ Una vez configurado tu archivo `.env` y el `usersFile` para producción, puedes 
     docker compose -f docker-compose-traefik.yml up -d
     ```
 
-#### 3. Verificación en el Navegador
+#### 4. Verificación en el Navegador
 
 Después de levantar los servicios, puedes verificar que Traefik está funcionando correctamente:
 
