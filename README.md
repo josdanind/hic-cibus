@@ -147,19 +147,56 @@ Primero, necesitas preparar tu archivo de variables de entorno.
     # Mantén las credenciales en secreto para garantizar la seguridad del sistema.
     ```
 
-#### 2. Despliegue con Docker Compose
+#### 2. Creación del Archivo usersFile para Producción
 
-Una vez configurado tu archivo `.env`, puedes levantar los servicios de Traefik según el entorno:
+Para el entorno de producción, es crucial asegurar el dashboard de Traefik.
+
+* **Navega al directorio de autenticación:**
+
+    ```bash
+    cd services/traefik/auth
+    ```
+
+* **Crea el archivo `usersFile`:** Puedes copiar el ejemplo o crearlo desde cero.
+   
+    ```bash
+    touch usersFile
+    ```
+
+* **Genera y añade usuarios**: Utiliza htpasswd (generalmente viene con Apache utils, puedes instalarlo con `sudo apt-get install apache2-utils` en Debian/Ubuntu o buscar el paquete equivalente para tu sistema).
+  
+  * Para crear un nuevo archivo `usersFile` con un usuario:
+
+    ```bash
+    htpasswd -cb usersFile nombre_de_usuario contraseña_segura
+    ```
+  * Para añadir más usuarios a un `usersFile` existente: 
+
+    ```bash
+    htpasswd -b usersFile nuevo_usuario nueva_contraseña_segura
+    ```
+
+**Ejemplo de contenido para `usersFile`**
+
+```
+usuario1:$apr1$sZ...
+admin:$apr1$OtroHashDeEjemplo..
+ ```
+
+#### 3. Despliegue con Docker Compose
+
+Una vez configurado tu archivo `.env` y el `usersFile` para producción, puedes levantar los servicios de Traefik según el entorno:
 
 * **Para Desarrollo:**
-    Utiliza el archivo `docker-compose-traefik-dev.yml` para el entorno de desarrollo. Esto levantará Traefik con la configuración adecuada para tu trabajo local.
+    Utiliza el archivo `docker-compose-traefik-dev.yml`. Las credenciales del dashboard serán `admin:admin`.
 
     ```bash
     docker compose -f docker-compose-traefik-dev.yml up -d
     ```
 
 * **Para Producción:**
-    Utiliza el archivo `docker-compose-traefik.yml` para el entorno de producción. Este archivo está optimizado para despliegues en servidores.
+
+    Asegúrate de que tu archivo `./services/traefik/auth/usersFile` exista y tenga las credenciales correctas. Utiliza el archivo `docker-compose-traefik.yml`.
 
     ```bash
     docker compose -f docker-compose-traefik.yml up -d
@@ -171,7 +208,7 @@ Después de levantar los servicios, puedes verificar que Traefik está funcionan
 
 * **Accede al Dashboard de Traefik:**
     Abre tu navegador y navega a la URL configurada para el dashboard de Traefik:
-    * **Desarrollo:** `http://traefik-dev.tu_dominio.com:8080/dashboard/` (reemplaza `tu_dominio.com` con el dominio que configuraste en el `.env` y añadiste en tu archivo `hosts`).
-    * **Producción:** `http://traefik.tu_dominio.com:8080/dashboard/` (reemplaza `tu_dominio.com` con tu dominio real).
+    * **Desarrollo:** `http://traefik-dev.tu_dominio.com` (reemplaza `tu_dominio.com` con el dominio que configuraste en el `.env` y añadiste en tu archivo `hosts`). Se te pedirá el usuario (`admin`) y la contraseña (`admin`).
+    * **Producción:** `https://traefik.tu_dominio.com` (reemplaza `tu_dominio.com` con tu dominio real). Se te pedirá el usuario y la contraseña que configuraste en el archivo `usersFile`.
 
     Deberías ver el panel de control de Traefik, mostrando los *routers* y *servicios* activos. Esto confirmará que Traefik está en ejecución y listo para enrutar el tráfico a los servicios de Tlaloc cuando se desplieguen.
