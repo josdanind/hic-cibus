@@ -16,9 +16,9 @@ Esta rama se enfoca en la implementación y configuración del servicio de base 
 
 Se configura un servidor PostgreSQL que contiene tres bases de datos:
 
-1. Autenticación de Bots: Para credenciales y datos de bots.
-2. Usuarios API CRUD: Para usuarios con acceso a la API CRUD de Tlaloc.
-3. Usuarios MQTT: Para información de usuarios del broker MQTT.
+1. **Autenticación de Bots:** Para credenciales y datos de bots.
+2. **Usuarios API CRUD:** Para usuarios con acceso a la API CRUD de Tlaloc.
+3. **Usuarios MQTT:** Para información de usuarios del broker MQTT.
 
 Esta base de datos es fundamental para la autenticación y gestión de bots, la API CRUD y el broker MQTT, centralizando el almacenamiento de datos.
 
@@ -64,11 +64,11 @@ Esta base de datos es fundamental para la autenticación y gestión de bots, la 
 
 #### Configuración de PostgreSQL:
 
-* El servicio PostgreSQL se define en docker-compose-postgresql-dev.yml (para desarrollo) y docker-compose-postgresql.yml (para producción).
+* El servicio PostgreSQL se define en `docker-compose-postgresql-dev.yml` (para desarrollo) y `docker-compose-postgresql.yml` (para producción).
 
-* Los scripts de inicialización en services/postgresql/ (01_create_databases.sh, 02_models_bot_auth.sql, etc.) se ejecutan al iniciar el contenedor para crear las tres bases de datos necesarias y aplicar sus respectivos esquemas y datos iniciales.
+* Los scripts de inicialización en `services/postgresql/` (`01_create_databases.sh`, `02_models_bot_auth.sql`, etc.) se ejecutan al iniciar el contenedor para crear las tres bases de datos necesarias y aplicar sus respectivos esquemas y datos iniciales.
 
-* Las credenciales y configuraciones de conexión para PostgreSQL deben establecerse en el archivo .env.
+* Las credenciales y configuraciones de conexión para PostgreSQL deben establecerse en el archivo `.env`.
 
 ### 🚀 Instrucciones de Uso
 ---
