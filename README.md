@@ -183,7 +183,17 @@ usuario1:$apr1$sZ...
 admin:$apr1$OtroHashDeEjemplo..
  ```
 
-#### 3. Despliegue con Docker Compose
+#### 3. 🌐 Creación de la Red Docker (Si no existe)
+
+Los servicios de Traefik (y futuros servicios de Tlaloc) operarán dentro de una red Docker externa llamada hic-cibus. Si esta red aún no existe en tu sistema Docker, necesitas crearla manualmente:
+
+```bash
+docker network create hic-cibus
+```
+
+Puedes verificar si la red ya existe con `docker network ls | grep hic-cibus`. Si ya existe, no necesitas volver a crearla.
+
+#### 4. Despliegue con Docker Compose
 
 Una vez configurado tu archivo `.env` y el `usersFile` para producción, puedes levantar los servicios de Traefik según el entorno:
 
@@ -202,7 +212,7 @@ Una vez configurado tu archivo `.env` y el `usersFile` para producción, puedes 
     docker compose -f docker-compose-traefik.yml up -d
     ```
 
-#### 4. Verificación en el Navegador
+#### 5. Verificación en el Navegador
 
 Después de levantar los servicios, puedes verificar que Traefik está funcionando correctamente:
 
