@@ -21,6 +21,10 @@ from app.database.models.bot_auth_db import BotModelTypes
 from app.database.models.user_auth_db import metadata as user_auth_metadata
 from app.database.models.user_auth_db import CrudModelTypes
 
+# Autenticación de Usuarios MQTT
+from app.database.models.mqtt_auth_db import metadata as mqtt_auth_metadata
+from app.database.models.mqtt_auth_db import MqttModelTypes
+
 # ───────────────────────────────────────────────────
 # 🗄️ Configuración de las bases de datos del sistema
 # ───────────────────────────────────────────────────
@@ -40,5 +44,10 @@ DATABASES: dict[str, DatabaseConfigSchema] = {
         db_url=settings.USER_AUTH_DB_URL,
         models=CrudModelTypes,
         metadata=user_auth_metadata,
+    ),
+    "mqtt_auth_db": DatabaseConfigSchema(
+        db_url=settings.MQTT_USER_AUTH_DB_URL,
+        models=MqttModelTypes,
+        metadata=mqtt_auth_metadata,
     )
 }

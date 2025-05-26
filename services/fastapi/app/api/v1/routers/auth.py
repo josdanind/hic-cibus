@@ -7,13 +7,14 @@ from typing import TypeAlias, Callable
 
 # Terceros
 from fastapi import HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import selectinload
 
 # Aplicación Local
 from app.core.config import settings
 from app.core.security import verify_password, create_access_token, decode_jwt
 from app.database import DATABASES
-from app.libraries.CRUDManager import CRUDManager
+from app.libraries import CRUDManager
 # schemas
 from app.schemas.auth import Token
 

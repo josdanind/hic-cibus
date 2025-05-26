@@ -17,7 +17,7 @@ class CRUDManager:
     """
     Gestor CRUD que opera sobre cualquier modelo usando una sesión específica.
     """
-    single_result_keys = {"id", "telegram_username", "telegram_id"}
+    single_result_keys = {"id", "telegram_username", "telegram_id", "username"}
 
     def __init__(self, session: AsyncSession):
         self.session = session # Sesión de la base de datos

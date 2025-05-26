@@ -92,6 +92,7 @@ def make_session_dep(
 
 get_bot_auth_session = make_session_dep(DATABASES["bot_auth_db"].session_factory)
 get_user_auth_session = make_session_dep(DATABASES["user_auth_db"].session_factory)
+get_mqtt_session = make_session_dep(DATABASES["mqtt_auth_db"].session_factory)
 
 def get_bot_crud (
     session: AsyncSession = Depends(get_bot_auth_session)
@@ -103,6 +104,10 @@ def get_user_crud (
 ) -> CRUDManager:
     return CRUDManager(session)
 
+def get_mqtt_crud(
+    session: AsyncSession = Depends(get_mqtt_session)
+) -> CRUDManager:
+    return CRUDManager(session)
 
 # ───────────────────────────────────────────────────
 # 👤 Crea usuario administrador
@@ -159,6 +164,47 @@ async def create_crud_user():
                     CrudUserModel.__tablename__,
                     f"id: {user.id}",
                 ),
+            ],
+            style="check arrow",
+        )
+
+# ───────────────────────────────────────────────────
+# 👤 Crea usuario MQTT
+# ───────────────────────────────────────────────────
+async def create_mqtt_user():
+    """
+    Crea el usuario mqtt por defecto si no existe.
+    """
+    mqtt_db = DATABASES["mqtt_auth_db"]
+    session_factory = mqtt_db.session_factory
+    MqttUserModel = mqtt_db.models.User
+
+    async with session_factory() as session:
+        crud_manager = CRUDManager(session)
+
+        # Datos del usuario mqtt
+        mqtt_user_model = MqttUserModel(
+            username = settings.MQTT_USER,
+            password_hash = settings.MQTT_USER_PASSWORD_HASH,
+            salt = " ",
+            is_superuser = True
+        )
+
+        if await crud_manager.get(
+            MqttUserModel,
+            {"username": mqtt_user_model.username}
+        ):
+            return
+
+        user = await crud_manager.add(mqtt_user_model)
+
+        print_panel(
+            title="Registros creados en mqtt_auth_db",
+            messages=[
+                (
+                    MqttUserModel.__tablename__,
+                    f"id: {user.id}, username: {user.username}",
+                )
             ],
             style="check arrow",
         )

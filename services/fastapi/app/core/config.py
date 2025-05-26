@@ -56,5 +56,26 @@ class Settings(BaseSettings):
 
         return f"postgresql+asyncpg://{user}:{password}@{host}:{port}/{name}"
 
+    # 🐘🖥️ Configuración de la base de datos para la autenticación de Usuarios MQTT
+    MQTT_USER_AUTH_DB_HOST: str
+    MQTT_USER_AUTH_DB_PORT: int
+    MQTT_USER_AUTH_DB_USER: str
+    MQTT_USER_AUTH_DB_PASSWORD: str
+    MQTT_USER_AUTH_DB_NAME: str
+
+    @computed_field
+    def MQTT_USER_AUTH_DB_URL(self) -> str:
+        user = self.MQTT_USER_AUTH_DB_USER
+        password = self.MQTT_USER_AUTH_DB_PASSWORD
+        host = self.MQTT_USER_AUTH_DB_HOST
+        port = self.MQTT_USER_AUTH_DB_PORT
+        name = self.MQTT_USER_AUTH_DB_NAME
+
+        return f"postgresql+asyncpg://{user}:{password}@{host}:{port}/{name}"
+
+    # Usuario MQTT por defecto
+    MQTT_USER:str
+    MQTT_USER_PASSWORD_HASH: str
+
 # Instancia global de configuración
 settings = Settings()

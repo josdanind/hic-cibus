@@ -35,7 +35,15 @@ services:
       - USER_AUTH_DB_USER=${USER_AUTH_DB_USER_DEV}
       - USER_AUTH_DB_PASSWORD=${USER_AUTH_DB_PASSWORD_DEV}
       - USER_AUTH_DB_NAME=${USER_AUTH_DB_NAME_DEV}
-
+      # Base de datos para la autenticación de usuarios MQTT
+      - MQTT_USER_AUTH_DB_HOST=${MQTT_USER_AUTH_DB_HOST_DEV}
+      - MQTT_USER_AUTH_DB_PORT=${MQTT_USER_AUTH_DB_PORT_DEV}
+      - MQTT_USER_AUTH_DB_USER=${MQTT_USER_AUTH_DB_USER_DEV}
+      - MQTT_USER_AUTH_DB_PASSWORD=${MQTT_USER_AUTH_DB_PASSWORD_DEV}
+      - MQTT_USER_AUTH_DB_NAME=${MQTT_USER_AUTH_DB_NAME_DEV}
+      # Usuario MQTT predeterminado
+      - MQTT_USER=${MQTT_USER_DEV}
+      - MQTT_USER_PASSWORD_HASH=${MQTT_USER_PASSWORD_HASH_DEV}
     # 📂 Montaje de volúmenes
     volumes:
       - ./services/fastapi:/app
