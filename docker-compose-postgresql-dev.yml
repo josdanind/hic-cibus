@@ -1,0 +1,47 @@
+services:
+    postgresql-dev:
+        image: postgres:17.2
+        container_name: postgresql-dev
+        restart: unless-stopped
+
+        # 📂 Volúmenes montados
+        volumes:
+            - postgresql_db-dev:/var/lib/postgresql/data # Datos de la base de datos
+            - ./services/postgresql:/docker-entrypoint-initdb.d # Inicialización de la base de datos
+
+        # 🏷️ Etiquetas para configuración dinámica con Traefik
+        labels:
+            traefik.enable: "true" # Habilitar Traefik para este servicio
+            traefik.tcp.routers.postgresql-router.entrypoints: "postgresql" # Punto de entrada para PostgreSQL
+            traefik.tcp.routers.postgresql-router.rule: "HostSNI(`*`)" # Aceptar conexiones desde cualquier cliente
+            traefik.tcp.routers.postgresql-router.service: "postgresql-service" # Servicio asociado al router
+            traefik.tcp.services.postgresql-service.loadbalancer.server.port: "5432" # Puerto interno del contenedor
+
+        # 🗝️ Variables de entorno
+        environment:
+            TZ: America/Bogota
+
+            # Credenciales del usuario predeterminado
+            POSTGRES_USER: ${POSTGRES_USER_DEV}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_DEV}
+            POSTGRES_DB: ${POSTGRES_DB_DEV}
+
+            # Bases de datos para autenticación
+            BOT_AUTH_DB: ${BOT_AUTH_DB}
+            USER_AUTH_DB: ${USER_AUTH_DB}
+            MQTT_AUTH_DB: ${MQTT_AUTH_DB}
+
+        # 🌍 Red asignada al servicio
+        networks:
+            - hic-cibus
+
+
+# 📂 Volúmenes
+volumes:
+    postgresql_db-dev:
+
+
+# 🌐 Redes
+networks:
+    hic-cibus:
+        external: true

@@ -10,70 +10,73 @@
 
 Tlaloc es una aplicación diseñada para la monitorización y gestión de cultivos. Este repositorio contendrá las diferentes componentes y servicios que conforman esta aplicación, organizada en ramas específicas para cada funcionalidad o infraestructura.
 
-## 🚦 Rama: tlaloc/traefik - Configuración del Router
+## 🐘 **Rama:**  `tlaloc/postgresql` - Servicio de Base de Datos PostgreSQL
 
-Esta rama es la primera configuración de infraestructura para la aplicación Tlaloc. Contiene la configuración base para integrar Docker y Traefik, proporcionando un proxy inverso esencial para gestionar y enrutar los servicios de Tlaloc en entornos diferenciados: Desarrollo y Producción. Además, la API de Traefik está habilitada para monitoreo y control de las configuraciones de tráfico.
+Esta rama se enfoca en la implementación y configuración del servicio de base de datos PostgreSQL para la aplicación Tlaloc. Aquí encontrarás la definición y la estructura necesaria para soportar los datos de varios componentes de la aplicación.
 
-En otras palabras, aquí se establece la arquitectura Docker donde Traefik es uno de los contenedores principales. Este se encarga de enrutar las peticiones HTML usando subdominios, redirigiendo el tráfico a los contenedores correspondientes de Docker que albergarán los servicios de Tlaloc. Así, cada servicio de la aplicación de monitorización de cultivos puede operar de manera independiente y coordinada bajo el mismo dominio.
+Se configura un servidor PostgreSQL que contiene tres bases de datos:
 
-Ejemplo de Enrutamiento para Tlaloc:
+1. **Autenticación de Bots:** Para credenciales y datos de bots.
+2. **Usuarios API CRUD:** Para usuarios con acceso a la API CRUD de Tlaloc.
+3. **Usuarios MQTT:** Para información de usuarios del broker MQTT.
 
-- **Dominio Completo:** `api-tlaloc.tu_dominio.com`
-- **Sub Dominio:** `api-tlaloc`
-- **Función:** Traefik enruta las solicitudes HTTP/HTTPS al contenedor de la API de Tlaloc correspondiente, identificado por el subdominio `api-tlaloc`.
+Esta base de datos es fundamental para la autenticación y gestión de bots, la API CRUD y el broker MQTT, centralizando el almacenamiento de datos.
 
 
 ### 📂 **Estructura de la Arquitectura**
+---
 
 ```
-services/                           # Directorio para los servicios de Tlaloc (aquí se añadirán más adelante).
-└── traefik/                        # Configuración específica de Traefik para Tlaloc
-    ├── auth/                       # Configuración de autenticación
-    │   ├── README.md               # Documentación de autenticación
-    │   ├── usersFile.example       # Ejemplo de archivo de usuarios
-    ├── middlewares/                # Configuración de middlewares
-    │   ├── middlewares-dev.toml    # Middlewares para entorno de desarrollo
-    │   ├── middlewares.toml        # Middlewares para entorno de producción
-    ├── traefik-dev.toml            # Configuración de Traefik para entorno de desarrollo
-    ├── traefik.toml                # Configuración principal de Traefik
-
-├── .env                            # Variables de entorno
-├── .env.example                    # Ejemplo de archivo de variables de entorno
-├── .gitignore                      # Archivos ignorados en Git
-├── docker-compose-traefik-dev.yml  # Docker Compose para entorno de desarrollo
-├── docker-compose-traefik.yml      # Docker Compose para producción
-├── LICENSE                         # Licencia del proyecto
-├── README.md                       # Documentación de la rama
-├── scripts/                        # Directorio para scripts
-│   ├── send_files_to_server.sh     # Script para enviar archivos al servidor
-├── docs/                           # Documentación
-│   ├── droplet_config.md           # Configuración inicial de un Droplet en DigitalOcean
-
+.
+├── .env.example                       # Ejemplo de archivo de variables de entorno
+├── .gitignore                         # Archivos ignorados en Git
+├── docker-compose-postgresql-dev.yml  # Docker Compose para PostgreSQL en desarrollo
+├── docker-compose-postgresql.yml      # Docker Compose para PostgreSQL en producción
+├── docker-compose-traefik-dev.yml     # Docker Compose para Traefik en desarrollo
+├── docker-compose-traefik.yml         # Docker Compose para Traefik en producción
+├── LICENSE                            # Licencia del proyecto
+├── README.md                          # Documentación de la rama
+├── scripts                            # Directorio para scripts
+│   └── send_files_to_server.sh
+├── docs                               # Documentación
+│   └── droplet_config.md
+└── services                           # Directorio para los servicios
+    ├── postgresql                     # Configuración específica de PostgreSQL
+    │   ├── 01_create_databases.sh     # Script para crear las 3 BDs
+    │   ├── 02_models_bot_auth.sql     # Modelos/Schemas para autenticación de bots
+    │   ├── 03_models_user_auth.sql    # Modelos/Schemas para usuarios de la API CRUD
+    │   ├── 04_models_mqtt_user.sql    # Modelos/Schemas para usuarios MQTT
+    │   ├── 05_values_bot_auth.sql     # Datos iniciales para autenticación de bots
+    │   └── 06_values_user_auth.sql    # Datos iniciales para usuarios de la API CRUD
+    └── traefik                        # Configuración de Traefik
+        ├── auth
+        │   ├── README.md
+        │   └── usersFile.example
+        ├── middlewares
+        │   ├── middlewares-dev.toml
+        │   └── middlewares.toml
+        ├── traefik-dev.toml
+        └── traefik.toml
 ```
 
 ### 📚 Descripción General
+---
 
-#### Configuraciones estáticas de Traefik:
+#### Configuración de PostgreSQL:
 
-- Utilizar `traefik-dev.toml` para el entorno de desarrollo.
-- Utilizar `traefik.toml` para el entorno de producción.
+* El servicio PostgreSQL se define en `docker-compose-postgresql-dev.yml` (para desarrollo) y `docker-compose-postgresql.yml` (para producción).
 
-#### Configuraciones de Docker y Traefik (routers, middlewares, servicios):
+* Los scripts de inicialización en `services/postgresql/` (`01_create_databases.sh`, `02_models_bot_auth.sql`, etc.) se ejecutan al iniciar el contenedor para crear las tres bases de datos necesarias y aplicar sus respectivos esquemas y datos iniciales.
 
-- Utilizar `docker-compose-traefik-dev.yml` para el entorno de desarrollo.
-- Utilizar `docker-compose-traefik.yml` para el entorno de producción.
-
-#### API de Traefik
-
-- Habilitada en ambos entornos para monitoreo y control.
-- Acceso a la API a través del Dashboard de Traefik.
-  - `traefik-dev.tu_dominio.com` Entorno de desarrollo.
-  - `traefik.tu_dominio.com` Entorno de producción.
+* Las credenciales y configuraciones de conexión para PostgreSQL deben establecerse en el archivo `.env`.
 
 ### 🚀 Instrucciones de Uso
 ---
 
-Para poner en marcha la configuración de Traefik para tu aplicación Tlaloc, sigue estos pasos:
+Para poner en marcha los servicios de la aplicación Tlaloc, sigue estos pasos:
+
+**⚠️ Importante:** Si vas a utilizar servicios que dependen de Traefik (como las APIs), asegúrate de que el **router de Traefik esté iniciado primero**. Las instrucciones para configurar e iniciar Traefik se encuentran en la rama [`tlaloc/traefik`](https://github.com/josdanind/hic-cibus/tree/tlaloc/traefik).
+
 
 #### 1. Configuración de Variables de Entorno
 
@@ -87,21 +90,17 @@ Primero, necesitas preparar tu archivo de variables de entorno.
 
 * **Edita el archivo `.env`:** Abre el nuevo archivo `.env` y diligencia las variables de entorno según tu configuración deseada:
 
-    * Asegúrate de configurar `TZ` para tu zona horaria (`America/Bogota` por defecto).
+  * **Para PostgreSQL:** Configura los nombres de las tres bases de datos (BOT_AUTH_DB, USER_AUTH_DB, MQTT_AUTH_DB). Define las credenciales para el entorno de desarrollo (POSTGRES_USER_DEV, POSTGRES_PASSWORD_DEV, POSTGRES_DB_DEV) y asegúrate de actualizar POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB con tus valores de producción.
 
-    * Para el **entorno de desarrollo**, verifica que `TRAEFIK_DASHBOARD_DOMAIN_DEV` apunte al dominio deseado (por ejemplo, `traefik-dev.hic-cibus.com`). Recuerda añadir la entrada `127.0.0.1 traefik-dev.hic-cibus.com` en tu archivo `/etc/hosts` (Linux) o `C:\Windows\System32\drivers\etc\hosts` (Windows) para que funcione localmente.
+  **Ejemplo de `.env` (tras la edición y añadiendo las de PostgreSQL):**
 
-    * Para el **entorno de producción**, actualiza `TRAEFIK_DASHBOARD_DOMAIN` con tu dominio real (por ejemplo, `traefik.tu_dominio.com`).
-
-    **Ejemplo de `.env` (tras la edición):**
-
-    ```ini
+   ```ini
     # ============================================================================
     #                                🌐 .env File
     # ============================================================================
     # Este archivo define las variables de entorno para la configuración de
     # servicios en Docker Compose, específicamente relacionados con el proxy
-    # inverso Traefik y el servidor EMQX.
+    # inverso Traefik y la base de datos de PostgreSQL.
     #
     # 🚨 IMPORTANTE:
     # 1. En entornos de producción, sustituye "hic-cibus.com" por tu dominio real.
@@ -129,17 +128,44 @@ Primero, necesitas preparar tu archivo de variables de entorno.
     # =========================================================
     # Credenciales para el dashboard de Traefik en desarrollo (usuario: admin, contraseña: admin).
     # Dominio para acceder al dashboard de Traefik en desarrollo.
-    TRAEFIK_DASHBOARD_DOMAIN_DEV="traefik-dev.tu_dominio.com" # <--- ¡IMPORTANTE! Cambia esto si usas un dominio distinto
+    TRAEFIK_DASHBOARD_DOMAIN_DEV="traefik-dev.hic-cibus.com"
 
     # ===========================================
     # 🌐 Producción - docker-compose-traefik.yml
     # ===========================================
     # Dominio para acceder al dashboard de Traefik en producción.
-    TRAEFIK_DASHBOARD_DOMAIN="traefik.tu_dominio.com" # <--- ¡IMPORTANTE! Asegúrate de que este sea tu dominio real en producción
+    TRAEFIK_DASHBOARD_DOMAIN="traefik.tu_dominio.com"
 
     # El archivo `usersFile` con las credenciales de producción debe almacenarse en:
     # `./services/traefik/auth/usersFile`.
     # Puedes agregar varios usuarios generando sus hashes con `htpasswd -nb <usuario> <contraseña>`.
+
+
+    # *****************************
+    # 🛠️ CONFIGURACIÓN DE POSGRESQL
+    # *****************************
+    # ===============================
+    # BASES DE DATOS DE AUTENTICACIÓN
+    # ===============================
+    BOT_AUTH_DB="bot_auth_db"
+    USER_AUTH_DB="user_auth_db"
+    MQTT_AUTH_DB="mqtt_auth_db"
+
+    # =================================================
+    # 🌱 Desarrollo - docker-compose-postgresql-dev.yml
+    # =================================================
+    # Configuración de la base de datos para PostgreSQL en desarrollo.
+    POSTGRES_USER_DEV="admin"
+    POSTGRES_PASSWORD_DEV="admin"
+    POSTGRES_DB_DEV="hic_cibus_dev"
+
+    # =============================================
+    # 🌐 Producción - docker-compose-postgresql.yml
+    # =============================================
+    # Configuración de la base de datos para PostgreSQL en producción
+    POSTGRES_USER="tu_usuario"
+    POSTGRES_PASSWORD="tu_contraseña"
+    POSTGRES_DB="tu_base_de_datos"
 
 
     # 📌 NOTA:
@@ -147,78 +173,42 @@ Primero, necesitas preparar tu archivo de variables de entorno.
     # Mantén las credenciales en secreto para garantizar la seguridad del sistema.
     ```
 
-#### 2. Creación del Archivo usersFile para Producción
 
-Para el entorno de producción, es crucial asegurar el dashboard de Traefik.
+#### 2. Despliegue de Servicios con Docker Compose
 
-* **Navega al directorio de autenticación:**
+Una vez configurado tu archivo .env, puedes levantar los servicios:
 
-    ```bash
-    cd services/traefik/auth
-    ```
+* **Levantar el servicio Traefik:** Solo necesitas asegurarte de que Traefik esté ya corriendo (ejecutado desde su propia rama o configuración principal), ya que los servicios de esta rama (tlaloc/postgresql) no lo inician directamente.
 
-* **Crea el archivo `usersFile`:** Puedes copiar el ejemplo o crearlo desde cero.
-   
-    ```bash
-    touch usersFile
-    ```
+* **Levantar el servicio PostgreSQL:**
+    * **Para Desarrollo:** Para iniciar la base de datos en el entorno de desarrollo, usa el archivo `docker-compose-postgresql-dev.yml`:
 
-* **Genera y añade usuarios**: Utiliza htpasswd (generalmente viene con Apache utils, puedes instalarlo con `sudo apt-get install apache2-utils` en Debian/Ubuntu o buscar el paquete equivalente para tu sistema).
-  
-  * Para crear un nuevo archivo `usersFile` con un usuario:
+        ```bash
+        docker compose -f docker-compose-postgresql-dev.yml up -d
+        ```
 
-    ```bash
-    htpasswd -cb usersFile nombre_de_usuario contraseña_segura
-    ```
-  * Para añadir más usuarios a un `usersFile` existente: 
+    * **Para Producción:** Para iniciar la base de datos en el entorno de producción, usa el archivo `docker-compose-postgresql.yml`:
+        ```bash
+        docker compose -f docker-compose-postgresql.yml up -d
+        ```
 
-    ```bash
-    htpasswd -b usersFile nuevo_usuario nueva_contraseña_segura
-    ```
 
-**Ejemplo de contenido para `usersFile`**
+#### 3. Verificación del Servicio PostgreSQL
 
-```
-usuario1:$apr1$sZ...
-admin:$apr1$OtroHashDeEjemplo..
- ```
-
-#### 3. 🌐 Creación de la Red Docker (Si no existe)
-
-Los servicios de Traefik (y futuros servicios de Tlaloc) operarán dentro de una red Docker externa llamada hic-cibus. Si esta red aún no existe en tu sistema Docker, necesitas crearla manualmente:
-
-```bash
-docker network create hic-cibus
-```
-
-Puedes verificar si la red ya existe con `docker network ls | grep hic-cibus`. Si ya existe, no necesitas volver a crearla.
-
-#### 4. Despliegue con Docker Compose
-
-Una vez configurado tu archivo `.env` y el `usersFile` para producción, puedes levantar los servicios de Traefik según el entorno:
-
-* **Para Desarrollo:**
-    Utiliza el archivo `docker-compose-traefik-dev.yml`. Las credenciales del dashboard serán `admin:admin`.
+* Puedes verificar que el contenedor de PostgreSQL se está ejecutando correctamente con:
 
     ```bash
-    docker compose -f docker-compose-traefik-dev.yml up -d
+    docker ps
     ```
 
-* **Para Producción:**
-
-    Asegúrate de que tu archivo `./services/traefik/auth/usersFile` exista y tenga las credenciales correctas. Utiliza el archivo `docker-compose-traefik.yml`.
+* Para conectarte a una de las bases de datos (ej. `bot_auth_db`) y verificar su existencia o la aplicación de los esquemas, puedes usar el cliente `psql` desde tu máquina local o desde otro contenedor en la misma red de Docker.
 
     ```bash
-    docker compose -f docker-compose-traefik.yml up -d
+    # Ejemplo de conexión desde tu terminal (asegúrate de tener psql instalado)
+    # Para desarrollo:
+    psql -h localhost -p 5433 -U ${POSTGRES_USER_DEV} -d ${BOT_AUTH_DB}
+
+    # Para producción (conectar a tu servidor remoto):
+    # psql -h <ip_de_servidor> -p 5432 -U ${POSTGRES_USER} -d ${BOT_AUTH_DB}
     ```
-
-#### 5. Verificación en el Navegador
-
-Después de levantar los servicios, puedes verificar que Traefik está funcionando correctamente:
-
-* **Accede al Dashboard de Traefik:**
-    Abre tu navegador y navega a la URL configurada para el dashboard de Traefik:
-    * **Desarrollo:** `http://traefik-dev.tu_dominio.com` (reemplaza `tu_dominio.com` con el dominio que configuraste en el `.env` y añadiste en tu archivo `hosts`). Se te pedirá el usuario (`admin`) y la contraseña (`admin`).
-    * **Producción:** `https://traefik.tu_dominio.com` (reemplaza `tu_dominio.com` con tu dominio real). Se te pedirá el usuario y la contraseña que configuraste en el archivo `usersFile`.
-
-    Deberías ver el panel de control de Traefik, mostrando los *routers* y *servicios* activos. Esto confirmará que Traefik está en ejecución y listo para enrutar el tráfico a los servicios de Tlaloc cuando se desplieguen.
+    Una vez conectado, puedes listar las tablas para verificar los modelos: `\dt`.
