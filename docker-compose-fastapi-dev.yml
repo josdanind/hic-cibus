@@ -44,6 +44,7 @@ services:
       # Usuario MQTT predeterminado
       - MQTT_USER=${MQTT_USER_DEV}
       - MQTT_USER_PASSWORD_HASH=${MQTT_USER_PASSWORD_HASH_DEV}
+
     # 📂 Montaje de volúmenes
     volumes:
       - ./services/fastapi:/app
