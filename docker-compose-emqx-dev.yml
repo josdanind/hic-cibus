@@ -4,8 +4,6 @@ services:
     image: emqx:5.8.4
     container_name: emqx-dev
     restart: unless-stopped
-    depends_on:
-      - emqx_db-dev
 
     # 📂 Volúmenes montados
     volumes:
@@ -46,40 +44,9 @@ services:
     networks:
         - hic-cibus
 
-  # Database
-  emqx_db-dev:
-    image: postgres:17.2-alpine3.21
-    container_name: emqx_db-dev
-    restart: unless-stopped
-
-    # 📂 Volúmenes montados
-    volumes:
-      - mqtt_db-dev:/var/lib/postgresql/data # Datos de la base de datos
-      - ./services/emqx/db/init_dev.sh:/docker-entrypoint-initdb.d/init.sh
-
-    labels:
-          traefik.enable: "true" # Habilitar Traefik para este servicio
-          traefik.tcp.routers.emqx_db-router.entrypoints: "emqx_db" # Punto de entrada para PostgreSQL
-          traefik.tcp.routers.emqx_db-router.rule: "HostSNI(`*`)" # Aceptar conexiones desde cualquier cliente
-          traefik.tcp.routers.emqx_db-router.service: "emqx_db-service" # Servicio asociado al router
-          traefik.tcp.services.emqx_db-service.loadbalancer.server.port: "5432" # Puerto interno del contenedor
-
-    # 🗝️ Variables de entorno
-    environment:
-        TZ: ${TZ}
-        POSTGRES_DB: ${EMQX_DB_DEV}
-        POSTGRES_USER: ${EMQX_DB_USER_DEV}
-        POSTGRES_PASSWORD: ${EMQX_DB_PASSWORD_DEV}
-        MQTT_ADMIN_USER_DEV: ${MQTT_ADMIN_USER_DEV}
-        MQTT_ADMIN_USER_PASSWORD_HASH_DEV: ${MQTT_ADMIN_USER_PASSWORD_HASH_DEV}
-
-    # 🌍 Red asignada al servicio
-    networks:
-        - hic-cibus
 
 # 📂 Volúmenes
 volumes:
-    mqtt_db-dev:
     vol-emqx-data:
     vol-emqx-log:
 
