@@ -1,0 +1,77 @@
+services:
+  fastapi:
+    container_name: fastapi
+    build:
+      context: ./services/fastapi
+    command: uvicorn main:app --host 0.0.0.0 --port ${FASTAPI_PORT}
+
+    # 🌍 Variables de entorno directas
+    environment:
+      - ENVIRONMENT=production
+      - PORT=${FASTAPI_PORT}
+      - API_DOMAIN=${API_PROD_DOMAIN}
+      # JWT
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_DAYS=${ACCESS_TOKEN_EXPIRE_DAYS}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      # Usuario predeterminado para la API
+      - TELEGRAM_USERNAME=${TELEGRAM_USERNAME}
+      - FIRST_NAME=${USER_FIRST_NAME}
+      - LAST_NAME=${USER_LAST_NAME}
+      - MOBILE_PHONE=${USER_MOBILE_PHONE}
+      - EMAIL=${USER_EMAIL}
+      - PASSWORD=${USER_PASSWORD}
+      # Base de datos para la autenticación de bots.
+      - BOT_AUTH_DB_HOST=${BOT_AUTH_DB_HOST}
+      - BOT_AUTH_DB_PORT=${BOT_AUTH_DB_PORT}
+      - BOT_AUTH_DB_USER=${BOT_AUTH_DB_USER}
+      - BOT_AUTH_DB_PASSWORD=${BOT_AUTH_DB_PASSWORD}
+      - BOT_AUTH_DB_NAME=${BOT_AUTH_DB_NAME}
+      # Base de datos para la autenticación de usuarios
+      - USER_AUTH_DB_HOST=${USER_AUTH_DB_HOST}
+      - USER_AUTH_DB_PORT=${USER_AUTH_DB_PORT}
+      - USER_AUTH_DB_USER=${USER_AUTH_DB_USER}
+      - USER_AUTH_DB_PASSWORD=${USER_AUTH_DB_PASSWORD}
+      - USER_AUTH_DB_NAME=${USER_AUTH_DB_NAME}
+      # Base de datos para la autenticación de usuarios MQTT
+      - MQTT_USER_AUTH_DB_HOST=${MQTT_USER_AUTH_DB_HOST}
+      - MQTT_USER_AUTH_DB_PORT=${MQTT_USER_AUTH_DB_PORT}
+      - MQTT_USER_AUTH_DB_USER=${MQTT_USER_AUTH_DB_USER}
+      - MQTT_USER_AUTH_DB_PASSWORD=${MQTT_USER_AUTH_DB_PASSWORD}
+      - MQTT_USER_AUTH_DB_NAME=${MQTT_USER_AUTH_DB_NAME}
+      # Usuario MQTT predeterminado
+      - MQTT_USER=${MQTT_USER}
+      - MQTT_USER_PASSWORD_HASH=${MQTT_USER_PASSWORD_HASH}
+
+    # 🏷️ Etiquetas para integración con Traefik
+    labels:
+      # 🌐 Habilitar Traefik
+      traefik.enable: "true"
+
+      # 🌐 Router para FastAPI (HTTP)
+      traefik.http.routers.fastapi_http-router.entrypoints: http
+      traefik.http.routers.fastapi_http-router.rule: Host(`${API_PROD_DOMAIN}`)
+      traefik.http.routers.fastapi_http-router.service: fastapi_http-service
+      traefik.http.services.fastapi_http-service.loadbalancer.server.port: ${FASTAPI_PORT}
+      traefik.http.routers.fastapi_http-router.middlewares: redirect-to-https@file
+
+      # 🌐 Router para FastAPI (HTTPS)
+      traefik.http.routers.fastapi_https-router.entrypoints: https
+      traefik.http.routers.fastapi_https-router.rule: Host(`${API_PROD_DOMAIN}`)
+      traefik.http.routers.fastapi_https-router.service: fastapi_https-service
+      traefik.http.services.fastapi_https-service.loadbalancer.server.port: ${FASTAPI_PORT}
+      traefik.http.routers.fastapi_https-router.tls: true
+      traefik.http.routers.fastapi_https-router.tls.certresolver: letsencrypt
+
+    # 🔄 Política de reinicio
+    restart: unless-stopped
+
+    # 🌐 Red asociada
+    networks:
+      - hic-cibus
+
+# 🌐 Redes utilizadas
+networks:
+  hic-cibus:
+    external: true
