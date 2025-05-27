@@ -1,0 +1,55 @@
+services:
+  # MQTT Server
+  emqx-dev:
+    image: emqx:5.8.4
+    container_name: emqx-dev
+    restart: unless-stopped
+
+    # 📂 Volúmenes montados
+    volumes:
+      - vol-emqx-data:/opt/emqx/data
+      - vol-emqx-log:/opt/emqx/log
+
+    # 🏷️ Etiquetas para Traefik
+    labels:
+      traefik.enable: "true"
+
+      # 🛠️ Conexiones MQTT no seguro
+      traefik.tcp.routers.mqtt-router.entrypoints: "mqtt"
+      traefik.tcp.routers.mqtt-router.rule: "HostSNI(`*`)"
+      traefik.tcp.routers.mqtt-router.service: "mqtt-service"
+      traefik.tcp.services.mqtt-service.loadbalancer.server.port: "1883"
+
+      # 🛠️ Conexiones Websocket no seguro
+      traefik.http.routers.ws-router.entrypoints: "websocket"
+      traefik.http.routers.ws-router.rule: "Host(`${EMQX_DOMAIN_DEV}`)"
+      traefik.http.routers.ws-router.service: "ws-service"
+      traefik.http.services.ws-service.loadbalancer.server.port: "8083"
+
+      # Dashboard administrativo de EMQX (HTTP)
+      traefik.http.routers.emqx_dashboard_http-router.entrypoints: "http"
+      traefik.http.routers.emqx_dashboard_http-router.rule: "Host(`${EMQX_DOMAIN_DEV}`)"
+      traefik.http.routers.emqx_dashboard_http-router.service: "emqx_dashboard_http-service"
+      traefik.http.services.emqx_dashboard_http-service.loadbalancer.server.port: "18083"
+
+    # 🗝️ Variables de entorno
+    environment:
+      TZ: ${TZ}
+      EMQX_NODE__NAME: ${EMQX_NODE_NAME_DEV}@emqx-dev
+      EMQX_NODE__COOKIE: ${EMQX_NODE_COOKIE_DEV}
+      EMQX_DASHBOARD__DEFAULT_USERNAME: ${EMQX_DASHBOARD_USERNAME_DEV}
+      EMQX_DASHBOARD__DEFAULT_PASSWORD: ${EMQX_DASHBOARD_PASSWORD_DEV}
+
+    # 🌍 Red asignada al servicio
+    networks:
+        - hic-cibus
+
+
+# 📂 Volúmenes
+volumes:
+    vol-emqx-data:
+    vol-emqx-log:
+
+networks:
+    hic-cibus:
+        external: true
