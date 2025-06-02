@@ -1,8 +1,8 @@
 services:
-  fastapi:
-    container_name: fastapi
+  api_crud:
+    container_name: api_crud
     build:
-      context: ./services/fastapi
+      context: ./services/api_crud
     command: uvicorn main:app --host 0.0.0.0 --port ${FASTAPI_PORT}
 
     # 🌍 Variables de entorno directas
