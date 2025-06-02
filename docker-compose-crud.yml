@@ -3,6 +3,11 @@ services:
     container_name: api_crud
     build:
       context: ./services/api_crud
+
+    # 🐳 Imagen de Docker utilizada para este servicio
+    image: tlaloc-crud:0.1.0
+
+    # 🚀 Comando para iniciar el servidor FastAPI
     command: uvicorn main:app --host 0.0.0.0 --port ${FASTAPI_PORT}
 
     # 🌍 Variables de entorno directas
