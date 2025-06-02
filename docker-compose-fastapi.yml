@@ -42,7 +42,8 @@ services:
       - MQTT_USER_AUTH_DB_NAME=${MQTT_USER_AUTH_DB_NAME}
       # Usuario MQTT predeterminado
       - MQTT_USER=${MQTT_USER}
-      - MQTT_USER_PASSWORD_HASH=${MQTT_USER_PASSWORD_HASH}
+      - MQTT_USER_PASSWORD=${MQTT_USER_PASSWORD}
+      - BCRYPT_ROUNDS=${BCRYPT_ROUNDS}
 
     # 🏷️ Etiquetas para integración con Traefik
     labels:

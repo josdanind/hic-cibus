@@ -75,7 +75,8 @@ class Settings(BaseSettings):
 
     # Usuario MQTT por defecto
     MQTT_USER:str
-    MQTT_USER_PASSWORD_HASH: str
+    MQTT_USER_PASSWORD: str
+    BCRYPT_ROUNDS: int
 
 # Instancia global de configuración
 settings = Settings()

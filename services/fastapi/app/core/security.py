@@ -5,8 +5,9 @@ from datetime import datetime, timedelta, timezone
 from app.core.config import settings
 
 # Librerías de terceros
-from passlib.context import CryptContext
 import jwt
+from passlib.context import CryptContext
+from passlib.hash import bcrypt
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -82,3 +83,16 @@ def decode_jwt(token: str) -> dict:
         return {"error": "Token expirado"}
     except jwt.InvalidTokenError:
         return {"error": "Token inválido"}
+
+def generate_bcrypt_hash(password: str) -> str:
+    """
+    Genera un hash bcrypt para una contraseña.
+
+    - **Parámetros**:
+        - `password` (str): Contraseña en texto plano.
+
+    - **Retorna**:
+        - `str`: Hash bcrypt de la contraseña.
+    """
+
+    return bcrypt.using(rounds=settings.BCRYPT_ROUNDS).hash(password)
