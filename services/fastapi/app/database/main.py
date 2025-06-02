@@ -24,6 +24,7 @@ from app.schemas.crud_user import CrudUserInDB as CrudUserInDBSchema
 # 🛠️ Utilidades, librerías y configuraciones
 from app.utils.rich_format import print_panel
 from app.core.config import settings
+from app.core.security import generate_bcrypt_hash
 from app.libraries.CRUDManager import CRUDManager
 from .config import DATABASES
 
@@ -181,11 +182,12 @@ async def create_mqtt_user():
 
     async with session_factory() as session:
         crud_manager = CRUDManager(session)
+        password_hash = generate_bcrypt_hash(settings.MQTT_USER_PASSWORD)
 
         # Datos del usuario mqtt
         mqtt_user_model = MqttUserModel(
             username = settings.MQTT_USER,
-            password_hash = settings.MQTT_USER_PASSWORD_HASH,
+            password_hash = password_hash,
             salt = " ",
             is_superuser = True
         )

@@ -43,7 +43,8 @@ services:
       - MQTT_USER_AUTH_DB_NAME=${MQTT_USER_AUTH_DB_NAME_DEV}
       # Usuario MQTT predeterminado
       - MQTT_USER=${MQTT_USER_DEV}
-      - MQTT_USER_PASSWORD_HASH=${MQTT_USER_PASSWORD_HASH_DEV}
+      - MQTT_USER_PASSWORD=${MQTT_USER_PASSWORD_DEV}
+      - BCRYPT_ROUNDS=${BCRYPT_ROUNDS_DEV}
 
     # 📂 Montaje de volúmenes
     volumes:
