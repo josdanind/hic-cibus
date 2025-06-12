@@ -1,3 +1,4 @@
+# Modelos base (sin dependencias)
 from .models import (
     Role,
     BotAccessRole,
@@ -10,6 +11,7 @@ from .models import (
     PaymentStatus
 )
 
+# Modelos del núcleo
 from .models import (
     Employee,
     Company,
@@ -20,6 +22,7 @@ from .models import (
     BotUser
 )
 
+# Modelos de relación M:N
 from .models import (
     BotCategoryLink,
     UserBotLink,
@@ -27,6 +30,7 @@ from .models import (
     SubscriptionPayment
 )
 
+# Metadata
 from .models import metadata
 
 class BotModelTypes:
@@ -62,4 +66,4 @@ class BotModelTypes:
     Subscription: type = Subscription         # → Bot, Company, SubscriptionStatus, SubscriptionPeriod
     SubscriptionPayment: type = SubscriptionPayment # → Subscription, PaymentStatus
 
-__all__ = ["metadata", "BotModelTypes"]
+# __all__ = ["metadata", "BotModelTypes"]

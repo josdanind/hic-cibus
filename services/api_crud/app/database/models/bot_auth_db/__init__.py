@@ -1,1 +1,1 @@
-from .v1 import metadata, BotModelTypes
+from .v1 import *

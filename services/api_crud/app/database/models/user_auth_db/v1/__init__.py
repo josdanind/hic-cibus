@@ -16,5 +16,5 @@ class CrudModelTypes:
     BotUser: type = UserAuthBotUser
 
 
-__all__ = ["metadata", "CrudModelTypes"]
+# __all__ = ["metadata", "CrudModelTypes"]
 

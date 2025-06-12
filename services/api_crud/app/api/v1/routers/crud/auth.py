@@ -1,113 +1,125 @@
 # ─────────────────
 # 📦 Importaciones
 # ─────────────────
-# Librería Estandar
+# 🐍 Librería Estándar
 from datetime import timedelta
-from typing import TypeAlias, Callable
+from typing import TypeAlias, Callable, NoReturn
 
-# Terceros
+# 🧩 Terceros
 from fastapi import HTTPException, status
 from sqlalchemy.orm import selectinload
 
-# Aplicación Local
-from app.core.config import settings
-from app.core.security import verify_password, create_access_token, decode_jwt
+# 🏗️  Módulos internos de la aplicación
 from app.database import DATABASES
 from app.libraries.CRUDManager import CRUDManager
-# schemas
+from app.core.config import settings
+from app.core.security import (
+    verify_password,
+    create_access_token,
+    decode_jwt
+)
+
+# 🧱 Modelos y esquemas
+from app.database.models.user_auth_db import UserAuthEmployee as EmployeeModel
 from app.schemas.auth import Token
 
-# Configuración de base de datos y modelos
+# ────────────────────────────────
+# 🗄️  Base de datos
+# ────────────────────────────────
 crud_user_db = DATABASES["user_auth_db"]
 session_factory = crud_user_db.session_factory
-EmployeeModel = crud_user_db.models.Employee
-CrudUserModel = crud_user_db.models.CrudUser
 
-# Alias de tipo para la función decodificadora de tokens
+# ────────────────────────────────
+# 🔖  Alias y constantes
+# ────────────────────────────────
 TokenDecoder: TypeAlias = Callable[[str], dict]
+_UNAUTHORIZED_HEADERS = {"WWW-Authenticate": "Bearer"}
 
-def raise_unauthorized_error(detail:str):
-    """Lanza una HTTPException con código 401 y detalles predefinidos."""
+# ────────────────────────────────
+# 🔧  Helpers
+# ────────────────────────────────
+def _raise_unauthorized(detail:str) -> NoReturn:
+    """Lanza un 401 con cabeceras y mensaje estándar."""
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail=detail,
-        headers={"WWW-Authenticate": "Bearer"},
+        headers=_UNAUTHORIZED_HEADERS,
     )
 
-# ───────────────────────────
-# 🔑 Lógica de Autenticación
-# ───────────────────────────
-# Obtiene Empleado
-async def get_employee(username: str, crud_manager: CRUDManager):
-    employee = await crud_manager.get(
+
+async def get_employee(
+    *,
+    username: str,
+    crud: CRUDManager
+) -> EmployeeModel | None:
+    """Obtiene un empleado y su CrudUser asociado."""
+    return await crud.get(
         EmployeeModel,
         {"telegram_username": username},
+        single_result=True,
         load_options = [selectinload(EmployeeModel.crud_user)]
     )
 
-    return employee
 
-# Autenticar usuario CRUD
-async def authenticate_crud_user(
-    username: str,
-    password: str
-):
+def _verify_password(*, plain: str, hashed: str) -> None:
+    """Valida la contraseña en texto plano contra la almacenada."""
+    if not verify_password(plain, hashed):
+        _raise_unauthorized("Incorrect username or password")
+
+
+# ────────────────────────────────
+# 🔑  API pública
+# ────────────────────────────────
+async def authenticate_crud_user(username: str, password: str) -> EmployeeModel:
+    """
+    Autentica un usuario CRUD.
+
+    Devuelve el modelo Employee si las credenciales son válidas.
+    """
     async with session_factory() as session:
         crud_manager = CRUDManager(session)
 
-        employee = await get_employee(username, crud_manager)
-        crud_user = employee.crud_user
+        employee = await get_employee(username=username, crud=crud_manager)
+        crud_user = employee.crud_user if employee else None
 
-        if not employee or not crud_user:
-            raise_unauthorized_error(
-                detail="Incorrect username or password"
-            )
+        if employee is None or crud_user is None:
+            _raise_unauthorized("Usuario o Contraseña incorrecta.")
 
-        hashed_password = crud_user.hashed_password
-
-        if not verify_password(password, hashed_password):
-            raise_unauthorized_error(
-                detail="Incorrect username or password"
-            )
+        _verify_password(plain=password, hashed=crud_user.hashed_password)
 
         return employee
 
-# Generar access Token
-async def generate_access_token(
-    username: str,
-    password: str
-) -> Token | None:
-    crud_user = await authenticate_crud_user(
-        username,
-        password,
+
+async def generate_access_token(username: str, password: str) -> Token:
+    employee = await authenticate_crud_user(username=username,password=password)
+    expires_delta = timedelta(days=settings.ACCESS_TOKEN_EXPIRE_DAYS)
+
+    token = create_access_token(
+        data={"sub": employee.telegram_username},
+        expires_delta= expires_delta
     )
 
-    access_token_expires = timedelta(
-        days=settings.ACCESS_TOKEN_EXPIRE_DAYS
-    )
+    return token
 
-    access_token = create_access_token(
-        data={"sub": crud_user.telegram_username},
-        expires_delta= access_token_expires
-    )
 
-    return access_token
-
-# Decodificador del Token
 async def decode_token(
-    token: str,
-    token_decoder: TokenDecoder = decode_jwt,
-) -> dict | None:
+    *, token: str, token_decoder: TokenDecoder = decode_jwt
+) -> EmployeeModel:
+    """
+    Decodifica un JWT y devuelve el empleado autenticado.
+
+    Lanza 401 si el token es inválido o el usuario no existe.
+    """
     payload: dict = token_decoder(token)
     username: str | None = payload.get("sub")
+    if username is None:
+        _raise_unauthorized("Invalid token")
 
     async with session_factory() as session:
         crud_manager = CRUDManager(session)
-        employee = await get_employee(username, crud_manager)
+        employee = await get_employee(username=username, crud=crud_manager)
 
-        if not username or not employee or not employee.crud_user:
-            raise_unauthorized_error(
-                detail="Invalid token"
-            )
+        if employee is None or employee.crud_user is None:
+            _raise_unauthorized("Invalid token")
 
-    return employee
+        return employee

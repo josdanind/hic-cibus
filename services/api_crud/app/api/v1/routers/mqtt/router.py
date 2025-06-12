@@ -37,7 +37,8 @@ async def get_mqtt_user(
     if username:
         mqtt_user = await crud_manager.get(
             MqttUserModel,
-            {"username": username}
+            {"username": username},
+            single_result=True
         )
 
         return (

@@ -54,7 +54,7 @@ async def initialize_databases(databases: dict[str, DatabaseConfigSchema] = DATA
 
     # Inicialización de la base de datos
     for db_name, config in databases.items():
-        engine = config._engine
+        engine = config.engine
         metadata = config.metadata
 
         async with engine.begin() as conn:
@@ -137,7 +137,8 @@ async def create_crud_user():
 
         if await crud_manager.get(
             EmployeeModel,
-            {"telegram_username": employee_model.telegram_username}
+            {"telegram_username": employee_model.telegram_username},
+            single_result=True
         ):
             return
 
@@ -194,7 +195,8 @@ async def create_mqtt_user():
 
         if await crud_manager.get(
             MqttUserModel,
-            {"username": mqtt_user_model.username}
+            {"username": mqtt_user_model.username},
+            single_result=True
         ):
             return
 
