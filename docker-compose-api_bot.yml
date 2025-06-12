@@ -1,25 +1,21 @@
 services:
-  fastapi:
-    container_name: fastapi
+  api_bot:
+    container_name: api_bot
     build:
-      context: ./services/fastapi
+      context: ./services/api_bot
     command: uvicorn main:app --host 0.0.0.0 --port ${FASTAPI_PORT}
 
     # 🌍 Variables de entorno directas
     environment:
+      # 🌍 Entorno de ejecución
       - ENVIRONMENT=production
       - PORT=${FASTAPI_PORT}
       - API_DOMAIN=${API_PROD_DOMAIN}
-      # JWT
-      - SECRET_KEY=${SECRET_KEY}
-      - ALGORITHM=${ALGORITHM}
-      - ACCESS_TOKEN_EXPIRE_DAYS=${ACCESS_TOKEN_EXPIRE_DAYS}
-      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
-      # Usuario simulado
-      - FASTAPI_DUMMY_USER=${FASTAPI_DUMMY_USERNAME}
-      - FASTAPI_DUMMY_PASSWORD=${FASTAPI_DUMMY_PASSWORD}
-      - FASTAPI_DUMMY_FULLNAME=${FASTAPI_DUMMY_FULLNAME}
-      - FASTAPI_DUMMY_EMAIL=${FASTAPI_DUMMY_EMAIL}
+      # 🔑 Clave de acceso para Valkey
+      - VALKEY_PASSWORD=${VALKEY_PASSWORD}
+      - VALKEY_HOST=${VALKEY_HOST}
+      - VALKEY_PORT=${VALKEY_PORT}
+
 
     # 🏷️ Etiquetas para integración con Traefik
     labels:
@@ -40,6 +36,34 @@ services:
       traefik.http.services.fastapi_https-service.loadbalancer.server.port: ${FASTAPI_PORT}
       traefik.http.routers.fastapi_https-router.tls: true
       traefik.http.routers.fastapi_https-router.tls.certresolver: letsencrypt
+
+    # 🔄 Política de reinicio
+    restart: unless-stopped
+
+    # 🌐 Red asociada
+    networks:
+      - hic-cibus
+
+
+  valkey:
+    image: valkey/valkey:7.2.5
+    container_name: valkey
+
+    # 🚀 Comando para iniciar Valkey
+    command: >
+      sh -c "valkey-server
+        --save \"\"
+        --appendonly no
+        --protected-mode yes
+        --requirepass $$VALKEY_PASSWORD"
+
+    # 📂 Montaje de volúmenes
+    volumes:
+      - valkey_data-dev:/data
+
+    # 🗝️ Variables de entorno
+    environment:
+      - VALKEY_PASSWORD=${VALKEY_PASSWORD}
 
     # 🔄 Política de reinicio
     restart: unless-stopped

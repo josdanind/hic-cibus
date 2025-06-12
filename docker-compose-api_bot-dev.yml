@@ -1,0 +1,89 @@
+services:
+  api_bot-dev:
+    container_name: api_bot-dev
+    build:
+      context: ./services/api_bot
+      dockerfile: Dockerfile.dev
+
+    # 🚀 Comando para iniciar la aplicación FastAPI
+    command: uvicorn main:app --host 0.0.0.0 --port ${API_BOT_PORT} --reload
+
+    # 🌍 Variables de entorno directas
+    environment:
+      # 🌍 Entorno de ejecución
+      - ENVIRONMENT=development
+      - PORT=${API_BOT_PORT}
+      - API_DOMAIN=${API_BOT_DEV_DOMAIN}
+      # Credenciales del bot de Telegram
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN_DEV}
+      - TELEGRAM_BOT_NAME=${TELEGRAM_BOT_NAME_DEV}
+      - TELEGRAM_BOT_PASSWORD=${TELEGRAM_BOT_PASSWORD_DEV}
+      # 🔑 Clave de acceso para Valkey
+      - VALKEY_PASSWORD=${VALKEY_PASSWORD_DEV}
+      - VALKEY_HOST=${VALKEY_HOST_DEV}
+      - VALKEY_PORT=${VALKEY_PORT_DEV}
+      # 🌐 URL base del servicio API CRUD
+      - API_CRUD_URL=http://${API_CRUD_DEV_DOMAIN}:${API_CRUD_PORT_DEV}/bots
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+
+    # 📂 Montaje de volúmenes
+    volumes:
+      - ./services/api_bot:/app
+
+    # 🏷️ Etiquetas para integración con Traefik
+    labels:
+      # 🌐 Habilitar Traefik
+      traefik.enable: "true"
+
+      # 🌐 Router para FastAPI (HTTP)
+      traefik.http.routers.bot-router.entrypoints: http
+      traefik.http.routers.bot-router.rule: Host(`${API_BOT_DEV_DOMAIN}`)
+      traefik.http.routers.bot-router.service: bot-service
+      traefik.http.services.bot-service.loadbalancer.server.port: ${API_BOT_PORT}
+
+    # 🔄 Política de reinicio
+    restart: unless-stopped
+
+    # 🌐 Red asociada
+    networks:
+      - hic-cibus
+
+  valkey:
+    image: valkey/valkey:7.2.5
+    container_name: valkey
+
+    # 🚀 Comando para iniciar Valkey
+    command:
+      - sh
+      - -c
+      - |
+        valkey-server \
+          --save "" \
+          --appendonly no \
+          --protected-mode yes \
+          --requirepass $$VALKEY_PASSWORD
+
+    # 📂 Montaje de volúmenes
+    volumes:
+      - valkey_data-dev:/data
+
+    # 🗝️ Variables de entorno
+    environment:
+      - VALKEY_PASSWORD=${VALKEY_PASSWORD_DEV}
+
+    # 🔄 Política de reinicio
+    restart: unless-stopped
+
+    # 🌐 Red asociada
+    networks:
+      - hic-cibus
+
+# 🌐 Redes utilizadas
+networks:
+  hic-cibus:
+    external: true
+
+# 📂 Volúmenes
+volumes:
+  valkey_data-dev:
