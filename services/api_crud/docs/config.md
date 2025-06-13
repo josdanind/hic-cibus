@@ -1,17 +1,33 @@
-# Dependencias
+# 🧩 Dependencias
 
-1. **fastapi**: Framework web moderno y rápido para construir APIs con Python 3.6+ basado en estándares como OpenAPI y JSON Schema.
-2. **uvicorn[standard]**: Servidor ASGI rápido y ligero para ejecutar aplicaciones FastAPI.
-3. **rich**: Biblioteca para formatear y renderizar texto en la terminal con colores y estilos.
-4. **sqlmodel**: Biblioteca para trabajar con bases de datos SQL en Python, basada en SQLAlchemy y Pydantic.
-5. **PyJWT**: Biblioteca para codificar y decodificar JSON Web Tokens (JWT) en Python.
-6. **passlib**: Biblioteca para manejar y verificar contraseñas de manera segura.
-7. **jinja2**: Motor de plantillas para Python, utilizado para generar HTML u otros formatos de texto.
-8. **python-multipart**: Biblioteca para manejar datos de formularios multipart en aplicaciones web.
+1. **fastapi**
+   Framework moderno para construir APIs web rápidas y robustas en Python. Genera automáticamente documentación interactiva con Swagger y Redoc.
 
-## Instalación de Dependencias
+2. **uvicorn[standard]**
+   Servidor ASGI rápido y ligero para ejecutar aplicaciones FastAPI. El extra `[standard]` incluye mejoras de rendimiento como `uvloop`, `httptools`, y `websockets`.
 
-Para instalar todas las dependencias, ejecuta el siguiente comando:
+3. **rich**
+   Biblioteca para mostrar texto enriquecido en la terminal, incluyendo colores, tablas, barras de progreso y trazas de error más legibles.
+
+4. **sqlmodel**
+   ORM moderno basado en SQLAlchemy y Pydantic. Facilita la definición de modelos y el trabajo con bases de datos en aplicaciones FastAPI.
+
+5. **PyJWT**
+   Permite crear y verificar tokens JWT (JSON Web Tokens), comúnmente utilizados para autenticación y autorización en APIs.
+
+6. **passlib**
+   Biblioteca para el manejo seguro de contraseñas, soportando múltiples algoritmos de hashing como bcrypt, pbkdf2, entre otros.
+
+7. **Jinja2**
+   Motor de plantillas para Python, útil para renderizar HTML dinámico desde FastAPI u otros entornos web.
+
+8. **python-multipart**
+   Necesaria para que FastAPI procese formularios `multipart/form-data`, como los usados en la carga de archivos.
+
+---
+
+## 📦 Instalación
 
 ```bash
 pip install fastapi "uvicorn[standard]" rich sqlmodel PyJWT passlib jinja2 python-multipart
+```

@@ -9,11 +9,14 @@ inicialización de bases de datos, mensajes de éxito, error o advertencia.
 # ─────────────────
 # 📦 Importaciones
 # ─────────────────
+
 from rich import print
 from rich.panel import Panel
 from rich.console import Console
+from rich.text import Text
+from rich.theme import Theme
 
-# Utilidades de app
+# 🏗️  Módulos internos de la aplicación
 from app.utils.validators import is_list_of_tuples_with_n_elements
 
 # Forzar salida con colores incluso en entornos como contenedores Docker
@@ -59,3 +62,13 @@ def print_panel(
 
     render_panel(lines)
 
+def print_success_message(message:str, success: bool = True) -> None:
+    """
+    Imprime un mensaje de éxito o error en la consola.
+    """
+    if success:
+        message = Text(f"✔ {message}", style="bold green")
+    else:
+        message = Text(f"❌ {message}", style="bold red")
+
+    console.print(message)

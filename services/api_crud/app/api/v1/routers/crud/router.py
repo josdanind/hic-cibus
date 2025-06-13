@@ -14,6 +14,7 @@ from app.libraries.CRUDManager import CRUDManager
 from app.database import get_bot_crud
 from app.database import DATABASES
 from app.utils.rich_format import print_panel
+from app.utils.http_exceptions import not_found
 
 # 🧱 Modelos y esquemas
 from app.database.models.bot_auth_db import (
@@ -120,6 +121,9 @@ async def ping_bot(
         single_result=True,
         load_options = [selectinload(BotModel.credentials)]
     )
+
+    if not bot_data:
+        raise not_found(f"El bot '{bot_name}' no existe")
 
     bot_url = bot_data.api_url + "/ping"
     credential = bot_data.credentials
