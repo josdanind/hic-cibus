@@ -72,17 +72,3 @@ def print_success_message(message:str, success: bool = True) -> None:
         message = Text(f"❌ {message}", style="bold red")
 
     console.print(message)
-
-# def print_token_status(success: bool) -> None:
-#     """
-#     Imprime un mensaje indicando si se obtuvo o no el token de la API CRUD.
-
-#     Args:
-#         success (bool): True si se obtuvo el token, False si falló.
-#     """
-#     if success:
-#         message = Text("✅ Token para la API CRUD obtenido exitosamente.", style="bold green")
-#     else:
-#         message = Text("❌ No se pudo obtener el token para la API CRUD.", style="bold red")
-
-#     console.print(message)

@@ -9,19 +9,24 @@ from passlib.context import CryptContext
 from app.core.config import settings
 from app.utils.rich_format import print_success_message
 
-# ────────────────────────────────
-# 🔖  URL del CRUD
-# ────────────────────────────────
+# ───────────────────────────────
+# 🔐 Seguridad y Autenticación
+# ───────────────────────────────
 __AUTH_BOT_URL = f"{settings.API_CRUD_URL}/auth"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def get_hash(plain_str: str):
+    """Genera un hash a partir de una cadena en texto plano."""
     return pwd_context.hash(plain_str)
 
 def verify_hash(plain_str: str, hashed_str: str) -> bool:
+    """Verifica si la cadena coincide con el hash."""
     return pwd_context.verify(plain_str, hashed_str)
 
+# ───────────────────────────────
+# 🔄 Comunicación con API CRUD
+# ───────────────────────────────
 async def fetch_crud_token():
     """Obtiene un token «fresco» del API CRUD."""
 

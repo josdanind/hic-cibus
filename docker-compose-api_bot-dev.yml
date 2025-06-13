@@ -24,8 +24,7 @@ services:
       - VALKEY_PORT=${VALKEY_PORT_DEV}
       # 🌐 URL base del servicio API CRUD
       - API_CRUD_URL=http://${API_CRUD_DEV_DOMAIN}:${API_CRUD_PORT_DEV}/bots
-      - SECRET_KEY=${SECRET_KEY}
-      - ALGORITHM=${ALGORITHM}
+
 
     # 📂 Montaje de volúmenes
     volumes:

@@ -1,15 +1,29 @@
-# Dependencias
+# 🧩 Dependencias
 
-1. **fastapi**: Framework web moderno y rápido para construir APIs con Python 3.6+ basado en estándares como OpenAPI y JSON Schema.
-2. **uvicorn[standard]**: Servidor ASGI rápido y ligero para ejecutar aplicaciones FastAPI.
-3. **rich**: Biblioteca para formatear y renderizar texto en la terminal con colores y estilos.
-5. **PyJWT**: Biblioteca para codificar y decodificar JSON Web Tokens (JWT) en Python.
-6. **passlib**: Biblioteca para manejar y verificar contraseñas de manera segura.
-8. **python-multipart**: Biblioteca para manejar datos de formularios multipart en aplicaciones web.
+1. **fastapi**
+   Framework moderno y eficiente para construir APIs web usando Python 3.7+ con validación automática y documentación integrada (OpenAPI, Swagger).
 
-## Instalación de Dependencias
+2. **uvicorn[standard]**
+   Servidor ASGI ultrarrápido para ejecutar aplicaciones FastAPI. El extra `[standard]` incluye optimizaciones como `uvloop`, `httptools`, y `websockets`.
 
-Para instalar todas las dependencias, ejecuta el siguiente comando:
+3. **rich**
+   Biblioteca para imprimir texto enriquecido en la terminal: colores, tablas, barras de progreso y trazas de errores más legibles.
+
+4. **python-multipart**
+   Necesaria para que FastAPI procese formularios `multipart/form-data`, comúnmente usados en carga de archivos.
+
+5. **pydantic-settings**
+   Extensión de Pydantic para manejar configuraciones cargadas desde archivos `.env` o variables de entorno.
+
+6. **redis**
+   Cliente para conectarse a bases de datos Redis (o Valkey), útil como sistema de caché, manejo de sesiones o almacenamiento temporal de tokens.
+
+7. **aiohttp**
+   Cliente HTTP asíncrono para realizar solicitudes externas de manera no bloqueante, ideal para microservicios y comunicación entre APIs.
+
+---
+
+## 📦 Instalación
 
 ```bash
-pip install fastapi "uvicorn[standard]" rich python-multipart pydantic-settings redis aiohttp PyJWT
+pip install fastapi "uvicorn[standard]" rich python-multipart pydantic-settings redis aiohttp

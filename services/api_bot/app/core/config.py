@@ -19,9 +19,6 @@ class Settings(BaseSettings):
 
     # 🌐 URL base del servicio API CRUD
     API_CRUD_URL:str
-    SECRET_KEY: str
-    ALGORITHM: str
-
 
 # Instancia global de configuración
 settings = Settings()
