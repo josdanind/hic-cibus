@@ -75,6 +75,18 @@ CREATE TABLE subscription_periods (
 -- Índices para acelerar búsquedas
 CREATE INDEX idx_subscription_periods_name ON subscription_periods (name);
 
+-- Estados posibles para los métodos de pago de suscripciones
+CREATE TABLE payment_methods (
+    id SERIAL PRIMARY KEY,
+    code VARCHAR(30) UNIQUE NOT NULL,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    description TEXT,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+);
+-- Índices para acelerar búsquedas
+CREATE INDEX idx_payment_methods_code ON payment_methods (code);
+CREATE INDEX idx_payment_methods_is_active ON payment_methods (is_active);
+
 -- Estados posibles para los pagos de suscripciones
 CREATE TABLE payment_statuses (
     id SERIAL PRIMARY KEY,
@@ -94,7 +106,7 @@ CREATE TABLE companies (
     name VARCHAR(50) UNIQUE NOT NULL,
     description TEXT,
     is_active BOOLEAN DEFAULT TRUE NOT NULL,
-    phone VARCHAR(20) NOT NULL,
+    phone VARCHAR(20) UNIQUE NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
     website VARCHAR(100),
     country VARCHAR(50),
@@ -285,12 +297,13 @@ CREATE TABLE subscription_payments (
     id SERIAL PRIMARY KEY,
     amount FLOAT DEFAULT 0.0,
     payment_date TIMESTAMP WITH TIME ZONE,
-    payment_method VARCHAR(50),
     transaction_id VARCHAR(100) UNIQUE NOT NULL,
+    payment_method_id INTEGER REFERENCES payment_methods(id) ON DELETE SET NULL,
     payment_status_id INTEGER REFERENCES payment_statuses(id) ON DELETE SET NULL,
     subscription_id INTEGER NOT NULL REFERENCES subscriptions(id) ON DELETE CASCADE
 );
 -- Indices para acelerar búsquedas
+CREATE INDEX idx_subscription_payments_transaction_id ON subscription_payments (transaction_id);
+CREATE INDEX idx_subscription_payments_payment_method_id ON subscription_payments (payment_method_id);
 CREATE INDEX idx_subscription_payments_payment_status_id ON subscription_payments (payment_status_id);
 CREATE INDEX idx_subscription_payments_subscription_id ON subscription_payments (subscription_id);
-CREATE INDEX idx_subscription_payments_transaction_id ON subscription_payments (transaction_id);
