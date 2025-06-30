@@ -1,0 +1,3043 @@
+{
+    "parent_uuid": "e9530608-8742-48e1-8215-5cd6c1797d7d",
+    "driver": "mysql",
+    "uuid": "d6d9e8ae-4ed8-4737-b6a3-252a780e2ff7",
+    "tables": [
+        {
+            "uuid": "42d9b264-250d-4c2d-b028-c3b54717eaa0",
+            "name": "bot_credentials",
+            "color": "#F66D9B",
+            "order": "Zw1iT",
+            "comment": null,
+            "width": 330,
+            "left": -710,
+            "top": -570,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 26,
+                    "driver_data_type_name": "int",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a074c",
+                    "table_uuid": "42d9b264-250d-4c2d-b028-c3b54717eaa0",
+                    "uuid": "f1225f00-9df8-49b3-a1e3-6f8954c10d94"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "hashed_password",
+                    "order": "a27wy",
+                    "table_uuid": "42d9b264-250d-4c2d-b028-c3b54717eaa0",
+                    "uuid": "1d77fc4d-1ede-44d8-ab99-b1d4d6f915f7"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "hashed_telegram_bot_token",
+                    "order": "a35hq",
+                    "table_uuid": "42d9b264-250d-4c2d-b028-c3b54717eaa0",
+                    "uuid": "efa230d0-38f3-4a2f-8352-7980e5cb72ea"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "hashed_api_access_token",
+                    "order": "a47TX",
+                    "table_uuid": "42d9b264-250d-4c2d-b028-c3b54717eaa0",
+                    "uuid": "85b25866-8204-46ca-ad6e-18c6b03b7ab0"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "bot_id",
+                    "order": "a4iSG",
+                    "table_uuid": "42d9b264-250d-4c2d-b028-c3b54717eaa0",
+                    "uuid": "040d841a-a0ac-4fc4-bd80-e7f5c5c8d740"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "created_at",
+                    "order": "a59ol",
+                    "table_uuid": "42d9b264-250d-4c2d-b028-c3b54717eaa0",
+                    "uuid": "f738c1f4-f149-44d6-995b-c50211a42e36"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "created_at",
+                    "order": "a68Gx",
+                    "table_uuid": "42d9b264-250d-4c2d-b028-c3b54717eaa0",
+                    "uuid": "2a64be14-e997-46d8-ad9d-27449920def2"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "0ff6e4e0-fdf2-4b5c-a4d5-58c6dff47315",
+                    "table_uuid": "42d9b264-250d-4c2d-b028-c3b54717eaa0",
+                    "name": "0ff6e4e0-fdf2-4b5c-a4d5-58c6dff47315",
+                    "type": "index",
+                    "order": "a03KB",
+                    "column_uuids": [
+                        "040d841a-a0ac-4fc4-bd80-e7f5c5c8d740"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "040d841a-a0ac-4fc4-bd80-e7f5c5c8d740",
+                            "name": "bot_id"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "7a704fa2-2e18-4bea-8919-a9b008130361",
+            "name": "subscription_payments",
+            "color": "#B8C2CC",
+            "order": "Zx8m0",
+            "comment": null,
+            "width": 300,
+            "left": 320,
+            "top": -1380,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a06xj",
+                    "table_uuid": "7a704fa2-2e18-4bea-8919-a9b008130361",
+                    "uuid": "985e0f66-e155-43cb-a75b-79d7d11b3c00"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 20,
+                    "driver_data_type_name": "float",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "amount",
+                    "order": "a0vKm2cW",
+                    "table_uuid": "7a704fa2-2e18-4bea-8919-a9b008130361",
+                    "uuid": "4d8b9828-b406-4930-84d4-d31e9b93721f"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "payment_date",
+                    "order": "a1KWJ7VB",
+                    "table_uuid": "7a704fa2-2e18-4bea-8919-a9b008130361",
+                    "uuid": "08238d67-d913-4d55-8a8b-a1dcf9b6bed7"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "transaction_id",
+                    "order": "a1dPSOv6",
+                    "table_uuid": "7a704fa2-2e18-4bea-8919-a9b008130361",
+                    "uuid": "3a06171c-bed3-48ac-9ff1-375cf9b723eb"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 26,
+                    "driver_data_type_name": "int",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "payment_method_id",
+                    "order": "a1gYeN47",
+                    "table_uuid": "7a704fa2-2e18-4bea-8919-a9b008130361",
+                    "uuid": "425d7eeb-9f9c-4cfa-8ecd-955a99624fa5"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 26,
+                    "driver_data_type_name": "int",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "payment_status_id",
+                    "order": "a1jhq",
+                    "table_uuid": "7a704fa2-2e18-4bea-8919-a9b008130361",
+                    "uuid": "a1593af3-4b47-407c-92cf-3eeb6e2a930a"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 26,
+                    "driver_data_type_name": "int",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "subscription_id",
+                    "order": "a1ucy52k",
+                    "table_uuid": "7a704fa2-2e18-4bea-8919-a9b008130361",
+                    "uuid": "5c5c9173-9c08-4141-a51a-24bd5dfd0727"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "20c553ce-ff90-414a-83bf-afb8462440b1",
+                    "table_uuid": "7a704fa2-2e18-4bea-8919-a9b008130361",
+                    "name": "20c553ce-ff90-414a-83bf-afb8462440b1",
+                    "type": "index",
+                    "order": "a059x",
+                    "column_uuids": [
+                        "a1593af3-4b47-407c-92cf-3eeb6e2a930a"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "a1593af3-4b47-407c-92cf-3eeb6e2a930a",
+                            "name": "payment_status_id"
+                        }
+                    ]
+                },
+                {
+                    "uuid": "d21cd92e-8c49-47d5-99df-2d49979f6811",
+                    "table_uuid": "7a704fa2-2e18-4bea-8919-a9b008130361",
+                    "name": "d21cd92e-8c49-47d5-99df-2d49979f6811",
+                    "type": "index",
+                    "order": "a1BNM",
+                    "column_uuids": [
+                        "425d7eeb-9f9c-4cfa-8ecd-955a99624fa5"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "425d7eeb-9f9c-4cfa-8ecd-955a99624fa5",
+                            "name": "payment_method_id"
+                        }
+                    ]
+                },
+                {
+                    "uuid": "41aac5cc-c185-47c1-b1ae-29bea88d39c6",
+                    "table_uuid": "7a704fa2-2e18-4bea-8919-a9b008130361",
+                    "name": "41aac5cc-c185-47c1-b1ae-29bea88d39c6",
+                    "type": "index",
+                    "order": "a22QC",
+                    "column_uuids": [
+                        "5c5c9173-9c08-4141-a51a-24bd5dfd0727"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "5c5c9173-9c08-4141-a51a-24bd5dfd0727",
+                            "name": "subscription_id"
+                        }
+                    ]
+                },
+                {
+                    "uuid": "5a539454-1abc-4721-a718-fade9bf0a35e",
+                    "table_uuid": "7a704fa2-2e18-4bea-8919-a9b008130361",
+                    "name": "5a539454-1abc-4721-a718-fade9bf0a35e",
+                    "type": "index",
+                    "order": "a38Nf",
+                    "column_uuids": [
+                        "3a06171c-bed3-48ac-9ff1-375cf9b723eb"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "3a06171c-bed3-48ac-9ff1-375cf9b723eb",
+                            "name": "transaction_id"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "563af187-6915-45a8-8d92-b1c5d606f092",
+            "name": "subscription_statuses",
+            "color": "#F6993F",
+            "order": "Zy5Uk",
+            "comment": null,
+            "width": null,
+            "left": 1230,
+            "top": -490,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a0CLu",
+                    "table_uuid": "563af187-6915-45a8-8d92-b1c5d606f092",
+                    "uuid": "d30cf7ae-9a52-425d-bf31-58c239a787d3"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "name",
+                    "order": "a19YW",
+                    "table_uuid": "563af187-6915-45a8-8d92-b1c5d606f092",
+                    "uuid": "f5ee3c3e-84fb-4781-863d-e56e455a09b9"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 54,
+                    "driver_data_type_name": "text",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "description",
+                    "order": "a28Lk",
+                    "table_uuid": "563af187-6915-45a8-8d92-b1c5d606f092",
+                    "uuid": "f25cd944-ab40-4c34-89a1-edc718915b89"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "1c1cbc04-45db-47d4-85b4-fe76704a243c",
+                    "table_uuid": "563af187-6915-45a8-8d92-b1c5d606f092",
+                    "name": "1c1cbc04-45db-47d4-85b4-fe76704a243c",
+                    "type": "index",
+                    "order": "a05oH",
+                    "column_uuids": [
+                        "f5ee3c3e-84fb-4781-863d-e56e455a09b9"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "f5ee3c3e-84fb-4781-863d-e56e455a09b9",
+                            "name": "name"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "281bdc11-44a1-48b6-81f5-f9204600dd25",
+            "name": "subscription_periods",
+            "color": "#F6993F",
+            "order": "ZzCGN",
+            "comment": null,
+            "width": null,
+            "left": 1230,
+            "top": -770,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a0CLu",
+                    "table_uuid": "281bdc11-44a1-48b6-81f5-f9204600dd25",
+                    "uuid": "b79fd04a-eca2-4f6d-b584-23878d327405"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "name",
+                    "order": "a19YW",
+                    "table_uuid": "281bdc11-44a1-48b6-81f5-f9204600dd25",
+                    "uuid": "98501f8e-4e69-4043-a4d0-dea919d4356e"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 54,
+                    "driver_data_type_name": "text",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "description",
+                    "order": "a28Lk",
+                    "table_uuid": "281bdc11-44a1-48b6-81f5-f9204600dd25",
+                    "uuid": "7f262402-af16-4372-bd6a-636ea22e2389"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "d77def9a-5e9a-482c-bdb1-f078a49821da",
+                    "table_uuid": "281bdc11-44a1-48b6-81f5-f9204600dd25",
+                    "name": "d77def9a-5e9a-482c-bdb1-f078a49821da",
+                    "type": "index",
+                    "order": "a05oH",
+                    "column_uuids": [
+                        "98501f8e-4e69-4043-a4d0-dea919d4356e"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "98501f8e-4e69-4043-a4d0-dea919d4356e",
+                            "name": "name"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+            "name": "subscriptions",
+            "color": "#22D3EE",
+            "order": "ZzmQh",
+            "comment": null,
+            "width": 370,
+            "left": 710,
+            "top": -820,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a017P",
+                    "table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+                    "uuid": "ebe025ee-b61c-4687-943e-ac74527d01ce"
+                },
+                {
+                    "comment": null,
+                    "default": "true",
+                    "driver_data_type_id": 6,
+                    "driver_data_type_name": "boolean",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "is_active",
+                    "order": "a17yI",
+                    "table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+                    "uuid": "33d17e55-0696-4169-806c-edd900ecc63b"
+                },
+                {
+                    "comment": null,
+                    "default": "1",
+                    "driver_data_type_id": 26,
+                    "driver_data_type_name": "int",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "max_users",
+                    "order": "a1c9l",
+                    "table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+                    "uuid": "05e7c03a-2dc7-4339-84e0-66991f143db2"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "start_date",
+                    "order": "a1mAb",
+                    "table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+                    "uuid": "75e51045-6d62-4545-80d3-de367bf0f4a4"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "end_date",
+                    "order": "a1xqw7Gj",
+                    "table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+                    "uuid": "7bb0ef18-9246-4919-bd2a-bebb2bdb2ed0"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "next_payment_date",
+                    "order": "a23h7BSn",
+                    "table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+                    "uuid": "f036e0e1-521b-4b1e-829d-b7d26611e7e5"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "last_payment_date",
+                    "order": "a26cChuJ",
+                    "table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+                    "uuid": "ed28689d-bf3f-49f0-ba19-50b57a82f430"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 54,
+                    "driver_data_type_name": "text",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "notes",
+                    "order": "a284kVCp",
+                    "table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+                    "uuid": "a14a564c-fc49-4e01-97a3-c7b42823930e"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 26,
+                    "driver_data_type_name": "int",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "company_id",
+                    "order": "a29XI",
+                    "table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+                    "uuid": "b9202a5c-8456-4016-9fef-b024ad9fb29f"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 26,
+                    "driver_data_type_name": "int",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "bot_id",
+                    "order": "a2aQH",
+                    "table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+                    "uuid": "7cfb90b4-caf0-404b-bed7-f48020026b85"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 26,
+                    "driver_data_type_name": "int",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "subscription_period_id",
+                    "order": "a2pFE",
+                    "table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+                    "uuid": "b3e285a3-423c-41b9-be12-13689b3c5aae"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 26,
+                    "driver_data_type_name": "int",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "status_id",
+                    "order": "a30NA",
+                    "table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+                    "uuid": "9592c166-7ded-4841-8d22-bbda5b7e9862"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "updated_at",
+                    "order": "a931P",
+                    "table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+                    "uuid": "111c74cc-0953-445c-adaa-9d6482e3ec22"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "created_at",
+                    "order": "aA699",
+                    "table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+                    "uuid": "5b1ceb93-5694-4379-a2ce-ca5d7bc7a1c7"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "3bf8acd3-c9fe-4e04-8a0f-2e003acd04b1",
+                    "table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+                    "name": "3bf8acd3-c9fe-4e04-8a0f-2e003acd04b1",
+                    "type": "index",
+                    "order": "a0Bwk",
+                    "column_uuids": [
+                        "ebe025ee-b61c-4687-943e-ac74527d01ce",
+                        "33d17e55-0696-4169-806c-edd900ecc63b",
+                        "9592c166-7ded-4841-8d22-bbda5b7e9862",
+                        "b9202a5c-8456-4016-9fef-b024ad9fb29f"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "ebe025ee-b61c-4687-943e-ac74527d01ce",
+                            "name": "id"
+                        },
+                        {
+                            "uuid": "33d17e55-0696-4169-806c-edd900ecc63b",
+                            "name": "is_active"
+                        },
+                        {
+                            "uuid": "9592c166-7ded-4841-8d22-bbda5b7e9862",
+                            "name": "status_id"
+                        },
+                        {
+                            "uuid": "b9202a5c-8456-4016-9fef-b024ad9fb29f",
+                            "name": "company_id"
+                        }
+                    ]
+                },
+                {
+                    "uuid": "a6445797-63e8-42db-8767-a493ef65ee82",
+                    "table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+                    "name": "a6445797-63e8-42db-8767-a493ef65ee82",
+                    "type": "index",
+                    "order": "a19P3",
+                    "column_uuids": [
+                        "7cfb90b4-caf0-404b-bed7-f48020026b85"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "7cfb90b4-caf0-404b-bed7-f48020026b85",
+                            "name": "bot_id"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "3a022908-1ac6-4410-bd2d-e83a1c084551",
+            "name": "bot_users",
+            "color": "#F66D9B",
+            "order": "a0CJp",
+            "comment": null,
+            "width": 410,
+            "left": -580,
+            "top": -1610,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a06OO",
+                    "table_uuid": "3a022908-1ac6-4410-bd2d-e83a1c084551",
+                    "uuid": "3360591c-80fa-4eb2-b197-11d3c15432af"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "telegram_username",
+                    "order": "a0X2i",
+                    "table_uuid": "3a022908-1ac6-4410-bd2d-e83a1c084551",
+                    "uuid": "ac9a396f-d991-4995-82db-cff14a1ae8bf"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 26,
+                    "driver_data_type_name": "int",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "telegram_user_id",
+                    "order": "a0bscATE",
+                    "table_uuid": "3a022908-1ac6-4410-bd2d-e83a1c084551",
+                    "uuid": "a893f8a0-0c7f-47be-9e06-c27a0b0e7ce8"
+                },
+                {
+                    "comment": null,
+                    "default": "true",
+                    "driver_data_type_id": 6,
+                    "driver_data_type_name": "boolean",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "is_active",
+                    "order": "a0eIZ657",
+                    "table_uuid": "3a022908-1ac6-4410-bd2d-e83a1c084551",
+                    "uuid": "31168a36-e19e-4da5-a20f-36edffa20821"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 26,
+                    "driver_data_type_name": "int",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "employee_id",
+                    "order": "a0giW",
+                    "table_uuid": "3a022908-1ac6-4410-bd2d-e83a1c084551",
+                    "uuid": "7915d0db-a351-4706-b986-240e2f5e55d6"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 26,
+                    "driver_data_type_name": "int",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "bot_access_role_id",
+                    "order": "a87Ml",
+                    "table_uuid": "3a022908-1ac6-4410-bd2d-e83a1c084551",
+                    "uuid": "53743ef0-5938-493a-b2c7-f3a557b1cb43"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "38e34585-33f5-4530-96f0-dae3dc189cb7",
+                    "table_uuid": "3a022908-1ac6-4410-bd2d-e83a1c084551",
+                    "name": "38e34585-33f5-4530-96f0-dae3dc189cb7",
+                    "type": "index",
+                    "order": "a27i4",
+                    "column_uuids": [
+                        "ac9a396f-d991-4995-82db-cff14a1ae8bf",
+                        "31168a36-e19e-4da5-a20f-36edffa20821",
+                        "7915d0db-a351-4706-b986-240e2f5e55d6"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "ac9a396f-d991-4995-82db-cff14a1ae8bf",
+                            "name": "telegram_username"
+                        },
+                        {
+                            "uuid": "31168a36-e19e-4da5-a20f-36edffa20821",
+                            "name": "is_active"
+                        },
+                        {
+                            "uuid": "7915d0db-a351-4706-b986-240e2f5e55d6",
+                            "name": "employee_id"
+                        }
+                    ]
+                },
+                {
+                    "uuid": "0679c77f-d0a7-45f5-842d-d625ad7fa05e",
+                    "table_uuid": "3a022908-1ac6-4410-bd2d-e83a1c084551",
+                    "name": "0679c77f-d0a7-45f5-842d-d625ad7fa05e",
+                    "type": "index",
+                    "order": "a38G5",
+                    "column_uuids": [
+                        "a893f8a0-0c7f-47be-9e06-c27a0b0e7ce8",
+                        "53743ef0-5938-493a-b2c7-f3a557b1cb43"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "a893f8a0-0c7f-47be-9e06-c27a0b0e7ce8",
+                            "name": "telegram_user_id"
+                        },
+                        {
+                            "uuid": "53743ef0-5938-493a-b2c7-f3a557b1cb43",
+                            "name": "bot_access_role_id"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "0864d37c-dc3a-4ade-a8ee-432846f9f033",
+            "name": "user_bot_link",
+            "color": "#9561E2",
+            "order": "a14Ce",
+            "comment": null,
+            "width": 380,
+            "left": -650,
+            "top": -930,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a07SD",
+                    "table_uuid": "0864d37c-dc3a-4ade-a8ee-432846f9f033",
+                    "uuid": "61d05eca-39d2-4167-be3d-e4466e394ff2"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "bot_id",
+                    "order": "a0v59A64",
+                    "table_uuid": "0864d37c-dc3a-4ade-a8ee-432846f9f033",
+                    "uuid": "6842fc54-1632-4b0a-9f81-05acc2191742"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "user_id",
+                    "order": "a1BB6",
+                    "table_uuid": "0864d37c-dc3a-4ade-a8ee-432846f9f033",
+                    "uuid": "ce6436f3-db64-4639-a283-b3ff186c9c1f"
+                },
+                {
+                    "comment": null,
+                    "default": "true",
+                    "driver_data_type_id": 6,
+                    "driver_data_type_name": "boolean",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "can_access",
+                    "order": "a30ui",
+                    "table_uuid": "0864d37c-dc3a-4ade-a8ee-432846f9f033",
+                    "uuid": "e704060e-a316-481a-b3f0-1bbc09925df2"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 12,
+                    "driver_data_type_name": "datetime",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "granted_at",
+                    "order": "a48XO",
+                    "table_uuid": "0864d37c-dc3a-4ade-a8ee-432846f9f033",
+                    "uuid": "11605a7b-624b-4dcf-ba27-6cffc5a68bc9"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 12,
+                    "driver_data_type_name": "datetime",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "revoked_at",
+                    "order": "a570x",
+                    "table_uuid": "0864d37c-dc3a-4ade-a8ee-432846f9f033",
+                    "uuid": "e606fa67-b669-4afe-a868-a8d64c3302ce"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "0f74b659-0cc8-42af-9310-7e0068f33c3c",
+                    "table_uuid": "0864d37c-dc3a-4ade-a8ee-432846f9f033",
+                    "name": "0f74b659-0cc8-42af-9310-7e0068f33c3c",
+                    "type": "index",
+                    "order": "a05Z9",
+                    "column_uuids": [
+                        "61d05eca-39d2-4167-be3d-e4466e394ff2",
+                        "6842fc54-1632-4b0a-9f81-05acc2191742",
+                        "ce6436f3-db64-4639-a283-b3ff186c9c1f"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "61d05eca-39d2-4167-be3d-e4466e394ff2",
+                            "name": "id"
+                        },
+                        {
+                            "uuid": "6842fc54-1632-4b0a-9f81-05acc2191742",
+                            "name": "bot_id"
+                        },
+                        {
+                            "uuid": "ce6436f3-db64-4639-a283-b3ff186c9c1f",
+                            "name": "user_id"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+            "name": "bots",
+            "color": "#6574CD",
+            "order": "a24Wl",
+            "comment": null,
+            "width": 350,
+            "left": -170,
+            "top": -280,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a03Vh",
+                    "table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+                    "uuid": "c57d1b06-57b8-46b8-bf38-bd5ac84f0484"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "name",
+                    "order": "a19uX",
+                    "table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+                    "uuid": "9c411d1d-2b48-4030-acfe-e66774144327"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 54,
+                    "driver_data_type_name": "text",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "description",
+                    "order": "a20dC",
+                    "table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+                    "uuid": "e49dfc41-b71a-4598-99cc-1ee595a23326"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "api_url",
+                    "order": "a34Fq",
+                    "table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+                    "uuid": "4aca2b90-4987-4ea2-9b4c-d2fda9f61283"
+                },
+                {
+                    "comment": null,
+                    "default": "true",
+                    "driver_data_type_id": 6,
+                    "driver_data_type_name": "boolean",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "is_active",
+                    "order": "a4AF0",
+                    "table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+                    "uuid": "25984157-5767-4a8a-8aa7-07809c4e1dc3"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 12,
+                    "driver_data_type_name": "datetime",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "last_ping",
+                    "order": "a59PI",
+                    "table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+                    "uuid": "7edc4b2c-7fcb-4a70-be1d-1faa70720832"
+                },
+                {
+                    "comment": null,
+                    "default": "0",
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "requests_per_minute",
+                    "order": "a6Bsb",
+                    "table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+                    "uuid": "a3a71033-4980-42cb-b8bc-27fc06fdb056"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 28,
+                    "driver_data_type_name": "json",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "data",
+                    "order": "a7AsQ",
+                    "table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+                    "uuid": "3151114a-9c01-4e44-b042-eda7da53eb60"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "bot_model_id",
+                    "order": "a80bV",
+                    "table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+                    "uuid": "91d54ed6-bc8e-4455-a0e2-ff3836c0af05"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 26,
+                    "driver_data_type_name": "int",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "status_id",
+                    "order": "a9Axx",
+                    "table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+                    "uuid": "3321704d-e5db-4a1e-89db-3be2bb81b39f"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 26,
+                    "driver_data_type_name": "int",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "environment_id",
+                    "order": "aA86K",
+                    "table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+                    "uuid": "279fe602-0242-4c06-8745-5cb384d0fc86"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "created_at",
+                    "order": "aBAop",
+                    "table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+                    "uuid": "718059c1-311e-4460-90b5-026629b5fd5d"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "updated_at",
+                    "order": "aCAlV",
+                    "table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+                    "uuid": "55476391-1e8a-4bef-99fb-f8f205bcc9a7"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "dab49a85-7652-4b05-8ea6-63a39495babf",
+                    "table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+                    "name": "dab49a85-7652-4b05-8ea6-63a39495babf",
+                    "type": "index",
+                    "order": "a04sc",
+                    "column_uuids": [
+                        "9c411d1d-2b48-4030-acfe-e66774144327",
+                        "25984157-5767-4a8a-8aa7-07809c4e1dc3",
+                        "a3a71033-4980-42cb-b8bc-27fc06fdb056"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "9c411d1d-2b48-4030-acfe-e66774144327",
+                            "name": "name"
+                        },
+                        {
+                            "uuid": "25984157-5767-4a8a-8aa7-07809c4e1dc3",
+                            "name": "is_active"
+                        },
+                        {
+                            "uuid": "a3a71033-4980-42cb-b8bc-27fc06fdb056",
+                            "name": "requests_per_minute"
+                        }
+                    ]
+                },
+                {
+                    "uuid": "9bed63fc-fea7-40e9-a305-c4fc777dec13",
+                    "table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+                    "name": "9bed63fc-fea7-40e9-a305-c4fc777dec13",
+                    "type": "index",
+                    "order": "a13fP",
+                    "column_uuids": [
+                        "3321704d-e5db-4a1e-89db-3be2bb81b39f",
+                        "91d54ed6-bc8e-4455-a0e2-ff3836c0af05"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "3321704d-e5db-4a1e-89db-3be2bb81b39f",
+                            "name": "status_id"
+                        },
+                        {
+                            "uuid": "91d54ed6-bc8e-4455-a0e2-ff3836c0af05",
+                            "name": "bot_model_id"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "ac2eaeed-d4ba-4412-952a-fddfd4c74ec3",
+            "name": "bot_access_roles",
+            "color": "#3490DC",
+            "order": "a3AzM",
+            "comment": null,
+            "width": 320,
+            "left": -530,
+            "top": -1210,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a0A4a",
+                    "table_uuid": "ac2eaeed-d4ba-4412-952a-fddfd4c74ec3",
+                    "uuid": "ec3b39ab-0c78-4ec9-abad-ee7a78a46ca4"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "name",
+                    "order": "a1AYF",
+                    "table_uuid": "ac2eaeed-d4ba-4412-952a-fddfd4c74ec3",
+                    "uuid": "9f749608-73d4-410d-81c3-c0bea57b4f4a"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 54,
+                    "driver_data_type_name": "text",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "description",
+                    "order": "a26FZ",
+                    "table_uuid": "ac2eaeed-d4ba-4412-952a-fddfd4c74ec3",
+                    "uuid": "5b25c149-307a-4282-bd2f-0462d8fd12d0"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "c9b95bc6-a902-48b3-ba4e-de4b38509e17",
+                    "table_uuid": "ac2eaeed-d4ba-4412-952a-fddfd4c74ec3",
+                    "name": "c9b95bc6-a902-48b3-ba4e-de4b38509e17",
+                    "type": "index",
+                    "order": "a09z2",
+                    "column_uuids": [
+                        "9f749608-73d4-410d-81c3-c0bea57b4f4a"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "9f749608-73d4-410d-81c3-c0bea57b4f4a",
+                            "name": "name"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "53c69b1f-ab8e-45de-bb05-917e28554adc",
+            "name": "employees",
+            "color": "#4DC0B5",
+            "order": "a444T",
+            "comment": null,
+            "width": 280,
+            "left": 0,
+            "top": -1580,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a0BmL",
+                    "table_uuid": "53c69b1f-ab8e-45de-bb05-917e28554adc",
+                    "uuid": "91ac6bc3-70e6-4631-a017-721ddf216668"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "first_name",
+                    "order": "a19G2",
+                    "table_uuid": "53c69b1f-ab8e-45de-bb05-917e28554adc",
+                    "uuid": "da2e627c-79f6-4c92-ace1-6df66ac4fa3a"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "middle_name",
+                    "order": "a2AbX",
+                    "table_uuid": "53c69b1f-ab8e-45de-bb05-917e28554adc",
+                    "uuid": "d92e9047-e674-483f-b69c-727b40d0964c"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "last_name",
+                    "order": "a33sM",
+                    "table_uuid": "53c69b1f-ab8e-45de-bb05-917e28554adc",
+                    "uuid": "8f958e16-c3f2-4b47-be61-b7854adbfdde"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "second_last_name",
+                    "order": "a406r",
+                    "table_uuid": "53c69b1f-ab8e-45de-bb05-917e28554adc",
+                    "uuid": "4fba2e65-8ba1-4b4b-bc5e-139ded224e25"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "mobile_phone",
+                    "order": "a62Ig",
+                    "table_uuid": "53c69b1f-ab8e-45de-bb05-917e28554adc",
+                    "uuid": "95280ecb-5b20-4226-9bdc-ff5f51b0924e"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "email",
+                    "order": "a6iHI",
+                    "table_uuid": "53c69b1f-ab8e-45de-bb05-917e28554adc",
+                    "uuid": "7046030c-ed43-4a53-b998-5f4e5febf3fb"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "position",
+                    "order": "a70Ma",
+                    "table_uuid": "53c69b1f-ab8e-45de-bb05-917e28554adc",
+                    "uuid": "e1e6aa3e-6bff-4e88-9f2f-5f2f8ebba59c"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "company_id",
+                    "order": "a7d6L",
+                    "table_uuid": "53c69b1f-ab8e-45de-bb05-917e28554adc",
+                    "uuid": "6f57a139-3b0e-4666-99c4-8ed36feff6cf"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "role_id",
+                    "order": "a892I",
+                    "table_uuid": "53c69b1f-ab8e-45de-bb05-917e28554adc",
+                    "uuid": "af7450a9-70b8-4ee5-85b0-350b543ad0d2"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "955eaad8-2020-47c2-82c4-5ce261d98db8",
+                    "table_uuid": "53c69b1f-ab8e-45de-bb05-917e28554adc",
+                    "name": "955eaad8-2020-47c2-82c4-5ce261d98db8",
+                    "type": "index",
+                    "order": "a00f5",
+                    "column_uuids": [
+                        "da2e627c-79f6-4c92-ace1-6df66ac4fa3a",
+                        "8f958e16-c3f2-4b47-be61-b7854adbfdde"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "da2e627c-79f6-4c92-ace1-6df66ac4fa3a",
+                            "name": "first_name"
+                        },
+                        {
+                            "uuid": "8f958e16-c3f2-4b47-be61-b7854adbfdde",
+                            "name": "last_name"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+            "name": "company",
+            "color": "#84CC16",
+            "order": "a6Azh",
+            "comment": null,
+            "width": 360,
+            "left": -50,
+            "top": -880,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a0853",
+                    "table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+                    "uuid": "30f2f8f4-8648-4cdf-b7c5-9a6c11ae031e"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "name",
+                    "order": "a117R",
+                    "table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+                    "uuid": "00420a39-cd29-4b6d-a7fe-35c40e0abea9"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 54,
+                    "driver_data_type_name": "text",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "description",
+                    "order": "a27Xn",
+                    "table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+                    "uuid": "2bffe25b-d554-4950-83d0-55caf37ed9cc"
+                },
+                {
+                    "comment": null,
+                    "default": "true",
+                    "driver_data_type_id": 6,
+                    "driver_data_type_name": "boolean",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "is_active",
+                    "order": "a2Thk",
+                    "table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+                    "uuid": "deb3af2b-3d0f-4b37-ae16-01ec8c033952"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "phone",
+                    "order": "a3ZOl",
+                    "table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+                    "uuid": "88f45a2a-5549-428e-a7c3-048774afc152"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "email",
+                    "order": "a3qcu8pD",
+                    "table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+                    "uuid": "7305d258-5822-48af-be5b-0a580acb42a9"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "website",
+                    "order": "a47r4",
+                    "table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+                    "uuid": "82836589-ce27-4516-b7c5-8a9a497c5b6c"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "country",
+                    "order": "a4jlD",
+                    "table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+                    "uuid": "084894b1-820f-49a5-9549-ef6474bd3b7a"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "city",
+                    "order": "a4skL1pc",
+                    "table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+                    "uuid": "9080c916-d45b-4ea6-9005-1f44defc5313"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "state",
+                    "order": "a4yMYh4K",
+                    "table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+                    "uuid": "c6201b77-4cd2-4332-8c83-6e14c3a493f9"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "zip_code",
+                    "order": "a4zUCSCO",
+                    "table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+                    "uuid": "2a86a1dd-c0a3-40cb-a1e7-0238283a8744"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "address",
+                    "order": "a50bqMAa",
+                    "table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+                    "uuid": "475a7051-7221-4f1b-8fce-cb33993abfa9"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "created_at",
+                    "order": "a51jU",
+                    "table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+                    "uuid": "62feb9b6-31ad-4999-a50b-ac012a2abab8"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "created_at",
+                    "order": "a69O8",
+                    "table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+                    "uuid": "72f8c6e8-cf52-4d8b-a9cf-92fab3482fd8"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "e6c9edb9-9f09-4425-9105-e8a3ab791fdd",
+                    "table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+                    "name": "e6c9edb9-9f09-4425-9105-e8a3ab791fdd",
+                    "type": "index",
+                    "order": "a0A4e",
+                    "column_uuids": [
+                        "30f2f8f4-8648-4cdf-b7c5-9a6c11ae031e",
+                        "00420a39-cd29-4b6d-a7fe-35c40e0abea9",
+                        "deb3af2b-3d0f-4b37-ae16-01ec8c033952"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "30f2f8f4-8648-4cdf-b7c5-9a6c11ae031e",
+                            "name": "id"
+                        },
+                        {
+                            "uuid": "00420a39-cd29-4b6d-a7fe-35c40e0abea9",
+                            "name": "name"
+                        },
+                        {
+                            "uuid": "deb3af2b-3d0f-4b37-ae16-01ec8c033952",
+                            "name": "is_active"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "4494938b-0aed-4776-9707-2e0afcb8e7dc",
+            "name": "company_contacts",
+            "color": "#38C172",
+            "order": "a73bc",
+            "comment": null,
+            "width": 330,
+            "left": 360,
+            "top": -1610,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a02Om",
+                    "table_uuid": "4494938b-0aed-4776-9707-2e0afcb8e7dc",
+                    "uuid": "e6cfc7f7-d4d4-43cf-87e2-14791bb77e07"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "employee_id",
+                    "order": "a0YTu",
+                    "table_uuid": "4494938b-0aed-4776-9707-2e0afcb8e7dc",
+                    "uuid": "350d126d-5414-445b-bf9d-f166fdea7bac"
+                },
+                {
+                    "comment": null,
+                    "default": "false",
+                    "driver_data_type_id": 6,
+                    "driver_data_type_name": "boolean",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "is_primary",
+                    "order": "a3BQY",
+                    "table_uuid": "4494938b-0aed-4776-9707-2e0afcb8e7dc",
+                    "uuid": "77716083-6013-4cc1-81b1-fa50cb35bcae"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 54,
+                    "driver_data_type_name": "text",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "notes",
+                    "order": "a44lG",
+                    "table_uuid": "4494938b-0aed-4776-9707-2e0afcb8e7dc",
+                    "uuid": "85497520-37ea-4ca8-90ff-e7aaf315c3c8"
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "uuid": "46783a18-2050-4072-a011-c054bec7159a",
+            "name": "roles",
+            "color": "#FFED4A",
+            "order": "a87E7",
+            "comment": null,
+            "width": null,
+            "left": 0,
+            "top": -1090,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a057I",
+                    "table_uuid": "46783a18-2050-4072-a011-c054bec7159a",
+                    "uuid": "77128f58-4dc9-4614-b2af-bee75ffd34e7"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "name",
+                    "order": "a12om",
+                    "table_uuid": "46783a18-2050-4072-a011-c054bec7159a",
+                    "uuid": "67ad6269-bbcc-46c4-a82e-2d0da79d26c3"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 54,
+                    "driver_data_type_name": "text",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "description",
+                    "order": "a24rA",
+                    "table_uuid": "46783a18-2050-4072-a011-c054bec7159a",
+                    "uuid": "caad71db-43c6-4ccb-99d9-59516e87cb4a"
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "uuid": "15be1c01-37a9-4f8d-8963-0921a3321060",
+            "name": "payment_statuses",
+            "color": "#6574CD",
+            "order": "a97Ik",
+            "comment": null,
+            "width": null,
+            "left": 780,
+            "top": -1110,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a076w",
+                    "table_uuid": "15be1c01-37a9-4f8d-8963-0921a3321060",
+                    "uuid": "566f4b8e-a63f-48d5-b214-13be6073f15d"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "name",
+                    "order": "a13Nq",
+                    "table_uuid": "15be1c01-37a9-4f8d-8963-0921a3321060",
+                    "uuid": "122d1505-12dc-4993-8858-ecdf071a7fa2"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 54,
+                    "driver_data_type_name": "text",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "description",
+                    "order": "a24F6",
+                    "table_uuid": "15be1c01-37a9-4f8d-8963-0921a3321060",
+                    "uuid": "63c2e398-d161-48d1-86db-4afda3823e64"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "cf91db15-eeb3-4f7f-9f4d-69cb5753c655",
+                    "table_uuid": "15be1c01-37a9-4f8d-8963-0921a3321060",
+                    "name": "cf91db15-eeb3-4f7f-9f4d-69cb5753c655",
+                    "type": "index",
+                    "order": "a07yH",
+                    "column_uuids": [
+                        "122d1505-12dc-4993-8858-ecdf071a7fa2"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "122d1505-12dc-4993-8858-ecdf071a7fa2",
+                            "name": "name"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "40bb98e8-93fb-4fa6-b653-c611ba37d8bb",
+            "name": "bot_model_statuses",
+            "color": "#3490DC",
+            "order": "a9hFt",
+            "comment": null,
+            "width": null,
+            "left": 770,
+            "top": -80,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a0CJA",
+                    "table_uuid": "40bb98e8-93fb-4fa6-b653-c611ba37d8bb",
+                    "uuid": "a279ab3c-5856-4923-8e26-9156f941739d"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "name",
+                    "order": "a1Bnh",
+                    "table_uuid": "40bb98e8-93fb-4fa6-b653-c611ba37d8bb",
+                    "uuid": "50ba9d0d-61de-4f74-a92f-b645b04c12d9"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 54,
+                    "driver_data_type_name": "text",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "description",
+                    "order": "a216L",
+                    "table_uuid": "40bb98e8-93fb-4fa6-b653-c611ba37d8bb",
+                    "uuid": "82b4af5d-ca6b-403a-9606-1e7c54eddcce"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "08db5ff5-2972-49e0-949f-1c4990e6281c",
+                    "table_uuid": "40bb98e8-93fb-4fa6-b653-c611ba37d8bb",
+                    "name": "08db5ff5-2972-49e0-949f-1c4990e6281c",
+                    "type": "index",
+                    "order": "a001f",
+                    "column_uuids": [
+                        "50ba9d0d-61de-4f74-a92f-b645b04c12d9"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "50ba9d0d-61de-4f74-a92f-b645b04c12d9",
+                            "name": "name"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "f20b8c48-2e9d-4c69-8907-e93c64608bc5",
+            "name": "bot_models",
+            "color": "#6574CD",
+            "order": "aA6sV",
+            "comment": null,
+            "width": null,
+            "left": 390,
+            "top": -200,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a012E",
+                    "table_uuid": "f20b8c48-2e9d-4c69-8907-e93c64608bc5",
+                    "uuid": "d6bf0eba-2db9-44bd-a28b-f432e4aeee24"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "name",
+                    "order": "a18ZE",
+                    "table_uuid": "f20b8c48-2e9d-4c69-8907-e93c64608bc5",
+                    "uuid": "04c3f56c-5a4c-423f-bdcc-bbb91f8d2645"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "description",
+                    "order": "a23iC",
+                    "table_uuid": "f20b8c48-2e9d-4c69-8907-e93c64608bc5",
+                    "uuid": "041d3334-05c8-4cd9-bde0-8ed92928e694"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "version",
+                    "order": "a37Gq",
+                    "table_uuid": "f20b8c48-2e9d-4c69-8907-e93c64608bc5",
+                    "uuid": "b6376a96-ad0f-4977-af32-0b5235c4aaed"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 26,
+                    "driver_data_type_name": "int",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "status_id",
+                    "order": "a447q",
+                    "table_uuid": "f20b8c48-2e9d-4c69-8907-e93c64608bc5",
+                    "uuid": "80f18f35-3d6b-4ff6-9aef-3423aa5898ec"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "created_at",
+                    "order": "a57b1",
+                    "table_uuid": "f20b8c48-2e9d-4c69-8907-e93c64608bc5",
+                    "uuid": "b331e475-788f-49d4-9267-4011f6457196"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "updated_at",
+                    "order": "a6B20",
+                    "table_uuid": "f20b8c48-2e9d-4c69-8907-e93c64608bc5",
+                    "uuid": "6eea83e8-68e1-4ffe-8163-041e5bd7f897"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "8f30e59b-14af-4fc8-94d5-5cd542641de7",
+                    "table_uuid": "f20b8c48-2e9d-4c69-8907-e93c64608bc5",
+                    "name": "8f30e59b-14af-4fc8-94d5-5cd542641de7",
+                    "type": "index",
+                    "order": "a06hS",
+                    "column_uuids": [
+                        "04c3f56c-5a4c-423f-bdcc-bbb91f8d2645",
+                        "80f18f35-3d6b-4ff6-9aef-3423aa5898ec"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "04c3f56c-5a4c-423f-bdcc-bbb91f8d2645",
+                            "name": "name"
+                        },
+                        {
+                            "uuid": "80f18f35-3d6b-4ff6-9aef-3423aa5898ec",
+                            "name": "status_id"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "a7611a84-a0c9-46e7-91e4-0ea8aad45a85",
+            "name": "bot_statuses",
+            "color": "#3490DC",
+            "order": "aC4w4",
+            "comment": null,
+            "width": null,
+            "left": 390,
+            "top": 170,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a0CJA",
+                    "table_uuid": "a7611a84-a0c9-46e7-91e4-0ea8aad45a85",
+                    "uuid": "5917c6a6-3e86-4933-a0a7-718da233f3c3"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "name",
+                    "order": "a1Bnh",
+                    "table_uuid": "a7611a84-a0c9-46e7-91e4-0ea8aad45a85",
+                    "uuid": "faf0eb84-5029-4f35-be72-7bc3bf225eae"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 54,
+                    "driver_data_type_name": "text",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "description",
+                    "order": "a216L",
+                    "table_uuid": "a7611a84-a0c9-46e7-91e4-0ea8aad45a85",
+                    "uuid": "42046706-c66f-46ff-ac02-22240a05d5da"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "8d964c89-a80b-4080-8c85-ccef66f93c98",
+                    "table_uuid": "a7611a84-a0c9-46e7-91e4-0ea8aad45a85",
+                    "name": "8d964c89-a80b-4080-8c85-ccef66f93c98",
+                    "type": "index",
+                    "order": "a09t8",
+                    "column_uuids": [
+                        "faf0eb84-5029-4f35-be72-7bc3bf225eae"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "faf0eb84-5029-4f35-be72-7bc3bf225eae",
+                            "name": "name"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "99ad5d50-8b01-4be0-90a8-3e467b12724c",
+            "name": "bot_environments",
+            "color": "#3490DC",
+            "order": "aD8fQ",
+            "comment": null,
+            "width": null,
+            "left": 350,
+            "top": 420,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a0CJA",
+                    "table_uuid": "99ad5d50-8b01-4be0-90a8-3e467b12724c",
+                    "uuid": "be95c499-3a51-4da1-9d5b-3059331183c6"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "name",
+                    "order": "a1Bnh",
+                    "table_uuid": "99ad5d50-8b01-4be0-90a8-3e467b12724c",
+                    "uuid": "233847b7-e8cb-402c-b27e-1df936991b42"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 54,
+                    "driver_data_type_name": "text",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "description",
+                    "order": "a216L",
+                    "table_uuid": "99ad5d50-8b01-4be0-90a8-3e467b12724c",
+                    "uuid": "83cfd872-649a-44cc-8b79-64051337e3ee"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "fdeb8973-14e8-4a15-a1f5-2e5e74de9534",
+                    "table_uuid": "99ad5d50-8b01-4be0-90a8-3e467b12724c",
+                    "name": "fdeb8973-14e8-4a15-a1f5-2e5e74de9534",
+                    "type": "index",
+                    "order": "a03MW",
+                    "column_uuids": [
+                        "233847b7-e8cb-402c-b27e-1df936991b42"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "233847b7-e8cb-402c-b27e-1df936991b42",
+                            "name": "name"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "a363cd76-ab46-4fd3-a545-c40aba2fd54f",
+            "name": "bot_category_link",
+            "color": "#84CC16",
+            "order": "aEBYK",
+            "comment": null,
+            "width": null,
+            "left": -650,
+            "top": -180,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "bot_id",
+                    "order": "a17m9",
+                    "table_uuid": "a363cd76-ab46-4fd3-a545-c40aba2fd54f",
+                    "uuid": "9bae2aab-111c-4e4c-b6b6-e04e6fc4bf63"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "category_id",
+                    "order": "a2AoQ",
+                    "table_uuid": "a363cd76-ab46-4fd3-a545-c40aba2fd54f",
+                    "uuid": "ec9302d1-7294-40f1-86f7-9a919d1cd2bf"
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "uuid": "590f9964-25c9-46d9-b085-c74a0481bdd6",
+            "name": "bot_categories",
+            "color": "#38C172",
+            "order": "aF1RO",
+            "comment": null,
+            "width": null,
+            "left": -650,
+            "top": -20,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 2,
+                    "driver_data_type_name": "bigint",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a0AeI",
+                    "table_uuid": "590f9964-25c9-46d9-b085-c74a0481bdd6",
+                    "uuid": "241cd45f-a66e-4e39-8953-dd1a096a7a9e"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "name",
+                    "order": "a16Fw",
+                    "table_uuid": "590f9964-25c9-46d9-b085-c74a0481bdd6",
+                    "uuid": "95481f52-3485-47e6-b966-3c33da345063"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 54,
+                    "driver_data_type_name": "text",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "description",
+                    "order": "a21zK",
+                    "table_uuid": "590f9964-25c9-46d9-b085-c74a0481bdd6",
+                    "uuid": "1cf08c72-5c30-4086-83c7-237fca7d97a8"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "created_at",
+                    "order": "a37Hq",
+                    "table_uuid": "590f9964-25c9-46d9-b085-c74a0481bdd6",
+                    "uuid": "1b62a599-7f82-4ea3-a697-dc505b8856ec"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 64,
+                    "driver_data_type_name": "timestamp",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "updated_at",
+                    "order": "a4Ag3",
+                    "table_uuid": "590f9964-25c9-46d9-b085-c74a0481bdd6",
+                    "uuid": "4057f54b-45a8-42a3-a696-b080e570edaf"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "a463de76-f2f3-4be9-83ce-e646eb129b32",
+                    "table_uuid": "590f9964-25c9-46d9-b085-c74a0481bdd6",
+                    "name": "a463de76-f2f3-4be9-83ce-e646eb129b32",
+                    "type": "index",
+                    "order": "a03rc",
+                    "column_uuids": [
+                        "95481f52-3485-47e6-b966-3c33da345063"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "95481f52-3485-47e6-b966-3c33da345063",
+                            "name": "name"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "27ed0908-39f2-4547-89a8-9eb3acdaf2f1",
+            "name": "payment_methods",
+            "color": "#FFED4A",
+            "order": "aG37S",
+            "comment": null,
+            "width": null,
+            "left": 780,
+            "top": -1420,
+            "columns": [
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 26,
+                    "driver_data_type_name": "int",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": true,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": true,
+                    "is_unique_key": false,
+                    "is_unsigned": true,
+                    "name": "id",
+                    "order": "a0A4o",
+                    "table_uuid": "27ed0908-39f2-4547-89a8-9eb3acdaf2f1",
+                    "uuid": "a9ab8a84-0a2b-4650-87ea-64b1e097c4cc"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": true,
+                    "is_unsigned": false,
+                    "name": "code",
+                    "order": "a0duZ",
+                    "table_uuid": "27ed0908-39f2-4547-89a8-9eb3acdaf2f1",
+                    "uuid": "4a4008d5-9626-4b6f-a84a-c6664ddca14c"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 52,
+                    "driver_data_type_name": "varchar",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "name",
+                    "order": "a13KH",
+                    "table_uuid": "27ed0908-39f2-4547-89a8-9eb3acdaf2f1",
+                    "uuid": "14f0bb11-d5ec-4186-ad8f-f20bf2615e5d"
+                },
+                {
+                    "comment": null,
+                    "default": null,
+                    "driver_data_type_id": 54,
+                    "driver_data_type_name": "text",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": true,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "description",
+                    "order": "a28cR",
+                    "table_uuid": "27ed0908-39f2-4547-89a8-9eb3acdaf2f1",
+                    "uuid": "bc869cba-87c1-437d-bcfd-2966869a20a7"
+                },
+                {
+                    "comment": null,
+                    "default": "true",
+                    "driver_data_type_id": 6,
+                    "driver_data_type_name": "boolean",
+                    "driver_data_type_params": [],
+                    "is_auto_increment": false,
+                    "is_index": false,
+                    "is_nullable": false,
+                    "is_primary_key": false,
+                    "is_unique_key": false,
+                    "is_unsigned": false,
+                    "name": "is_active",
+                    "order": "a33eF",
+                    "table_uuid": "27ed0908-39f2-4547-89a8-9eb3acdaf2f1",
+                    "uuid": "d46d7050-4c79-4364-9a73-8c94f1557c32"
+                }
+            ],
+            "indexes": [
+                {
+                    "uuid": "6c5cefb5-b9f6-4198-b763-3db3877c742c",
+                    "table_uuid": "27ed0908-39f2-4547-89a8-9eb3acdaf2f1",
+                    "name": "6c5cefb5-b9f6-4198-b763-3db3877c742c",
+                    "type": "index",
+                    "order": "a02KS",
+                    "column_uuids": [
+                        "4a4008d5-9626-4b6f-a84a-c6664ddca14c",
+                        "d46d7050-4c79-4364-9a73-8c94f1557c32"
+                    ],
+                    "columns": [
+                        {
+                            "uuid": "4a4008d5-9626-4b6f-a84a-c6664ddca14c",
+                            "name": "code"
+                        },
+                        {
+                            "uuid": "d46d7050-4c79-4364-9a73-8c94f1557c32",
+                            "name": "is_active"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "uuid": "299b0c02-239a-4421-ae5f-41e3e6a12f6d",
+            "source_column_uuid": "9bae2aab-111c-4e4c-b6b6-e04e6fc4bf63",
+            "source_table_uuid": "a363cd76-ab46-4fd3-a545-c40aba2fd54f",
+            "target_column_uuid": "c57d1b06-57b8-46b8-bf38-bd5ac84f0484",
+            "target_table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+            "type": "many-to-one"
+        },
+        {
+            "uuid": "4f7d1215-18b7-4927-a9ef-31f742163612",
+            "source_column_uuid": "040d841a-a0ac-4fc4-bd80-e7f5c5c8d740",
+            "source_table_uuid": "42d9b264-250d-4c2d-b028-c3b54717eaa0",
+            "target_column_uuid": "c57d1b06-57b8-46b8-bf38-bd5ac84f0484",
+            "target_table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+            "type": "one-to-one"
+        },
+        {
+            "uuid": "e168d82d-44eb-43a2-8e27-d21ddff74581",
+            "source_column_uuid": "7cfb90b4-caf0-404b-bed7-f48020026b85",
+            "source_table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+            "target_column_uuid": "c57d1b06-57b8-46b8-bf38-bd5ac84f0484",
+            "target_table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+            "type": "many-to-one"
+        },
+        {
+            "uuid": "f512c468-e786-446d-82d9-b0d6b008f90c",
+            "source_column_uuid": "6842fc54-1632-4b0a-9f81-05acc2191742",
+            "source_table_uuid": "0864d37c-dc3a-4ade-a8ee-432846f9f033",
+            "target_column_uuid": "c57d1b06-57b8-46b8-bf38-bd5ac84f0484",
+            "target_table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+            "type": "many-to-one"
+        },
+        {
+            "uuid": "f5d48288-111e-49f9-be51-6c7bd6897622",
+            "source_column_uuid": "91d54ed6-bc8e-4455-a0e2-ff3836c0af05",
+            "source_table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+            "target_column_uuid": "d6bf0eba-2db9-44bd-a28b-f432e4aeee24",
+            "target_table_uuid": "f20b8c48-2e9d-4c69-8907-e93c64608bc5",
+            "type": "many-to-one"
+        },
+        {
+            "uuid": "59e58dac-6c94-4c65-a683-9ee751261b83",
+            "source_column_uuid": "6f57a139-3b0e-4666-99c4-8ed36feff6cf",
+            "source_table_uuid": "53c69b1f-ab8e-45de-bb05-917e28554adc",
+            "target_column_uuid": "30f2f8f4-8648-4cdf-b7c5-9a6c11ae031e",
+            "target_table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+            "type": "many-to-one"
+        },
+        {
+            "uuid": "badca451-0c6c-48a2-b1fb-218388220860",
+            "source_column_uuid": "b9202a5c-8456-4016-9fef-b024ad9fb29f",
+            "source_table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+            "target_column_uuid": "30f2f8f4-8648-4cdf-b7c5-9a6c11ae031e",
+            "target_table_uuid": "66655e4e-1885-4b34-9699-0f07ec00140e",
+            "type": "many-to-one"
+        },
+        {
+            "uuid": "ded44952-caa6-40c6-b30f-23585220cc9c",
+            "source_column_uuid": "350d126d-5414-445b-bf9d-f166fdea7bac",
+            "source_table_uuid": "4494938b-0aed-4776-9707-2e0afcb8e7dc",
+            "target_column_uuid": "91ac6bc3-70e6-4631-a017-721ddf216668",
+            "target_table_uuid": "53c69b1f-ab8e-45de-bb05-917e28554adc",
+            "type": "one-to-one"
+        },
+        {
+            "uuid": "ec7ac2fd-2854-43c0-824d-00afd2810c9a",
+            "source_column_uuid": "279fe602-0242-4c06-8745-5cb384d0fc86",
+            "source_table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+            "target_column_uuid": "be95c499-3a51-4da1-9d5b-3059331183c6",
+            "target_table_uuid": "99ad5d50-8b01-4be0-90a8-3e467b12724c",
+            "type": "many-to-one"
+        },
+        {
+            "uuid": "a3b97158-30e3-4cff-9c1d-dce314b338bd",
+            "source_column_uuid": "ec3b39ab-0c78-4ec9-abad-ee7a78a46ca4",
+            "source_table_uuid": "ac2eaeed-d4ba-4412-952a-fddfd4c74ec3",
+            "target_column_uuid": "53743ef0-5938-493a-b2c7-f3a557b1cb43",
+            "target_table_uuid": "3a022908-1ac6-4410-bd2d-e83a1c084551",
+            "type": "one-to-many"
+        },
+        {
+            "uuid": "66839c50-7291-428f-957d-b5ddb7de280f",
+            "source_column_uuid": "241cd45f-a66e-4e39-8953-dd1a096a7a9e",
+            "source_table_uuid": "590f9964-25c9-46d9-b085-c74a0481bdd6",
+            "target_column_uuid": "ec9302d1-7294-40f1-86f7-9a919d1cd2bf",
+            "target_table_uuid": "a363cd76-ab46-4fd3-a545-c40aba2fd54f",
+            "type": "one-to-many"
+        },
+        {
+            "uuid": "550cf1db-6779-495b-a843-a8a752e34bea",
+            "source_column_uuid": "91ac6bc3-70e6-4631-a017-721ddf216668",
+            "source_table_uuid": "53c69b1f-ab8e-45de-bb05-917e28554adc",
+            "target_column_uuid": "7915d0db-a351-4706-b986-240e2f5e55d6",
+            "target_table_uuid": "3a022908-1ac6-4410-bd2d-e83a1c084551",
+            "type": "one-to-one"
+        },
+        {
+            "uuid": "c467bb7c-d999-417a-b810-76d0c36ff220",
+            "source_column_uuid": "a9ab8a84-0a2b-4650-87ea-64b1e097c4cc",
+            "source_table_uuid": "27ed0908-39f2-4547-89a8-9eb3acdaf2f1",
+            "target_column_uuid": "425d7eeb-9f9c-4cfa-8ecd-955a99624fa5",
+            "target_table_uuid": "7a704fa2-2e18-4bea-8919-a9b008130361",
+            "type": "one-to-many"
+        },
+        {
+            "uuid": "a17ddfa1-9238-479c-b6d7-7f19dfe5e0b6",
+            "source_column_uuid": "d30cf7ae-9a52-425d-bf31-58c239a787d3",
+            "source_table_uuid": "563af187-6915-45a8-8d92-b1c5d606f092",
+            "target_column_uuid": "9592c166-7ded-4841-8d22-bbda5b7e9862",
+            "target_table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+            "type": "one-to-many"
+        },
+        {
+            "uuid": "ba2901e0-18f8-4a28-b06c-b918f8291ead",
+            "source_column_uuid": "ebe025ee-b61c-4687-943e-ac74527d01ce",
+            "source_table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+            "target_column_uuid": "5c5c9173-9c08-4141-a51a-24bd5dfd0727",
+            "target_table_uuid": "7a704fa2-2e18-4bea-8919-a9b008130361",
+            "type": "one-to-many"
+        },
+        {
+            "uuid": "026b5845-ecb7-4331-8e3e-e772243e431d",
+            "source_column_uuid": "3360591c-80fa-4eb2-b197-11d3c15432af",
+            "source_table_uuid": "3a022908-1ac6-4410-bd2d-e83a1c084551",
+            "target_column_uuid": "ce6436f3-db64-4639-a283-b3ff186c9c1f",
+            "target_table_uuid": "0864d37c-dc3a-4ade-a8ee-432846f9f033",
+            "type": "one-to-many"
+        },
+        {
+            "uuid": "6d72fadf-5bc4-4547-8ac5-41412c85bebf",
+            "source_column_uuid": "a1593af3-4b47-407c-92cf-3eeb6e2a930a",
+            "source_table_uuid": "7a704fa2-2e18-4bea-8919-a9b008130361",
+            "target_column_uuid": "566f4b8e-a63f-48d5-b214-13be6073f15d",
+            "target_table_uuid": "15be1c01-37a9-4f8d-8963-0921a3321060",
+            "type": "many-to-one"
+        },
+        {
+            "uuid": "7369507b-8db9-4659-a401-6cc2ed590869",
+            "source_column_uuid": "af7450a9-70b8-4ee5-85b0-350b543ad0d2",
+            "source_table_uuid": "53c69b1f-ab8e-45de-bb05-917e28554adc",
+            "target_column_uuid": "77128f58-4dc9-4614-b2af-bee75ffd34e7",
+            "target_table_uuid": "46783a18-2050-4072-a011-c054bec7159a",
+            "type": "many-to-one"
+        },
+        {
+            "uuid": "21df16b4-1101-4f3e-a852-1b7c1aa96f4c",
+            "source_column_uuid": "80f18f35-3d6b-4ff6-9aef-3423aa5898ec",
+            "source_table_uuid": "f20b8c48-2e9d-4c69-8907-e93c64608bc5",
+            "target_column_uuid": "a279ab3c-5856-4923-8e26-9156f941739d",
+            "target_table_uuid": "40bb98e8-93fb-4fa6-b653-c611ba37d8bb",
+            "type": "many-to-one"
+        },
+        {
+            "uuid": "30e436d4-0ac5-4dcb-ba1c-9338942a1730",
+            "source_column_uuid": "3321704d-e5db-4a1e-89db-3be2bb81b39f",
+            "source_table_uuid": "e0102435-5dc2-49a2-8c6a-17ce333d1b59",
+            "target_column_uuid": "5917c6a6-3e86-4933-a0a7-718da233f3c3",
+            "target_table_uuid": "a7611a84-a0c9-46e7-91e4-0ea8aad45a85",
+            "type": "many-to-one"
+        },
+        {
+            "uuid": "806812ab-42f7-4a1f-a0ff-0cdbcf0a9aa6",
+            "source_column_uuid": "b3e285a3-423c-41b9-be12-13689b3c5aae",
+            "source_table_uuid": "3f6cf08d-e48d-4cb8-8036-250c798001d3",
+            "target_column_uuid": "b79fd04a-eca2-4f6d-b584-23878d327405",
+            "target_table_uuid": "281bdc11-44a1-48b6-81f5-f9204600dd25",
+            "type": "many-to-one"
+        }
+    ],
+    "created_at": "2025-06-30T22:42:49+00:00",
+    "schema_version": 3,
+    "version": 2
+}

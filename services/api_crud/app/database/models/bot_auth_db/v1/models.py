@@ -187,9 +187,50 @@ class BotModelStatus(SQLModel, table=True):
         passive_deletes="all"
     )
 
+# ---------------------------------------------------------------------------
+# 6. PaymentMethod
+# ---------------------------------------------------------------------------
+class PaymentMethod(SQLModel, table=True):
+    """
+    💳 Catálogo de métodos de pago admitidos por la plataforma
+    (tarjeta, PSE, transferencia, dinero en cuenta, etc.).
+    """
+    __tablename__ = "payment_methods"
+    metadata = metadata
+
+    # 🔑 Identificador
+    id: int | None = Field(default=None, primary_key=True)
+
+    # 🏷️ Datos del método
+    code: str = Field(
+        max_length=30,
+        unique=True,
+        index=True,
+        description="Código interno único (ej: 'CARD', 'PSE', 'NEQUI')"
+    )
+    name: str = Field(
+        max_length=50,
+        description="Nombre visible para el usuario (ej: 'Tarjeta de crédito')"
+    )
+    description: str | None = Field(
+        default=None,
+        max_length=255,
+        description="Descripción opcional y detalles del método"
+    )
+    is_active: bool = Field(
+        default=True,
+        index=True,
+        description="Indica si el método está habilitado para nuevos pagos"
+    )
+
+    # 🔗 Relación con `SubscriptionPayment`
+    payments: list["SubscriptionPayment"] = Relationship(
+        back_populates="method",
+        passive_deletes="all"
+    )
 
 # ---------------------------------------------------------------------------
-# 6. PaymentStatus
+# 7. PaymentStatus
 # ---------------------------------------------------------------------------
 class PaymentStatus(SQLModel, table=True):
     """Estado de un pago (pendiente, completado, cancelado…)."""
@@ -216,7 +257,7 @@ class PaymentStatus(SQLModel, table=True):
 
 
 # ---------------------------------------------------------------------------
-# 7. SubscriptionStatus
+# 8. SubscriptionStatus
 # ---------------------------------------------------------------------------
 class SubscriptionStatus(SQLModel, table=True):
     """
@@ -256,7 +297,7 @@ class SubscriptionStatus(SQLModel, table=True):
 
 
 # ---------------------------------------------------------------------------
-# 8. SubscriptionPeriod
+# 9. SubscriptionPeriod
 # ---------------------------------------------------------------------------
 class SubscriptionPeriod(SQLModel, table=True):
     """
@@ -295,7 +336,7 @@ class SubscriptionPeriod(SQLModel, table=True):
 # 🔗 Tabla de unión M‑N
 # ───────────────────────────────────────────────
 # ---------------------------------------------------------------------------
-# 9. BotCategoryLink
+# 10. BotCategoryLink
 # ---------------------------------------------------------------------------
 class BotCategoryLink(SQLModel, table=True):
     """
@@ -325,7 +366,7 @@ class BotCategoryLink(SQLModel, table=True):
 # 🔗 Catálogo Dependiente de unión
 # ───────────────────────────────────────────────
 # ---------------------------------------------------------------------------
-# 10. BotCategory
+# 11. BotCategory
 # ---------------------------------------------------------------------------
 class BotCategory(SQLModel, table=True):
     """
@@ -370,7 +411,7 @@ class BotCategory(SQLModel, table=True):
 # 🗄️ Núcleo de la base de datos
 # ───────────────────────────────────────────────
 # ---------------------------------------------------------------------------
-# 11. Employee
+# 12. Employee
 # ---------------------------------------------------------------------------
 class Employee(SQLModel, table=True):
     """
@@ -424,14 +465,6 @@ class Employee(SQLModel, table=True):
         description="Cargo u ocupación dentro de la empresa"
     )
 
-    # 🔗 Relación con `Role` (Cada empleado se le asigna un único rol)
-    role_id: int | None = Field(
-        default=None,
-        foreign_key="roles.id",
-        ondelete="SET NULL"
-    )
-    role: Optional[Role] = Relationship(back_populates="employees")
-
     # 🔗 Relación con `Company` (Cada empleado pertenece a una única empresa)
     company_id: int = Field(
         foreign_key="companies.id",
@@ -439,6 +472,14 @@ class Employee(SQLModel, table=True):
         description="ID de la empresa a la que pertenece el empleado"
     )
     company: "Company" = Relationship(back_populates="employees")
+
+    # 🔗 Relación con `Role` (Cada empleado se le asigna un único rol)
+    role_id: int | None = Field(
+        default=None,
+        foreign_key="roles.id",
+        ondelete="SET NULL"
+    )
+    role: Optional[Role] = Relationship(back_populates="employees")
 
     # 🔗 Relación con `CompanyContact` (Cada empleado es un contacto de la empresa)
     company_contact: Optional["CompanyContact"]= Relationship(
@@ -464,7 +505,7 @@ class Employee(SQLModel, table=True):
 
 
 # ---------------------------------------------------------------------------
-# 12. Company
+# 13. Company
 # ---------------------------------------------------------------------------
 class Company(SQLModel, table=True):
     """
@@ -519,6 +560,7 @@ class Company(SQLModel, table=True):
     # ☎️ Información de contacto
     phone: str = Field(
         max_length=20,
+        unique=True,
         description="Número de contacto de la empresa"
     )
     email: str = Field(
@@ -562,7 +604,7 @@ class Company(SQLModel, table=True):
 
 
 # ---------------------------------------------------------------------------
-# 13. CompanyContact
+# 14. CompanyContact
 # ---------------------------------------------------------------------------
 class CompanyContact(SQLModel, table=True):
     """Empleado designado como contacto para una :class:`Company`."""
@@ -597,7 +639,7 @@ class CompanyContact(SQLModel, table=True):
 
 
 # ---------------------------------------------------------------------------
-# 14. BotModel
+# 15. BotModel
 # ---------------------------------------------------------------------------
 class BotModel(SQLModel, table=True):
     """
@@ -656,7 +698,7 @@ class BotModel(SQLModel, table=True):
 
 
 # ---------------------------------------------------------------------------
-# 15. Bot
+# 16. Bot
 # ---------------------------------------------------------------------------
 class Bot(SQLModel, table=True):
     """
@@ -769,7 +811,7 @@ class Bot(SQLModel, table=True):
 
 
 # ---------------------------------------------------------------------------
-# 16. BotCredential
+# 17. BotCredential
 # ---------------------------------------------------------------------------
 class BotCredential(SQLModel, table=True):
     """
@@ -822,7 +864,7 @@ class BotCredential(SQLModel, table=True):
 
 
 # ---------------------------------------------------------------------------
-# 17. BotUser
+# 18. BotUser
 # ---------------------------------------------------------------------------
 class BotUser(SQLModel, table=True):
     """
@@ -878,7 +920,7 @@ class BotUser(SQLModel, table=True):
         index=True,
         description="Permisos asignados al usuario"
     )
-    access_role: BotAccessRole = Relationship(
+    access_role: BotAccessRole | None = Relationship(
         back_populates="users"
     )
 
@@ -893,7 +935,7 @@ class BotUser(SQLModel, table=True):
 # 🔗 Tabla de unión M‑N
 # ───────────────────────────────────────────────
 # ---------------------------------------------------------------------------
-# 18. UserBotLink
+# 19. UserBotLink
 # ---------------------------------------------------------------------------
 class UserBotLink(SQLModel, table=True):
     """
@@ -949,7 +991,7 @@ class UserBotLink(SQLModel, table=True):
 # 🔄 Transaccionales
 # ───────────────────────────────────────────────
 # ---------------------------------------------------------------------------
-# 19. Subscription
+# 20. Subscription
 # ---------------------------------------------------------------------------
 class Subscription(SQLModel, table=True):
     """
@@ -1015,6 +1057,15 @@ class Subscription(SQLModel, table=True):
     )
     company: Company = Relationship(back_populates="bot_subscriptions")
 
+    # 🔗 Relación con `SubscriptionPeriod` (Cada suscripción tiene un único período de facturación)
+    subscription_period_id: int | None = Field(
+        default=None,
+        foreign_key="subscription_periods.id",
+        ondelete="SET NULL",
+        description="Frecuencia de facturación de la suscripción"
+    )
+    period: SubscriptionPeriod | None = Relationship(back_populates="subscriptions")
+
     # 🔗 Relación con `SubscriptionStatus` (Cada suscripción tiene un único estado)
     status_id: int | None = Field(
         default=None,
@@ -1024,15 +1075,6 @@ class Subscription(SQLModel, table=True):
         description="Estado actual de la suscripción"
     )
     status: Optional[SubscriptionStatus] = Relationship(back_populates="subscriptions")
-
-    # 🔗 Relación con `SubscriptionPeriod` (Cada suscripción tiene un único período de facturación)
-    subscription_period_id: int | None = Field(
-        default=None,
-        foreign_key="subscription_periods.id",
-        ondelete="SET NULL",
-        description="Frecuencia de facturación de la suscripción"
-    )
-    period: SubscriptionPeriod | None = Relationship(back_populates="subscriptions")
 
     # 🔗 Relación con `SubscriptionPayment` (Las suscripción tienen varios pagos)
     payments: list["SubscriptionPayment"] = Relationship(
@@ -1050,7 +1092,7 @@ class Subscription(SQLModel, table=True):
 
 
 # ---------------------------------------------------------------------------
-# 20. SubscriptionPayment
+# 21. SubscriptionPayment
 # ---------------------------------------------------------------------------
 class SubscriptionPayment(SQLModel, table=True):
     """
@@ -1085,6 +1127,15 @@ class SubscriptionPayment(SQLModel, table=True):
         index=True,
         description="Identificador único de la transacción, generado por la pasarela de pagos"
     )
+    # 🔗 Relación con `PaymentMethod`
+    payment_method_id: int | None = Field(
+        default=None,
+        foreign_key="payment_methods.id",
+        ondelete="SET NULL",
+        index=True,
+        description="Método utilizado para realizar el pago"
+    )
+    method: PaymentMethod | None = Relationship(back_populates="payments")
 
     # 🔗 Relación con `PaymentStatus` (Cada pago tiene un único estado)
     payment_status_id: int | None = Field(
