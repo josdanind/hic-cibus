@@ -21,13 +21,19 @@ from fastapi import Depends
 from app.schemas.database import DatabaseConfig as DatabaseConfigSchema
 from app.schemas.crud_user import CrudUserInDB as CrudUserInDBSchema
 
-# 🛠️ Utilidades, librerías y configuraciones
+# 🏗️  Módulos internos de la aplicación
 from app.utils.rich_format import print_panel
 from app.core.config import settings
 from app.core.security import generate_bcrypt_hash
 from app.libraries.CRUDManager import CRUDManager
 from .config import DATABASES
 
+# 🧱 Modelos y esquemas
+from .models.user_auth_db import (
+    UserAuthEmployee as EmployeeModel,
+    UserAuthCrudUser as CrudUserModel
+)
+from .models.mqtt_auth_db import MqttUser as MqttUserModel
 
 # ────────────────────────────────────────
 # 🚀 Inicialización de las bases de datos
@@ -120,8 +126,6 @@ async def create_crud_user():
     # Obtener referencias a la sesión y los modelos
     user_db = DATABASES["user_auth_db"]
     session_factory = user_db.session_factory
-    EmployeeModel = user_db.models.Employee
-    CrudUserModel = user_db.models.CrudUser
 
     async with session_factory() as session:
         crud_manager = CRUDManager(session)
@@ -179,7 +183,7 @@ async def create_mqtt_user():
     """
     mqtt_db = DATABASES["mqtt_auth_db"]
     session_factory = mqtt_db.session_factory
-    MqttUserModel = mqtt_db.models.User
+    # MqttUserModel = mqtt_db.models.User
 
     async with session_factory() as session:
         crud_manager = CRUDManager(session)

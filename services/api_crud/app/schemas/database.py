@@ -1,12 +1,8 @@
 # ─────────────────
 # 📦 Importaciones
 # ─────────────────
-# Librería Estándar
-from typing import Type, TypeVar, Generic
-
-# Librerías de terceros
+# 🧩 Terceros
 from pydantic import BaseModel, PrivateAttr
-from sqlmodel import SQLModel
 from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -15,12 +11,8 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker
 )
 
-T_ModelCollection = TypeVar('T_ModelCollection')
-
-class DatabaseConfig(BaseModel, Generic[T_ModelCollection]):
+class DatabaseConfig(BaseModel):
     db_url: str
-    models: Type[T_ModelCollection]
-    # models: dict[str, Type[SQLModel]]
     metadata: MetaData
 
     _engine: AsyncEngine = PrivateAttr()

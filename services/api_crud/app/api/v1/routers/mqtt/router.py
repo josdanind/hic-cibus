@@ -1,17 +1,18 @@
 # ─────────────────
 # 📦 Importaciones
 # ─────────────────
-# FastAPI
+# 🧩 Terceros
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordBearer
-
-# SQLModel y SQLAlchemist
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-# Utilidades y esquemas de la App
+# 🏗️  Módulos internos de la aplicación
 from app.database import get_mqtt_crud, DATABASES
 
-# Autenticación para Usuarios CRUD
+# 🧱 Modelos y esquemas
+from app.database.models.mqtt_auth_db import MqttUser as MqttUserModel
+
+# 🔐 Autenticación para Usuarios CRUD
 from ..crud.auth import decode_token as user_crud_decode_token
 
 router = APIRouter()
@@ -19,7 +20,7 @@ oauth2_schema = OAuth2PasswordBearer(tokenUrl="crud_user/auth")
 
 # Configuración de base de datos y modelos
 mqtt_db = DATABASES["mqtt_auth_db"]
-MqttUserModel = mqtt_db.models.User
+# MqttUserModel = mqtt_db.models.User
 
 @router.get(
     "",

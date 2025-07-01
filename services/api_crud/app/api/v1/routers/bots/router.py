@@ -7,7 +7,6 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 
 # 🏗️  Módulos internos de la aplicación
 from app.schemas.auth import Token
-from app.libraries.CRUDManager import CRUDManager
 
 # 🛠️ Utilidades del router
 from .auth import generate_access_token
