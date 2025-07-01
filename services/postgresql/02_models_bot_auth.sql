@@ -81,7 +81,7 @@ CREATE TABLE payment_methods (
     code VARCHAR(30) UNIQUE NOT NULL,
     name VARCHAR(50) UNIQUE NOT NULL,
     description TEXT,
-    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
 -- Índices para acelerar búsquedas
 CREATE INDEX idx_payment_methods_code ON payment_methods (code);
