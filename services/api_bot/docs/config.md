@@ -26,4 +26,5 @@
 ## 📦 Instalación
 
 ```bash
-pip install fastapi "uvicorn[standard]" rich python-multipart pydantic-settings redis aiohttp
+pip install fastapi "uvicorn[standard]" rich python-multipart pydantic-settings redis aiohttp pyngrok pyTelegramBotAPI
+```

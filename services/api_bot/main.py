@@ -1,6 +1,11 @@
 """
-Punto de entrada de la aplicación FastAPI.
-Gestiona el ciclo de vida (startup/shutdown) y registra los routers.
+📌 Punto de entrada de la aplicación FastAPI para el bot Tlaloc.
+
+Este módulo configura y lanza la aplicación principal:
+- Gestiona el ciclo de vida (startup y shutdown).
+- Inicializa servicios externos como Valkey y Ngrok.
+- Define y registra los routers.
+- Establece el webhook del bot de Telegram.
 """
 
 # ─────────────────────────────
@@ -15,11 +20,14 @@ from fastapi import FastAPI
 
 # 🏗️  Módulos internos de la aplicación
 from app.api.v1.routers import router
+from app.core.ngrok_service import init_ngrok, close_ngrok
+from app.core.config import settings
 from app.database import (
     init_token_cache,
     get_valkey,
     close_valkey
 )
+from app.TheaterHandler import theater_handler
 
 # ─────────────────────────────
 # ⚙️ METADATOS DE LA APP
@@ -33,11 +41,40 @@ APP_VER:   Final[str] = "0.1.0"
 # ─────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Arranca Valkey, precarga el token y cierra recursos al apagar."""
+    """Gestiona la fase de ARRANQUE y APAGADO de la aplicación."""
+    # ──────── ARRANQUE ────────
+    # 1. Conexión Valkey
     app.state.valkey = await get_valkey()
+
+    # 2. Precarga de token
     await init_token_cache()
+
+    # 3. Determina la URL que usará el bot
+    if settings.DEVELOPMENT_MODE:
+        api_bot_url = init_ngrok(settings.NGROK_TOKEN)
+    else:
+        api_bot_url = settings.API_DOMAIN
+
+    # 4. Establece el webhook
+    await theater_handler.set_webhook(
+        f"{api_bot_url}/webhook",
+        secret_token=settings.TELEGRAM_SECRET_TOKEN
+    )
+
     yield
+
+    # ──────── APAGADO ────────
+    # 1. Cierra Ngrok (si existía)
+    if settings.DEVELOPMENT_MODE:
+        close_ngrok()
+
+    # 2. Elimina el webhook del bot
+    await theater_handler.delete_webhook()
+
+    # 3. Desconexión Valkey
     await close_valkey()
+
+
 
 # ─────────────────────────────
 # 🚀 FACTORY DE LA APLICACIÓN

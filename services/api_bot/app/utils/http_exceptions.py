@@ -5,7 +5,7 @@
 from fastapi import HTTPException, status
 
 # ─────────────────────────────
-# 🚫 ERRORES GENERALES
+# ⚠️ ERRORES 4XX - CLIENTE
 # ─────────────────────────────
 
 def not_found(detail: str = "Recurso no encontrado") -> HTTPException:
@@ -71,5 +71,33 @@ def unprocessable_entity(detail: str = "Entidad no procesable") -> HTTPException
     """
     return HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        detail=detail
+    )
+
+def unsupported_media_type(detail: str = "Tipo de contenido no soportado") -> HTTPException:
+    """
+    415 Unsupported Media Type:
+    El servidor no puede procesar la solicitud porque el tipo de contenido
+    especificado en la cabecera 'Content-Type' no es soportado por el endpoint.
+    Por ejemplo, se espera 'application/json' pero se recibe 'text/plain'.
+    """
+    return HTTPException(
+        status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+        detail=detail
+    )
+
+# ─────────────────────────────
+# 💥 ERRORES 5XX - SERVIDOR
+# ─────────────────────────────
+
+def internal_server_error(detail: str = "Error interno del servidor") -> HTTPException:
+    """
+    500 Internal Server Error:
+    El servidor encontró una condición inesperada que le impidió cumplir con la solicitud.
+    Este error es genérico y debe usarse solo cuando no hay un código más específico.
+    Evita revelar detalles técnicos para no comprometer la seguridad del sistema.
+    """
+    return HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         detail=detail
     )

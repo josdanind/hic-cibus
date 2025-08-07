@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Ngrok
+config_ngrok.yml
+
 # Environments
 .env
 .venv
