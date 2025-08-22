@@ -1,0 +1,13 @@
+# ============================================================================
+# 📁 .gitignore (ubicado dentro de models/)
+# ============================================================================
+# 🎯 Objetivo:
+# Ignorar todos los archivos `.sql` dentro de las subcarpetas,
+# excepto los que comienzan con un número (ej. 01_, 02_, etc.)
+# ============================================================================
+
+# 🚫 Ignorar todos los archivos `.sql` dentro de cualquier subcarpeta
+*/*.sql
+
+# ✅ PERMITIR los archivos `.sql` que comienzan con un número
+!*/[0-9]*.sql

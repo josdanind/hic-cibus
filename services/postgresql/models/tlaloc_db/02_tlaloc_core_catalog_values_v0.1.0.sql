@@ -1,4 +1,14 @@
-\c bot_auth_db_v2;
+-- tlaloc_core_catalog_values_v0.1.0.sql
+-- ==========================================
+-- 💾 CODE: TLALOC_CORE_CATALOG_VALUES
+-- 📌 VERSIÓN: v0.1.0
+-- 📦 DESCRIPCIÓN:
+--      Valores de catálogos base del núcleo de datos de
+--      Tlaloc
+-- 🧠 LÓGICA:
+--      - tlaloc_core_models_v0.2.0.sql
+-- 📅 FECHA: 2025-09-10
+-- ==========================================
 
 -- Estados del bot
 INSERT INTO bot_statuses (code, name, description)

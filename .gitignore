@@ -56,8 +56,3 @@ usersFile
 # Others
 logs/
 *.log
-
-
-# Ignora archivos sensibles de inicialización que terminan en 'private_values.sql' dentro de initdb
-services/postgresql/initdb/*private_values.sql
-

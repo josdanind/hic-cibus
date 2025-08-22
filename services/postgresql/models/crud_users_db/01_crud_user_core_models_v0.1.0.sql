@@ -1,5 +1,12 @@
--- Cambiar a la base de datos de autenticación de usuarios
-\c user_auth_db;
+-- crud_user_core_models_v0.1.0
+-- ==========================================
+-- 💾 CODE: CRUD_USER_CORE_MODELS
+-- 📌 VERSIÓN: v0.1.0
+-- 📦 DESCRIPCIÓN:
+--      Modelos base del núcleo de datos para
+--      el manejo de usuarios CRUD.
+-- 📅 FECHA: 2025-09-10
+-- ==========================================
 
 -- ╭──────────────────────────────────────────────────────╮
 -- │ 💼 1. Job Positions                                  │

@@ -1,5 +1,12 @@
--- Cambiar a la base de datos de autenticación de bots
-\c bot_auth_db_v2;
+-- tlaloc_core_models_v0.2.0.sql
+-- ==========================================
+-- 💾 CODE: TLALOC_CORE_MODELS
+-- 📌 VERSIÓN: v0.2.0
+-- 📦 DESCRIPCIÓN:
+--      Modelos base del núcleo de datos de
+--      Tlaloc
+-- 📅 FECHA: 2025-09-10
+-- ==========================================
 
 -- ╭──────────────────────────────────────────────────────╮
 -- │ ⚡️⚡️ 1. Triggers y funciones relacionadas ⚡️⚡️       │

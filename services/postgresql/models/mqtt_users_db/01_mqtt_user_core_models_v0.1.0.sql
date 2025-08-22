@@ -1,5 +1,12 @@
--- Cambiar a la base de datos de autenticación de usuarios MQTT
-\c mqtt_auth_db;
+-- mqtt_user_core_models_v0.1.0.sql
+-- ==========================================
+-- 💾 CODE: MQTT_USER_CORE_MODELS
+-- 📌 VERSIÓN: v0.1.0
+-- 📦 DESCRIPCIÓN:
+--      Modelos base del núcleo de datos de
+--      para el manejo de usuarios MQTT
+-- 📅 FECHA: 2025-09-10
+-- ==========================================
 
 -- ╭──────────────────────────────────────────────────────╮
 -- │ 👥 1. MQTT Users                                     │
