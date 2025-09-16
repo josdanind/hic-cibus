@@ -203,7 +203,7 @@ EXECUTE FUNCTION set_updated_at();
 └───────────────────────────────────────────────────────────────*/
 
 CREATE TABLE process_templates (
-    id              SMALLINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 
     -- Claves de negocio
     code            VARCHAR(30)                                 NOT NULL UNIQUE
