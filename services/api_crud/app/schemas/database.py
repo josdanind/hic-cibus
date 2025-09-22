@@ -35,6 +35,8 @@ class DatabaseConfig(BaseModel):
         return self._session_factory
 
     model_config = {
+        # ✅ Permite usar tipos no nativos de Pydantic (ej: objetos SQLAlchemy)
         'arbitrary_types_allowed': True,
+        # 🚫 Prohíbe pasar atributos extra no definidos en el modelo
         "extra": "forbid"
     }

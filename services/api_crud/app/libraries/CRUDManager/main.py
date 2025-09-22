@@ -2,7 +2,7 @@
 # 📦 Importaciones
 # ────────────────
 # Librería estándar
-from typing import Type, Any, Sequence
+from typing import Type, Sequence
 
 # Librerías de terceros
 from sqlmodel import SQLModel, select

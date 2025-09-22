@@ -11,46 +11,6 @@ services:
     # 🚀 Comando para iniciar el servidor FastAPI
     command: uvicorn main:app --host 0.0.0.0 --port ${FASTAPI_PORT} --reload
 
-    # 🌍 Variables de entorno directas
-    environment:
-      - ENVIRONMENT=development
-      - PORT=${FASTAPI_PORT}
-      - API_DOMAIN=${API_DEV_DOMAIN}
-      # JWT
-      - SECRET_KEY=${SECRET_KEY}
-      - ALGORITHM=${ALGORITHM}
-      - ACCESS_TOKEN_EXPIRE_DAYS=${ACCESS_TOKEN_EXPIRE_DAYS}
-      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
-      # Usuario predeterminado para la API
-      - TELEGRAM_USERNAME=${TELEGRAM_USERNAME_DEV}
-      - FIRST_NAME=${USER_FIRST_NAME_DEV}
-      - LAST_NAME=${USER_LAST_NAME_DEV}
-      - MOBILE_PHONE=${USER_MOBILE_PHONE_DEV}
-      - EMAIL=${USER_EMAIL_DEV}
-      - PASSWORD=${USER_PASSWORD_DEV}
-      # Base de datos para la autenticación de bots.
-      - BOT_AUTH_DB_HOST=${BOT_AUTH_DB_HOST_DEV}
-      - BOT_AUTH_DB_PORT=${BOT_AUTH_DB_PORT_DEV}
-      - BOT_AUTH_DB_USER=${BOT_AUTH_DB_USER_DEV}
-      - BOT_AUTH_DB_PASSWORD=${BOT_AUTH_DB_PASSWORD_DEV}
-      - BOT_AUTH_DB_NAME=${BOT_AUTH_DB_NAME_DEV}
-      # Base de datos para la autenticación de usuarios
-      - USER_AUTH_DB_HOST=${USER_AUTH_DB_HOST_DEV}
-      - USER_AUTH_DB_PORT=${USER_AUTH_DB_PORT_DEV}
-      - USER_AUTH_DB_USER=${USER_AUTH_DB_USER_DEV}
-      - USER_AUTH_DB_PASSWORD=${USER_AUTH_DB_PASSWORD_DEV}
-      - USER_AUTH_DB_NAME=${USER_AUTH_DB_NAME_DEV}
-      # Base de datos para la autenticación de usuarios MQTT
-      - MQTT_USER_AUTH_DB_HOST=${MQTT_USER_AUTH_DB_HOST_DEV}
-      - MQTT_USER_AUTH_DB_PORT=${MQTT_USER_AUTH_DB_PORT_DEV}
-      - MQTT_USER_AUTH_DB_USER=${MQTT_USER_AUTH_DB_USER_DEV}
-      - MQTT_USER_AUTH_DB_PASSWORD=${MQTT_USER_AUTH_DB_PASSWORD_DEV}
-      - MQTT_USER_AUTH_DB_NAME=${MQTT_USER_AUTH_DB_NAME_DEV}
-      # Usuario MQTT predeterminado
-      - MQTT_USER=${MQTT_USER_DEV}
-      - MQTT_USER_PASSWORD=${MQTT_USER_PASSWORD_DEV}
-      - BCRYPT_ROUNDS=${BCRYPT_ROUNDS_DEV}
-
     # 📂 Montaje de volúmenes
     volumes:
       - ./services/api_crud:/app
@@ -68,6 +28,9 @@ services:
 
     # 🔄 Política de reinicio
     restart: unless-stopped
+
+    # 📄 Variables de entorno - Modo Desarrollo
+    env_file: services/api_crud/.env.dev
 
     # 🌐 Red asociada
     networks:

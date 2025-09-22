@@ -6,18 +6,23 @@ from typing import Optional
 from sqlmodel import SQLModel, Field, Relationship, Column
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy import func, MetaData
-
+from sqlalchemy.orm import registry
 
 # Utilidades de la aplicación
 from app.utils.regex import E164_PHONE_RE, TELEGRAM_USERNAME_RE, EMAIL_RE
 
 metadata  = MetaData()
+crud_users_db_registry = registry()
+
+class CrudUsersDB_Base(SQLModel, registry=crud_users_db_registry, metadata=metadata):
+    """Clase base para los modelos de la base de datos 'crud_users_db'."""
+    __abstract__ = True
 
 
 # ---------------------------------------------------------------------------
 # 1. UserAuthJobPosition
 # ---------------------------------------------------------------------------
-class UserAuthJobPosition(SQLModel, table=True):
+class JobPosition(CrudUsersDB_Base, table=True):
     """
     Modelo base para datos de puestos de trabajo.
     """
@@ -41,7 +46,7 @@ class UserAuthJobPosition(SQLModel, table=True):
     )
 
     # 🔗 Relación con 'UserAuthEmployee'
-    employees: list["UserAuthEmployee"] = Relationship(
+    employees: list["Employee"] = Relationship(
         back_populates="job_position",
         passive_deletes="all"
     )
@@ -49,7 +54,7 @@ class UserAuthJobPosition(SQLModel, table=True):
 # ---------------------------------------------------------------------------
 # 2. UserAuthAccessRole
 # ---------------------------------------------------------------------------
-class UserAuthAccessRole(SQLModel, table=True):
+class AccessRole(CrudUsersDB_Base, table=True):
     """
     Modelo base para datos de roles de acceso.
     """
@@ -74,13 +79,13 @@ class UserAuthAccessRole(SQLModel, table=True):
     )
 
     # 🔗 Relación con 'UserAuthCrudUser'
-    crud_users: list["UserAuthCrudUser"] = Relationship(
+    crud_users: list["CrudUser"] = Relationship(
         back_populates="access_role",
         passive_deletes="all"
     )
 
     # 🔗 Relación con 'UserAuthBotUser'
-    bot_users: list["UserAuthBotUser"] = Relationship(
+    bot_users: list["BotUser"] = Relationship(
         back_populates="access_role",
         passive_deletes="all"
     )
@@ -89,7 +94,7 @@ class UserAuthAccessRole(SQLModel, table=True):
 # ---------------------------------------------------------------------------
 # 3. UserAuthEmployee
 # ---------------------------------------------------------------------------
-class UserAuthEmployee(SQLModel, table=True):
+class Employee(CrudUsersDB_Base, table=True):
     """
     Modelo base para datos de personas.
     """
@@ -126,19 +131,19 @@ class UserAuthEmployee(SQLModel, table=True):
         foreign_key="job_positions.id",
         ondelete="SET NULL"
     )
-    job_position: Optional[UserAuthJobPosition] = Relationship(
+    job_position: Optional[JobPosition] = Relationship(
         back_populates="employees"
     )
 
     # 🔗 Relación con 'UserAuthCrudUser'
-    crud_user: Optional["UserAuthCrudUser"] = Relationship(
+    crud_user: Optional["CrudUser"] = Relationship(
         back_populates="employee",
         cascade_delete=True,
         sa_relationship_kwargs={"uselist": False}
     )
 
     # 🔗 Relación con 'UserAuthBotUser'
-    bot_user: Optional["UserAuthBotUser"] = Relationship(
+    bot_user: Optional["BotUser"] = Relationship(
         back_populates="employee",
         cascade_delete=True,
         sa_relationship_kwargs={"uselist": False}
@@ -156,7 +161,7 @@ class UserAuthEmployee(SQLModel, table=True):
 # ---------------------------------------------------------------------------
 # 4. UserAuthCrudUser
 # ---------------------------------------------------------------------------
-class UserAuthCrudUser(SQLModel, table=True):
+class CrudUser(CrudUsersDB_Base, table=True):
     """
     Modelo base para datos de usuarios.
     """
@@ -177,7 +182,7 @@ class UserAuthCrudUser(SQLModel, table=True):
         ondelete="CASCADE",
         unique=True
     )
-    employee: UserAuthEmployee = Relationship(
+    employee: Employee = Relationship(
         back_populates="crud_user",
         sa_relationship_kwargs={"uselist": False}
     )
@@ -188,7 +193,7 @@ class UserAuthCrudUser(SQLModel, table=True):
         foreign_key="access_roles.id",
         ondelete="SET NULL"
     )
-    access_role: Optional[UserAuthAccessRole] = Relationship(
+    access_role: Optional[AccessRole] = Relationship(
         back_populates="crud_users"
     )
 
@@ -204,7 +209,7 @@ class UserAuthCrudUser(SQLModel, table=True):
 # ---------------------------------------------------------------------------
 # 5. UserAuthBotUser
 # ---------------------------------------------------------------------------
-class UserAuthBotUser(SQLModel, table=True):
+class BotUser(CrudUsersDB_Base, table=True):
     """
     Modelo base para datos de usuarios de bots.
     """
@@ -224,7 +229,7 @@ class UserAuthBotUser(SQLModel, table=True):
         foreign_key="access_roles.id",
         ondelete="SET NULL"
     )
-    access_role: Optional[UserAuthAccessRole] = Relationship(
+    access_role: Optional[AccessRole] = Relationship(
         back_populates="bot_users"
     )
 
@@ -234,7 +239,7 @@ class UserAuthBotUser(SQLModel, table=True):
         ondelete="CASCADE",
         unique=True
     )
-    employee: UserAuthEmployee = Relationship(
+    employee: Employee = Relationship(
         back_populates="bot_user",
         sa_relationship_kwargs={"uselist": False}
     )

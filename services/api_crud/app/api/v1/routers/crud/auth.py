@@ -10,7 +10,6 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import selectinload
 
 # 🏗️  Módulos internos de la aplicación
-from app.database import DATABASES
 from app.libraries.CRUDManager import CRUDManager
 from app.core.config import settings
 from app.core.security import (
@@ -18,15 +17,20 @@ from app.core.security import (
     create_access_token,
     decode_jwt
 )
+from app.database import (
+    DATABASES,
+    crud_users_db_name
+)
 
 # 🧱 Modelos y esquemas
-from app.database.models.user_auth_db import UserAuthEmployee as EmployeeModel
+# from app.database.models.crud_users_db import UserAuthEmployee as EmployeeModel
+from app.database.models.crud_users_db import Employee as EmployeeModel
 from app.schemas.auth import Token
 
 # ────────────────────────────────
 # 🗄️  Base de datos
 # ────────────────────────────────
-crud_user_db = DATABASES["user_auth_db"]
+crud_user_db = DATABASES[crud_users_db_name]
 session_factory = crud_user_db.session_factory
 
 # ────────────────────────────────

@@ -10,7 +10,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.database import get_mqtt_crud, DATABASES
 
 # 🧱 Modelos y esquemas
-from app.database.models.mqtt_auth_db import MqttUser as MqttUserModel
+from app.database.models.mqtt_users_db import MqttUser as MqttUserModel
 
 # 🔐 Autenticación para Usuarios CRUD
 from ..crud.auth import decode_token as user_crud_decode_token

@@ -26,14 +26,19 @@ from app.utils.rich_format import print_panel
 from app.core.config import settings
 from app.core.security import generate_bcrypt_hash
 from app.libraries.CRUDManager import CRUDManager
-from .config import DATABASES
+from .config import (
+    DATABASES,
+    crud_users_db_name,
+    mqtt_users_db_name,
+    tlaloc_db_name
+)
 
 # 🧱 Modelos y esquemas
-from .models.user_auth_db import (
-    UserAuthEmployee as EmployeeModel,
-    UserAuthCrudUser as CrudUserModel
+from .models.crud_users_db import (
+    Employee as EmployeeModel,
+    CrudUser as CrudUserModel
 )
-from .models.mqtt_auth_db import MqttUser as MqttUserModel
+from .models.mqtt_users_db import MqttUser as MqttUserModel
 
 # ────────────────────────────────────────
 # 🚀 Inicialización de las bases de datos
@@ -79,9 +84,9 @@ async def initialize_databases(databases: dict[str, DatabaseConfigSchema] = DATA
             style="check arrow",
         )
 
-# ──────────────────────────────
-# 🧭 Instancias de gestores CRUD
-# ──────────────────────────────
+# -----------------------------------------------------------------------------
+# 🧭 Dependencias de sesión y gestores CRUD
+# -----------------------------------------------------------------------------
 def make_session_dep(
     session_factory: Callable[[], AsyncSession],
 ) -> Callable[[], AsyncGenerator[AsyncSession, None]]:
@@ -97,15 +102,25 @@ def make_session_dep(
 
     return _get_session
 
-get_bot_auth_session = make_session_dep(DATABASES["bot_auth_db"].session_factory)
-get_user_auth_session = make_session_dep(DATABASES["user_auth_db"].session_factory)
-get_mqtt_session = make_session_dep(DATABASES["mqtt_auth_db"].session_factory)
+# -----------------------------------------------------------------------------
+# 🔌 Dependencias de sesión por base de datos
+# -----------------------------------------------------------------------------
+get_user_auth_session = make_session_dep(
+    DATABASES[crud_users_db_name].session_factory
+)
 
-def get_bot_crud (
-    session: AsyncSession = Depends(get_bot_auth_session)
-) -> CRUDManager:
-    return CRUDManager(session)
+get_mqtt_session = make_session_dep(
+    DATABASES[mqtt_users_db_name].session_factory
+)
 
+get_tlaloc_session = make_session_dep(
+    DATABASES[tlaloc_db_name].session_factory
+)
+
+
+# -----------------------------------------------------------------------------
+# 🧰 Gestores CRUD
+# -----------------------------------------------------------------------------
 def get_user_crud (
     session: AsyncSession = Depends(get_user_auth_session)
 ) -> CRUDManager:
@@ -116,27 +131,33 @@ def get_mqtt_crud(
 ) -> CRUDManager:
     return CRUDManager(session)
 
+def get_tlaloc_crud(
+    session: AsyncSession = Depends(get_tlaloc_session)
+) -> CRUDManager:
+    return CRUDManager(session)
+
 # ───────────────────────────────────────────────────
-# 👤 Crea usuario administrador
+# 👤 Crea usuario predeterminado
 # ───────────────────────────────────────────────────
 async def create_crud_user():
     """
     Crea el usuario administrador por defecto si no existe.
     """
     # Obtener referencias a la sesión y los modelos
-    user_db = DATABASES["user_auth_db"]
+    user_db = DATABASES[crud_users_db_name]
     session_factory = user_db.session_factory
+    db_name = user_db.engine.url.database
 
     async with session_factory() as session:
         crud_manager = CRUDManager(session)
 
         # Datos del usuario administrativo por defecto
         employee_model = EmployeeModel(
-            telegram_username = settings.TELEGRAM_USERNAME,
-            first_name = settings.FIRST_NAME,
-            last_name = settings.LAST_NAME,
-            mobile_phone = settings.MOBILE_PHONE,
-            email = settings.EMAIL
+            telegram_username = settings.CRUD_USER_TELEGRAM_USERNAME,
+            first_name = settings.CRUD_USER_FIRST_NAME,
+            last_name = settings.CRUD_USER_LAST_NAME,
+            mobile_phone = settings.CRUD_USER_MOBILE_PHONE,
+            email = settings.CRUD_USER_EMAIL
         )
 
         if await crud_manager.get(
@@ -151,7 +172,7 @@ async def create_crud_user():
 
         crud_user_model = CrudUserModel(
             ** CrudUserInDBSchema(
-                password=settings.PASSWORD,
+                password=settings.CRUD_USER_PASSWORD,
                 employee_id=employee.id,
                 access_role_id=4
             ).model_dump(by_alias=True)
@@ -160,7 +181,7 @@ async def create_crud_user():
         user = await crud_manager.add(crud_user_model)
 
         print_panel(
-            title="Registros creados en user_auth_db",
+            title=f"Registros creados en {db_name}",
             messages=[
                 (
                     EmployeeModel.__tablename__,
@@ -175,15 +196,14 @@ async def create_crud_user():
         )
 
 # ───────────────────────────────────────────────────
-# 👤 Crea usuario MQTT
+# 👤 Crea usuario MQTT predeterminado
 # ───────────────────────────────────────────────────
 async def create_mqtt_user():
     """
     Crea el usuario mqtt por defecto si no existe.
     """
-    mqtt_db = DATABASES["mqtt_auth_db"]
+    mqtt_db = DATABASES[mqtt_users_db_name]
     session_factory = mqtt_db.session_factory
-    # MqttUserModel = mqtt_db.models.User
 
     async with session_factory() as session:
         crud_manager = CRUDManager(session)
@@ -191,7 +211,7 @@ async def create_mqtt_user():
 
         # Datos del usuario mqtt
         mqtt_user_model = MqttUserModel(
-            username = settings.MQTT_USER,
+            username = settings.MQTT_USER_USERNAME,
             password_hash = password_hash,
             salt = " ",
             is_superuser = True

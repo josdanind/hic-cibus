@@ -18,7 +18,7 @@ from app.database import DATABASES
 from app.libraries.CRUDManager import CRUDManager
 
 # 🧱 Modelos y esquemas
-from app.database.models.bot_auth_db import Bot, BotCredential
+from app.database.models.tlaloc_db import Bot, BotCredential
 from app.schemas.auth import Token
 
 # ────────────────────────────────

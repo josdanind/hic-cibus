@@ -13,14 +13,14 @@ from app.schemas.database import DatabaseConfig as DatabaseConfigSchema
 # ────────────────────────────────────────────────
 # 🗄️ Modelos de la base de datos
 # ────────────────────────────────────────────────
-# Autenticación de Bots
-from app.database.models.bot_auth_db import metadata as bot_auth_metadata
-
 # Autenticación de Usuarios
-from app.database.models.user_auth_db import metadata as user_auth_metadata
+from app.database.models.crud_users_db import metadata as user_auth_metadata
 
 # Autenticación de Usuarios MQTT
-from app.database.models.mqtt_auth_db import metadata as mqtt_auth_metadata
+from app.database.models.mqtt_users_db import metadata as mqtt_auth_metadata
+
+# Autenticación de Bots
+from app.database.models.tlaloc_db import metadata as bot_auth_metadata
 
 # ───────────────────────────────────────────────────
 # 🗄️ Configuración de las bases de datos del sistema
@@ -31,17 +31,21 @@ from app.database.models.mqtt_auth_db import metadata as mqtt_auth_metadata
 # - models: modelos SQLModel asociados.
 # - db_url: URL de la base de datos (postgresql+asyncpg://...).
 
+crud_users_db_name = settings.CRUD_USERS_DB_NAME
+mqtt_users_db_name = settings.MQTT_USERS_DB_NAME
+tlaloc_db_name = settings.TLALOC_DB_NAME
+
 DATABASES: dict[str, DatabaseConfigSchema] = {
-    "bot_auth_db": DatabaseConfigSchema(
-        db_url=settings.BOT_AUTH_DB_URL,
-        metadata=bot_auth_metadata,
-    ),
-    "user_auth_db": DatabaseConfigSchema(
-        db_url=settings.USER_AUTH_DB_URL,
+    f"{crud_users_db_name}": DatabaseConfigSchema(
+        db_url=settings.CRUD_USERS_DB_URL,
         metadata=user_auth_metadata,
     ),
-    "mqtt_auth_db": DatabaseConfigSchema(
-        db_url=settings.MQTT_USER_AUTH_DB_URL,
+    f"{mqtt_users_db_name}": DatabaseConfigSchema(
+        db_url=settings.MQTT_USERS_DB_URL,
         metadata=mqtt_auth_metadata,
-    )
+    ),
+    f"{tlaloc_db_name}": DatabaseConfigSchema(
+        db_url=settings.TLALOC_DB_URL,
+        metadata=bot_auth_metadata,
+    ),
 }
