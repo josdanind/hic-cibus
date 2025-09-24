@@ -11,7 +11,6 @@ from app.schemas.auth import Token
 # 🛠️ Utilidades del router
 from .auth import generate_access_token
 
-
 router = APIRouter()
 
 oauth2_schema = OAuth2PasswordBearer(tokenUrl="bot/auth")

@@ -1,17 +1,21 @@
 # Librería estándar
 from decimal import Decimal
-from typing import Optional
+from typing import Optional, Any
 from datetime import datetime
 
 # ORMs
 from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy import (
     MetaData,
+    Column,
+    text,
     UniqueConstraint,
+    DateTime,
+    func
 )
 from sqlalchemy.orm import registry
-from pydantic import model_validator
+from pydantic import model_validator, ConfigDict
 
 # Validadores
 from .validators import (
@@ -24,7 +28,6 @@ from .validators import (
     MacAddressStr,
     MqttTopicStr
 )
-from .mixins import TimestampMixin
 
 metadata = MetaData()
 tlaloc_db_registry = registry()
@@ -33,14 +36,20 @@ class TlalocDB_Base(SQLModel, registry=tlaloc_db_registry, metadata=metadata):
     """Clase base para los modelos de la base de datos 'tlaloc_db'."""
     __abstract__ = True
 
+    # 🔧 Pydantic v2: permite tipos arbitrarios (Mapped[...]) y lectura desde ORM
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        from_attributes=True,
+    )
+
 
 #  ╭──────────────────────────────────────────────────────╮
 #  │ 📚 1. Tablas de enlaces (relaciones muchos-a-muchos) │
 #  ╰──────────────────────────────────────────────────────╯
 # ---------------------------------------------------------------------------
-# 🔗 employee_role_links
+# 1. 🔗 employee_role_links
 # ---------------------------------------------------------------------------
-class EmployeeRoleLink(TlalocDB_Base, TimestampMixin, table=True):
+class EmployeeRoleLink(TlalocDB_Base, table=True):
     """
     Tabla: employee_role_links
     Relación muchos-a-muchos entre empleados y roles.
@@ -48,6 +57,7 @@ class EmployeeRoleLink(TlalocDB_Base, TimestampMixin, table=True):
     PK compuesta: (employee_id, role_id)
     """
     __tablename__ = "employee_role_links"
+    metadata = metadata
 
     # 🔗 Claves compuestas (PK)
     employee_id: int = Field(
@@ -67,16 +77,32 @@ class EmployeeRoleLink(TlalocDB_Base, TimestampMixin, table=True):
         description="Marca de tiempo de la asignación (set por la BD con DEFAULT now(), si lo tienes en el DDL).",
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
 # ---------------------------------------------------------------------------
-# 🔗 bot_category_links
+# 2. 🔗 bot_category_links
 # ---------------------------------------------------------------------------
-class BotCategoryLink(TlalocDB_Base, TimestampMixin, table=True):
+class BotCategoryLink(TlalocDB_Base, table=True):
     """
     Tabla: bot_category_links
     Relación muchos-a-muchos entre bots y categorías.
     PK compuesta: (bot_id, category_id).
     """
     __tablename__ = "bot_category_links"
+    metadata = metadata
 
     # 🔗 Claves compuestas (PK)
     bot_id: int = Field(
@@ -92,15 +118,32 @@ class BotCategoryLink(TlalocDB_Base, TimestampMixin, table=True):
         description="Categoría asociada al bot."
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 🔗 sensor_model_magnitude_links
+# 3. 🔗 sensor_model_magnitude_links
 # ---------------------------------------------------------------------------
-class SensorModelMagnitudeLink(TlalocDB_Base, TimestampMixin, table=True):
+class SensorModelMagnitudeLink(TlalocDB_Base, table=True):
     """
     Tabla: sensor_model_magnitude_links
     Relación muchos-a-muchos entre modelos de sensores y magnitudes.
     """
     __tablename__ = "sensor_model_magnitude_links"
+    metadata = metadata
 
     # 🔗 Relaciones (PK compuesta)
     sensor_model_id: int = Field(
@@ -117,15 +160,32 @@ class SensorModelMagnitudeLink(TlalocDB_Base, TimestampMixin, table=True):
         ondelete="CASCADE"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 🔗 actuator_model_magnitude_links
+# 4. 🔗 actuator_model_magnitude_links
 # ---------------------------------------------------------------------------
-class ActuatorModelMagnitudeLink(TlalocDB_Base, TimestampMixin, table=True):
+class ActuatorModelMagnitudeLink(TlalocDB_Base, table=True):
     """
     Tabla: actuator_model_magnitude_links
     Relación muchos-a-muchos entre modelos de actuadores y magnitudes.
     """
     __tablename__ = "actuator_model_magnitude_links"
+    metadata = metadata
 
     # 🔗 Relaciones (PK compuesta)
     actuator_model_id: int = Field(
@@ -142,8 +202,24 @@ class ActuatorModelMagnitudeLink(TlalocDB_Base, TimestampMixin, table=True):
         description="Identificador de la magnitud asociada."
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 🔗 bot_user_subscription_links
+# 5. 🔗 bot_user_subscription_links
 # ---------------------------------------------------------------------------
 class BotUserSubscriptionLink(TlalocDB_Base, table=True):
     """
@@ -151,6 +227,7 @@ class BotUserSubscriptionLink(TlalocDB_Base, table=True):
     Relación N:M entre bot_users y subscriptions.
     """
     __tablename__ = "bot_user_subscription_links"
+    metadata = metadata
 
     # 🔗 Claves (PK compuesta)
     bot_user_id: int = Field(
@@ -172,15 +249,16 @@ class BotUserSubscriptionLink(TlalocDB_Base, table=True):
     )
 
 # ---------------------------------------------------------------------------
-# 🔗 user_process_permission_links
+# 6. 🔗 user_process_permission_links
 # ---------------------------------------------------------------------------
-class UserProcessPermissionLink(TlalocDB_Base, TimestampMixin, table=True):
+class UserProcessPermissionLink(TlalocDB_Base, table=True):
     """
     Tabla: user_process_permission_links
     Permisos que un usuario de bot posee sobre un proceso concreto.
     Relación muchos-a-muchos entre user_processes y user_process_permissions.
     """
     __tablename__ = "user_process_permission_links"
+    metadata = metadata
 
     # 🔗 Relaciones (PK compuesta)
     user_process_id: int = Field(
@@ -197,16 +275,33 @@ class UserProcessPermissionLink(TlalocDB_Base, TimestampMixin, table=True):
         ondelete="CASCADE",
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 🔗 bot_process_permission_links
+# 7. 🔗 bot_process_permission_links
 # ---------------------------------------------------------------------------
-class BotProcessPermissionLink(TlalocDB_Base, TimestampMixin, table=True):
+class BotProcessPermissionLink(TlalocDB_Base, table=True):
     """
     Tabla: bot_process_permission_links
     Permisos que un bot posee sobre un proceso concreto.
     Relación muchos-a-muchos entre bot_processes y bot_process_permissions.
     """
     __tablename__ = "bot_process_permission_links"
+    metadata = metadata
 
     # 🔗 Relaciones (PK compuesta)
     bot_process_id: int = Field(
@@ -223,14 +318,29 @@ class BotProcessPermissionLink(TlalocDB_Base, TimestampMixin, table=True):
         ondelete="CASCADE",
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 #  ╭──────────────────────────────────────────────────────╮
 #  │ 📚 1. Catálogos base (sin dependencias)              │
 #  ╰──────────────────────────────────────────────────────╯
-
 # ---------------------------------------------------------------------------
-# 1. 🤖 bot_model_statuses
+# 8. 🤖 bot_model_statuses
 # ---------------------------------------------------------------------------
-class BotModelStatus(TlalocDB_Base, TimestampMixin,  table=True):
+class BotModelStatus(TlalocDB_Base, table=True):
     """
     Tabla: bot_model_statuses
     Catálogo de estados de desarrollo de un modelo de bot (p. ej. EN_DESARROLLO, EN_PRODUCCION).
@@ -257,10 +367,26 @@ class BotModelStatus(TlalocDB_Base, TimestampMixin,  table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 2. 🤖 bot_statuses
+# 9. 🤖 bot_statuses
 # ---------------------------------------------------------------------------
-class BotStatus(TlalocDB_Base, TimestampMixin, table=True):
+class BotStatus(TlalocDB_Base, table=True):
     """
     Tabla: bot_statuses
     Catálogo de estados operativos que puede tener un bot
@@ -302,16 +428,33 @@ class BotStatus(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 3. 🤖 bot_environments
+# 10. 🤖 bot_environments
 # ---------------------------------------------------------------------------
-class BotEnvironment(TlalocDB_Base, TimestampMixin, table=True):
+class BotEnvironment(TlalocDB_Base, table=True):
     """
     Tabla: bot_environments
     Catálogo de entornos donde puede ejecutarse un bot
     (p. ej. PRODUCCION, DESARROLLO, PRUEBAS).
     """
     __tablename__ = "bot_environments"
+    metadata = metadata
 
     # 🔑 Clave primaria
     id: int = Field(primary_key=True)
@@ -344,16 +487,33 @@ class BotEnvironment(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 4. 🤖 bot_categories
+# 11. 🤖 bot_categories
 # ---------------------------------------------------------------------------
-class BotCategory(TlalocDB_Base, TimestampMixin, table=True):
+class BotCategory(TlalocDB_Base, table=True):
     """
     Tabla: bot_categories
     Catálogo de categorías funcionales de los bots
     (p. ej. MONITOREO, AUTOMATIZACION).
     """
     __tablename__ = "bot_categories"
+    metadata = metadata
 
     # 🔑 Clave primaria
     id: int = Field(primary_key=True)
@@ -380,10 +540,26 @@ class BotCategory(TlalocDB_Base, TimestampMixin, table=True):
         link_model=BotCategoryLink,
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 5. 🧩 process_templates
+# 12. 🧩 process_templates
 # ---------------------------------------------------------------------------
-class ProcessTemplate(TlalocDB_Base, TimestampMixin, table=True):
+class ProcessTemplate(TlalocDB_Base, table=True):
     """
     Tabla: process_templates
     Catálogo de plantillas estandarizadas de procesos operativos
@@ -392,6 +568,7 @@ class ProcessTemplate(TlalocDB_Base, TimestampMixin, table=True):
     procesos implementados en distintas unidades operativas.
     """
     __tablename__ = "process_templates"
+    metadata = metadata
 
     # 🔑 Clave primaria
     id: int = Field(primary_key=True)
@@ -427,16 +604,33 @@ class ProcessTemplate(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 6. 📏 magnitudes
+# 13. 📏 magnitudes
 # ---------------------------------------------------------------------------
-class Magnitude(TlalocDB_Base, TimestampMixin, table=True):
+class Magnitude(TlalocDB_Base, table=True):
     """
     Tabla: magnitudes
     Catálogo de magnitudes físicas que los bots pueden medir o controlar
     (p. ej. TEMPERATURA, HUMEDAD, LUZ).
     """
     __tablename__ = "magnitudes"
+    metadata = metadata
 
     # 🔑 Clave primaria
     id: int = Field(primary_key=True)
@@ -487,16 +681,33 @@ class Magnitude(TlalocDB_Base, TimestampMixin, table=True):
         link_model=ActuatorModelMagnitudeLink,
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 7. 🏭 manufacturers
+# 14. 🏭 manufacturers
 # ---------------------------------------------------------------------------
-class Manufacturer(TlalocDB_Base, TimestampMixin, table=True):
+class Manufacturer(TlalocDB_Base, table=True):
     """
     Tabla: manufacturers
     Catálogo de fabricantes de hardware utilizado en los procesos
     (p. ej. MICROCHIP, BOSCH, TEXAS_INSTRUMENTS).
     """
     __tablename__ = "manufacturers"
+    metadata = metadata
 
     # 🔑 Clave primaria
     id: int = Field(primary_key=True)
@@ -541,16 +752,33 @@ class Manufacturer(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 8. 🗓️ subscription_statuses
+#15. 🗓️ subscription_statuses
 # ---------------------------------------------------------------------------
-class SubscriptionStatus(TlalocDB_Base, TimestampMixin, table=True):
+class SubscriptionStatus(TlalocDB_Base, table=True):
     """
     Tabla: subscription_statuses
     Catálogo de estados posibles de una suscripción
     (p. ej. ACTIVA, GRACE_PERIOD, CANCELADA).
     """
     __tablename__ = "subscription_statuses"
+    metadata = metadata
 
     # 🔑 Clave primaria
     id: int = Field(primary_key=True)
@@ -582,16 +810,33 @@ class SubscriptionStatus(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 9. ⏳ period_units
+# 16. ⏳ period_units
 # ---------------------------------------------------------------------------
-class PeriodUnit(TlalocDB_Base, TimestampMixin, table=True):
+class PeriodUnit(TlalocDB_Base, table=True):
     """
     Tabla: period_units
     Catálogo de unidades de periodo utilizadas en planes o suscripciones
     (p. ej. DIA, SEMANA, MES).
     """
     __tablename__ = "period_units"
+    metadata = metadata
 
     # 🔑 Clave primaria
     id: int = Field(primary_key=True)
@@ -620,16 +865,33 @@ class PeriodUnit(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 10. 💸 invoice_statuses
+# 17. 💸 invoice_statuses
 # ---------------------------------------------------------------------------
-class InvoiceStatus(TlalocDB_Base, TimestampMixin, table=True):
+class InvoiceStatus(TlalocDB_Base, table=True):
     """
     Tabla: invoice_statuses
     Catálogo de estados que puede tener una factura
     (p. ej. PENDIENTE, PAGADA, VENCIDA).
     """
     __tablename__ = "invoice_statuses"
+    metadata = metadata
 
     # 🔑 Clave primaria
     id: int = Field(primary_key=True)
@@ -661,16 +923,33 @@ class InvoiceStatus(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 11. 💳 payment_statuses
+# 18. 💳 payment_statuses
 # ---------------------------------------------------------------------------
-class PaymentStatus(TlalocDB_Base, TimestampMixin, table=True):
+class PaymentStatus(TlalocDB_Base, table=True):
     """
     Tabla: payment_statuses
     Catálogo de estados posibles de un pago
     (p. ej. PENDIENTE, CONFIRMADO, FALLIDO).
     """
     __tablename__ = "payment_statuses"
+    metadata = metadata
 
     # 🔑 Clave primaria
     id: int = Field(primary_key=True)
@@ -702,16 +981,33 @@ class PaymentStatus(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 12. 💳 payment_methods
+# 19. 💳 payment_methods
 # ---------------------------------------------------------------------------
-class PaymentMethod(TlalocDB_Base, TimestampMixin, table=True):
+class PaymentMethod(TlalocDB_Base, table=True):
     """
     Tabla: payment_methods
     Catálogo de métodos de pago aceptados
     (p. ej. TARJETA, NEQUI, DAVIPLATA, TRANSFERENCIA).
     """
     __tablename__ = "payment_methods"
+    metadata = metadata
 
     # 🔑 Clave primaria
     id: int = Field(primary_key=True)
@@ -744,16 +1040,39 @@ class PaymentMethod(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 🔗 Relación con `PaymentAttempt`
+    payment_attempts: list["PaymentAttempt"] = Relationship(
+        back_populates="method",
+        passive_deletes="all"
+    )
+
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 13. 🔐 user_process_permissions
+# 20. 🔐 user_process_permissions
 # ---------------------------------------------------------------------------
-class UserProcessPermission(TlalocDB_Base, TimestampMixin, table=True):
+class UserProcessPermission(TlalocDB_Base, table=True):
     """
     Tabla: user_process_permissions
     Catálogo de permisos que pueden tener los usuarios para ejecutar acciones
     en procesos (p. ej. READ_TELEMETRY, START_PROCESS).
     """
     __tablename__ = "user_process_permissions"
+    metadata = metadata
 
     # 🔑 Clave primaria
     id: int = Field(primary_key=True)
@@ -781,16 +1100,33 @@ class UserProcessPermission(TlalocDB_Base, TimestampMixin, table=True):
         link_model=UserProcessPermissionLink,
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 14. 🤖 bot_process_permissions
+# 21. 🤖 bot_process_permissions
 # ---------------------------------------------------------------------------
-class BotProcessPermission(TlalocDB_Base, TimestampMixin, table=True):
+class BotProcessPermission(TlalocDB_Base, table=True):
     """
     Tabla: bot_process_permissions
     Catálogo de permisos que pueden tener los bots sobre procesos
     (p. ej. SEND_DATA, EXECUTE_ACTION).
     """
     __tablename__ = "bot_process_permissions"
+    metadata = metadata
 
     # 🔑 Clave primaria
     id: int = Field(primary_key=True)
@@ -818,16 +1154,33 @@ class BotProcessPermission(TlalocDB_Base, TimestampMixin, table=True):
         link_model=BotProcessPermissionLink
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 15. 👥 roles
+# 22. 👥 roles
 # ---------------------------------------------------------------------------
-class Role(TlalocDB_Base, TimestampMixin, table=True):
+class Role(TlalocDB_Base, table=True):
     """
     Tabla: roles
     Catálogo de roles asignables a usuarios
     (p. ej. ADMIN, SUPERVISOR, VIEWER).
     """
     __tablename__ = "roles"
+    metadata = metadata
 
     # 🔑 Clave primaria
     id: int = Field(primary_key=True)
@@ -862,21 +1215,37 @@ class Role(TlalocDB_Base, TimestampMixin, table=True):
         link_model=EmployeeRoleLink,
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
 
 #  ╭──────────────────────────────────────────────────────╮
 #  │ 🗂️ 2. Catálogos dependientes                         │
 #  ╰──────────────────────────────────────────────────────╯
 
 # ---------------------------------------------------------------------------
-# 16. 🧩 subprocess_types
+# 23. 🧩 subprocess_types
 # ---------------------------------------------------------------------------
-class SubprocessType(TlalocDB_Base, TimestampMixin, table=True):
+class SubprocessType(TlalocDB_Base, table=True):
     """
     Tabla: subprocess_types
     Catálogo de tipos funcionales de subproceso.
     Indica si un tipo puede agruparse (is_groupable) y si es experimental.
     """
     __tablename__ = "subprocess_types"
+    metadata = metadata
 
     # 🔑 Clave primaria
     id: int = Field(primary_key=True)
@@ -939,16 +1308,33 @@ class SubprocessType(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 17. 🗓️ plans
+# 24. 🗓️ plans
 # ---------------------------------------------------------------------------
-class Plan(TlalocDB_Base, TimestampMixin, table=True):
+class Plan(TlalocDB_Base, table=True):
     """
     Tabla: plans
     Catálogo de planes de suscripción disponibles en la plataforma.
     Contiene información comercial, límites de uso y unidad de periodo.
     """
     __tablename__ = "plans"
+    metadata = metadata
 
     # 🔑 Clave primaria
     id: int = Field(primary_key=True)
@@ -996,10 +1382,11 @@ class Plan(TlalocDB_Base, TimestampMixin, table=True):
         description="Número máximo de MCUs permitidos por proceso."
     )
 
-    # 🌟 Características extendidas
-    features: dict | None = Field(
+    # 🌟 Características extendidas (✅ JSONB en Postgres)
+    features: dict[str, Any] | None = Field(
         default=None,
-        description="Características adicionales del plan en formato JSON."
+        description="Características adicionales del plan en formato JSON.",
+        sa_column=Column(JSONB, nullable=True)
     )
 
     # ⚙️ Estado
@@ -1025,10 +1412,26 @@ class Plan(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 18. 🤖 bot_models
+# 25. 🤖 bot_models
 # ---------------------------------------------------------------------------
-class BotModel(TlalocDB_Base, TimestampMixin, table=True):
+class BotModel(TlalocDB_Base, table=True):
     """
     Tabla: bot_models
     Catálogo de modelos de bot disponibles en el sistema.
@@ -1036,8 +1439,9 @@ class BotModel(TlalocDB_Base, TimestampMixin, table=True):
     """
     __tablename__ = "bot_models"
     __table_args__ = (
-        UniqueConstraint("name", "version", name="uq_bot_model_name_version")
+        UniqueConstraint("name", "version", name="uq_bot_model_name_version"),
     )
+    metadata = metadata
 
     # 🔑 Clave primaria
     id: int = Field(primary_key=True)
@@ -1074,10 +1478,26 @@ class BotModel(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 19. 🌡️ sensor_models
+# 26. 🌡️ sensor_models
 # ---------------------------------------------------------------------------
-class SensorModel(TlalocDB_Base, TimestampMixin, table=True):
+class SensorModel(TlalocDB_Base, table=True):
     """
     Tabla: sensor_models
     Catálogo de modelos de sensores disponibles en el sistema.
@@ -1087,6 +1507,7 @@ class SensorModel(TlalocDB_Base, TimestampMixin, table=True):
     __table_args__ = (
         UniqueConstraint("name", "version", name="uq_sensor_model_name_version"),
     )
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(primary_key=True)
@@ -1130,10 +1551,26 @@ class SensorModel(TlalocDB_Base, TimestampMixin, table=True):
         link_model=SensorModelMagnitudeLink,
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 20. ⚙️ actuator_models
+# 27. ⚙️ actuator_models
 # ---------------------------------------------------------------------------
-class ActuatorModel(TlalocDB_Base, TimestampMixin, table=True):
+class ActuatorModel(TlalocDB_Base, table=True):
     """
     Tabla: actuator_models
     Catálogo de modelos de actuadores disponibles en el sistema.
@@ -1143,6 +1580,7 @@ class ActuatorModel(TlalocDB_Base, TimestampMixin, table=True):
     __table_args__ = (
         UniqueConstraint("name", "version", name="uq_actuator_model_name_version"),
     )
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(primary_key=True)
@@ -1186,10 +1624,26 @@ class ActuatorModel(TlalocDB_Base, TimestampMixin, table=True):
         link_model=ActuatorModelMagnitudeLink,
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 21. 🕹️ controller_models
+# 28. 🕹️ controller_models
 # ---------------------------------------------------------------------------
-class ControllerModel(TlalocDB_Base, TimestampMixin, table=True):
+class ControllerModel(TlalocDB_Base, table=True):
     """
     Tabla: controller_models
     Catálogo de modelos de controladores (p. ej. ESP32, PLC).
@@ -1198,6 +1652,7 @@ class ControllerModel(TlalocDB_Base, TimestampMixin, table=True):
     __table_args__ = (
         UniqueConstraint("name", "version", name="uq_controller_model_name_version"),
     )
+    metadata = metadata
 
     # 🔑 Clave primaria (en PG es SMALLINT; aquí mapeamos como int)
     id: int = Field(primary_key=True)
@@ -1241,19 +1696,36 @@ class ControllerModel(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
-# ╭──────────────────────────────────────────────────────╮
-# │ 🏢 3. Datos maestro                                  │
-# ╰──────────────────────────────────────────────────────╯
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
+# # ╭──────────────────────────────────────────────────────╮
+# # │ 🏢 3. Datos maestro                                  │
+# # ╰──────────────────────────────────────────────────────╯
 
 # ---------------------------------------------------------------------------
-# 22. 🏢 companies
+# 29. 🏢 companies
 # ---------------------------------------------------------------------------
-class Company(TlalocDB_Base, TimestampMixin, table=True):
+class Company(TlalocDB_Base, table=True):
     """
     Tabla: companies
     Catálogo de empresas que utilizan los bots y servicios.
     """
     __tablename__ = "companies"
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(primary_key=True)
@@ -1319,15 +1791,32 @@ class Company(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 23. 👤 employees
+# 30. 👤 employees
 # ---------------------------------------------------------------------------
-class Employee(TlalocDB_Base, TimestampMixin, table=True):
+class Employee(TlalocDB_Base, table=True):
     """
     Tabla: employees
     Registro de empleados asociados a las empresas.
     """
     __tablename__ = "employees"
+    metadata = metadata
 
     # 🔑 PK (en PG es BIGINT; aquí mapeamos como int)
     id: int = Field(primary_key=True)
@@ -1401,16 +1890,33 @@ class Employee(TlalocDB_Base, TimestampMixin, table=True):
         sa_relationship_kwargs={"uselist": False}
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 24. ☎️ company_contacts
+# 31. ☎️ company_contacts
 # ---------------------------------------------------------------------------
-class CompanyContact(TlalocDB_Base, TimestampMixin, table=True):
+class CompanyContact(TlalocDB_Base, table=True):
     """
     Tabla: company_contacts
     Contactos designados dentro de cada empresa.
     Relación 1:1 con un empleado.
     """
     __tablename__ = "company_contacts"
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(primary_key=True)
@@ -1438,15 +1944,32 @@ class CompanyContact(TlalocDB_Base, TimestampMixin, table=True):
         sa_relationship_kwargs={"uselist": False}
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 26. 🤖 bots
+# 32. 🤖 bots
 # ---------------------------------------------------------------------------
-class Bot(TlalocDB_Base, TimestampMixin, table=True):
+class Bot(TlalocDB_Base, table=True):
     """
     Tabla: bots
     Registro de bots disponibles en el sistema.
     """
     __tablename__ = "bots"
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(primary_key=True)
@@ -1485,10 +2008,11 @@ class Bot(TlalocDB_Base, TimestampMixin, table=True):
         description="Límite de solicitudes por minuto."
     )
 
-    # 🧩 Datos extra (JSONB en PG)
-    data: dict | None = Field(
+    # ✅ JSONB en Postgres
+    data: dict[str, Any] | None = Field(
         default=None,
-        description="Metadata adicional del bot (JSON)."
+        description="Metadata adicional del bot (JSON).",
+        sa_column=Column(JSONB, nullable=True)
     )
 
     # 🔗 Relación con `BotModel`
@@ -1545,15 +2069,32 @@ class Bot(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 27. 🔐 bot_credentials
+# 33. 🔐 bot_credentials
 # ---------------------------------------------------------------------------
-class BotCredential(TlalocDB_Base, TimestampMixin, table=True):
+class BotCredential(TlalocDB_Base, table=True):
     """
     Tabla: bot_credentials
     Credenciales asociadas 1:1 a cada bot.
     """
     __tablename__ = "bot_credentials"
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(primary_key=True)
@@ -1582,10 +2123,26 @@ class BotCredential(TlalocDB_Base, TimestampMixin, table=True):
         sa_relationship_kwargs={"uselist": False}
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 27. 📝 subscriptions
+# 34. 📝 subscriptions
 # ---------------------------------------------------------------------------
-class Subscription(TlalocDB_Base, TimestampMixin, table=True):
+class Subscription(TlalocDB_Base, table=True):
     """
     Tabla: subscriptions
     Suscripciones de empresas a un bot bajo un plan determinado.
@@ -1594,6 +2151,7 @@ class Subscription(TlalocDB_Base, TimestampMixin, table=True):
     __table_args__ = (
         UniqueConstraint("bot_id", "company_id", name="uq_subscriptions_bot_company"),
     )
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(primary_key=True)
@@ -1672,6 +2230,22 @@ class Subscription(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
     # ✅ Validación cross-field que refleja el CHECK del DDL
     @model_validator(mode="after")
     def _check_dates(self):
@@ -1681,14 +2255,15 @@ class Subscription(TlalocDB_Base, TimestampMixin, table=True):
         return self
 
 # ---------------------------------------------------------------------------
-# 27. 📝 OperationalUnit
+#35. 📝 OperationalUnit
 # ---------------------------------------------------------------------------
-class OperationalUnit(TimestampMixin, TlalocDB_Base, table=True):
+class OperationalUnit(TlalocDB_Base, table=True):
     """
     Tabla: operational_units
     Unidades operativas pertenecientes a una empresa.
     """
     __tablename__ = "operational_units"
+    metadata = metadata
 
     id: int = Field(
         primary_key=True,
@@ -1740,15 +2315,32 @@ class OperationalUnit(TimestampMixin, TlalocDB_Base, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 28. 📝 processes
+# 36. 📝 processes
 # ---------------------------------------------------------------------------
-class Process(TimestampMixin, TlalocDB_Base, table=True):
+class Process(TlalocDB_Base, table=True):
     """
     Tabla: processes
     Procesos que se ejecutan dentro de una unidad operativa.
     """
     __tablename__ = "processes"
+    metadata = metadata
 
     id: int = Field(
         primary_key=True,
@@ -1810,22 +2402,39 @@ class Process(TimestampMixin, TlalocDB_Base, table=True):
     )
 
     # 🔗 Relación con `BotProcess`
-    suscription_links: list["BotProcess"] = Relationship(
+    subscription_links: list["BotProcess"] = Relationship(
         back_populates="process",
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 
 # ---------------------------------------------------------------------------
-# 29. 🧩 subprocess_groups
+# 37. 🧩 subprocess_groups
 # ---------------------------------------------------------------------------
-class SubprocessGroup(TimestampMixin, TlalocDB_Base, table=True):
+class SubprocessGroup(TlalocDB_Base, table=True):
     """
     Tabla: subprocess_groups
     Grupos homogéneos de subprocesos agrupables dentro de un proceso,
     según su tipo (solo si is_groupable = TRUE en subprocess_types).
     """
     __tablename__ = "subprocess_groups"
+    metadata = metadata
 
     id: int = Field(
         primary_key=True,
@@ -1871,15 +2480,32 @@ class SubprocessGroup(TimestampMixin, TlalocDB_Base, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 29. 🪜 subprocesses
+# 38. 🪜 subprocesses
 # ---------------------------------------------------------------------------
-class Subprocess(TimestampMixin, TlalocDB_Base, table=True):
+class Subprocess(TlalocDB_Base, table=True):
     """
     Tabla: subprocesses
     Subprocesos que conforman un proceso operativo.
     """
     __tablename__ = "subprocesses"
+    metadata = metadata
 
     id: int = Field(
         primary_key=True,
@@ -1954,15 +2580,32 @@ class Subprocess(TimestampMixin, TlalocDB_Base, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 30. 🖥️  controller_devices
+# 39. 🖥️  controller_devices
 # ---------------------------------------------------------------------------
-class ControllerDevice(TlalocDB_Base, TimestampMixin, table=True):
+class ControllerDevice(TlalocDB_Base, table=True):
     """
     Tabla: controller_devices
     Dispositivos de control (p. ej. ESP32, PLC) instalados en un subproceso.
     """
     __tablename__ = "controller_devices"
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(primary_key=True)
@@ -2030,15 +2673,32 @@ class ControllerDevice(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 31. 📡  sensors
+# 40. 📡  sensors
 # ---------------------------------------------------------------------------
-class Sensor(TlalocDB_Base, TimestampMixin, table=True):
+class Sensor(TlalocDB_Base, table=True):
     """
     Tabla: sensors
     Sensores físicos asociados a un dispositivo de control.
     """
     __tablename__ = "sensors"
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(
@@ -2090,15 +2750,32 @@ class Sensor(TlalocDB_Base, TimestampMixin, table=True):
         back_populates="sensors"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 32. 🔧 actuators
+# 41. 🔧 actuators
 # ---------------------------------------------------------------------------
-class Actuator(TlalocDB_Base, TimestampMixin, table=True):
+class Actuator(TlalocDB_Base, table=True):
     """
     Tabla: actuators
     Actuadores físicos asociados a un dispositivo de control.
     """
     __tablename__ = "actuators"
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(primary_key=True)
@@ -2147,15 +2824,32 @@ class Actuator(TlalocDB_Base, TimestampMixin, table=True):
         back_populates="actuators"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 33. 🤖 bot_users
+# 42. 🤖 bot_users
 # ---------------------------------------------------------------------------
-class BotUser(TlalocDB_Base, TimestampMixin, table=True):
+class BotUser(TlalocDB_Base, table=True):
     """
     Tabla: bot_users
     Usuarios finales que interactúan con los bots a través de Telegram.
     """
     __tablename__ = "bot_users"
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(
@@ -2208,16 +2902,33 @@ class BotUser(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 34. 👤 user_processes
+# 43. 👤 user_processes
 # ---------------------------------------------------------------------------
-class UserProcess(TlalocDB_Base, TimestampMixin, table=True):
+class UserProcess(TlalocDB_Base, table=True):
     """
     Tabla: user_processes
     Procesos asignados a un usuario de bot.
     Cada vínculo indica qué procesos de negocio puede operar (o vigilar) un usuario.
     """
     __tablename__ = "user_processes"
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(
@@ -2255,8 +2966,8 @@ class UserProcess(TlalocDB_Base, TimestampMixin, table=True):
 
     # 🔗 Relación con `UserProcessPermission`
     permissions: list["UserProcessPermission"] = Relationship(
-        back_populates="user_process",
-        link_model="UserProcessPermissionLink"
+        back_populates="user_processes",
+        link_model=UserProcessPermissionLink
     )
 
     # 📌 Evita que un mismo proceso se asigne dos veces al mismo usuario
@@ -2268,16 +2979,33 @@ class UserProcess(TlalocDB_Base, TimestampMixin, table=True):
         ),
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 35. ⚙️ bot_processes
+# 44. ⚙️ bot_processes
 # ---------------------------------------------------------------------------
-class BotProcess(TlalocDB_Base, TimestampMixin, table=True):
+class BotProcess(TlalocDB_Base, table=True):
     """
     Tabla: bot_processes
     Procesos operativos administrados por un bot dentro de una suscripción específica.
     Cada fila enlaza un proceso de negocio con la suscripción activa que lo ejecuta.
     """
     __tablename__ = "bot_processes"
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(
@@ -2329,13 +3057,29 @@ class BotProcess(TlalocDB_Base, TimestampMixin, table=True):
         ),
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 #  ╭──────────────────────────────────────────────────────╮
 #  │ 💰 6. Facturación y pagos                            │
 #  ╰──────────────────────────────────────────────────────╯
 # ---------------------------------------------------------------------------
-# 36. 📅 subscription_periods
+# 45. 📅 subscription_periods
 # ---------------------------------------------------------------------------
-class SubscriptionPeriod(TlalocDB_Base, TimestampMixin, table=True):
+class SubscriptionPeriod(TlalocDB_Base, table=True):
     """
     Tabla: subscription_periods
     Periodos de facturación pertenecientes a una suscripción.
@@ -2343,6 +3087,7 @@ class SubscriptionPeriod(TlalocDB_Base, TimestampMixin, table=True):
     así como su snapshot comercial para histórico de precios y límites.
     """
     __tablename__ = "subscription_periods"
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(
@@ -2359,8 +3104,10 @@ class SubscriptionPeriod(TlalocDB_Base, TimestampMixin, table=True):
     )
 
     # 📦 Snapshot comercial del plan
-    plan_snapshot: dict = Field(
-        description="Snapshot JSON del plan en vigor durante el periodo."
+    plan_snapshot: dict[str, Any] = Field(
+        default_factory=dict,
+        description="Snapshot JSON del plan en vigor durante el periodo.",
+        sa_column=Column(JSONB, server_default=text("'{}'::jsonb"), nullable=False),
     )
 
     # 🔗 Relación con `Subscription`
@@ -2381,6 +3128,22 @@ class SubscriptionPeriod(TlalocDB_Base, TimestampMixin, table=True):
         sa_relationship_kwargs={"uselist": False}
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
     # ✅ Validación cross-field
     @classmethod
     def validate_dates(cls, values):
@@ -2390,15 +3153,16 @@ class SubscriptionPeriod(TlalocDB_Base, TimestampMixin, table=True):
         return values
 
 # ---------------------------------------------------------------------------
-# 37. 🧾 invoices
+# 46. 🧾 invoices
 # ---------------------------------------------------------------------------
-class Invoice(TlalocDB_Base, TimestampMixin, table=True):
+class Invoice(TlalocDB_Base, table=True):
     """
     Tabla: invoices
     Facturas emitidas para cada periodo de suscripción.
     Contiene montos, fechas clave y estado de cobranza.
     """
     __tablename__ = "invoices"
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(
@@ -2470,15 +3234,32 @@ class Invoice(TlalocDB_Base, TimestampMixin, table=True):
         passive_deletes="all"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 38. 💳 payments
+# 47. 💳 payments
 # ---------------------------------------------------------------------------
-class Payment(TlalocDB_Base, TimestampMixin, table=True):
+class Payment(TlalocDB_Base, table=True):
     """
     Tabla: payments
     Pagos registrados para saldar facturas.
     """
     __tablename__ = "payments"
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(primary_key=True)
@@ -2529,10 +3310,26 @@ class Payment(TlalocDB_Base, TimestampMixin, table=True):
         back_populates="payments"
     )
 
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
 # ---------------------------------------------------------------------------
-# 39. 🔁 payment_attempts
+# 48. 🔁 payment_attempts
 # ---------------------------------------------------------------------------
-class PaymentAttempt(TlalocDB_Base, TimestampMixin, table=True):
+class PaymentAttempt(TlalocDB_Base, table=True):
     """
     Tabla: payment_attempts
     Registro de cada intento de pago asociado a una factura.
@@ -2541,6 +3338,7 @@ class PaymentAttempt(TlalocDB_Base, TimestampMixin, table=True):
     __table_args__ = (
         UniqueConstraint("invoice_id", "attempt_no", name="uq_payment_attempts_invoice_attemptno"),
     )
+    metadata = metadata
 
     # 🔑 PK
     id: int = Field(primary_key=True)
@@ -2588,7 +3386,7 @@ class PaymentAttempt(TlalocDB_Base, TimestampMixin, table=True):
         back_populates="payment_attempts"
     )
 
-    # 🔗 Relación con `Factura`
+    # 🔗 Relación con `Invoice`
     invoice_id: int = Field(
         foreign_key="invoices.id",
         ondelete="CASCADE",
@@ -2609,4 +3407,20 @@ class PaymentAttempt(TlalocDB_Base, TimestampMixin, table=True):
 
     status: Optional["PaymentStatus"] = Relationship(
         back_populates="payments_attempts"
+    )
+
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
     )

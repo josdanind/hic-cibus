@@ -16,6 +16,7 @@ from app.core.config import settings
 from app.core.security import verify_password, create_access_token, get_password_hash
 from app.database import DATABASES
 from app.libraries.CRUDManager import CRUDManager
+from app.utils.rich_format import print_success_message
 
 # 🧱 Modelos y esquemas
 from app.database.models.tlaloc_db import Bot, BotCredential
@@ -24,7 +25,7 @@ from app.schemas.auth import Token
 # ────────────────────────────────
 # 🗄️  Base de datos
 # ────────────────────────────────
-bot_db = DATABASES["bot_auth_db"]
+bot_db = DATABASES[settings.TLALOC_DB_NAME]
 session_factory = bot_db.session_factory
 
 # ────────────────────────────────
@@ -45,11 +46,11 @@ def _raise_unauthorized(detail:str) -> NoReturn:
     )
 
 
-async def get_bot(username: str, crud: CRUDManager) -> Bot | None:
-    """Devuelve un bot (con sus credenciales) por nombre de usuario."""
+async def get_bot(name: str, crud: CRUDManager) -> Bot | None:
+    """Devuelve un bot (con sus credenciales)"""
     return await crud.get(
         Bot,
-        {"name": username},
+        {"name": name},
         single_result=True,
         load_options=[selectinload(Bot.credentials)]
     )
@@ -71,11 +72,11 @@ async def update_bot_credentials(
 # ────────────────────────────────
 # 🔑  API pública
 # ────────────────────────────────
-async def authenticate_bot(username: str, password: str) -> Bot:
+async def authenticate_bot(name: str, password: str) -> Bot:
     async with session_factory() as session:
         crud_manager = CRUDManager(session)
 
-        bot = await get_bot(username=username, crud=crud_manager)
+        bot = await get_bot(name=name, crud=crud_manager)
         credentials = bot.credentials if bot else None
 
         if bot is None or credentials is None:
@@ -90,13 +91,13 @@ async def authenticate_bot(username: str, password: str) -> Bot:
         return bot
 
 
-async def generate_access_token(username: str, password: str) -> Token:
+async def generate_access_token(bot_name: str, password: str) -> Token:
     """
     Autentica un bot y genera un access token JWT.
 
     El token se almacena (hash) en la tabla de credenciales.
     """
-    bot = await authenticate_bot(username, password)
+    bot = await authenticate_bot(bot_name, password)
     expires_delta = timedelta(days=settings.ACCESS_TOKEN_EXPIRE_DAYS)
 
     token: str = create_access_token(
@@ -111,7 +112,6 @@ async def generate_access_token(username: str, password: str) -> Token:
             crud=crud_manager,
             bot_id=bot.id,
             hashed_api_access_token=get_password_hash(token),
-            hashed_telegram_bot_token="Hola"
         )
 
     return token

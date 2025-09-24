@@ -8,6 +8,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 # 🏗️  Módulos internos de la aplicación
 from app.database import get_mqtt_crud, DATABASES
+from app.core.config import settings
 
 # 🧱 Modelos y esquemas
 from app.database.models.mqtt_users_db import MqttUser as MqttUserModel
@@ -18,9 +19,6 @@ from ..crud.auth import decode_token as user_crud_decode_token
 router = APIRouter()
 oauth2_schema = OAuth2PasswordBearer(tokenUrl="crud_user/auth")
 
-# Configuración de base de datos y modelos
-mqtt_db = DATABASES["mqtt_auth_db"]
-# MqttUserModel = mqtt_db.models.User
 
 @router.get(
     "",
@@ -33,7 +31,7 @@ async def get_mqtt_user(
     username: str | None = None
 ):
     # Verifica Token de usuario CRUD
-    await user_crud_decode_token(token)
+    await user_crud_decode_token(token=token)
 
     if username:
         mqtt_user = await crud_manager.get(

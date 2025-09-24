@@ -3,23 +3,23 @@
 # ─────────────────
 # 🧩 Terceros
 from sqlalchemy.orm import selectinload
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 import aiohttp
 
 # 🏗️  Módulos internos de la aplicación
 from app.schemas.auth import Token
-from app.schemas.bot import RegisterBot
+from app.schemas.bot import BotCredential as BotCredentialSchema
 from app.libraries.CRUDManager import CRUDManager
-# from app.database import get_bot_crud
+from app.database import get_tlaloc_crud
 from app.database import DATABASES
 from app.utils.rich_format import print_panel
 from app.utils.http_exceptions import not_found
 
 # 🧱 Modelos y esquemas
-from app.database.models.tlaloc_db import (
-    Bot as BotModel,
-    BotCredential as BotCredentialModel
+from app.database.models.tlaloc_db.V2 import (
+    Bot,
+    BotCredential
 )
 
 # 🚦 Utilidades del router
@@ -47,12 +47,70 @@ async def login_for_access_token(
 
     return Token(access_token=access_token)
 
+@router.post(
+    "/create_bot_credential",
+    status_code=status.HTTP_200_OK
+)
+async def create_bot_credential(
+    register_credential: BotCredentialSchema,
+    token: str = Depends(oauth2_schema),
+    crud_manager: CRUDManager  = Depends(get_tlaloc_crud)
+):
+    """
+    Crea o actualiza las credenciales para un bot existente.
+    - Si el bot no existe → 404
+    - Si no tiene credenciales → crea
+    - Si ya tiene → actualiza
+    """
+    await user_crud_decode_token(token=token)
+
+    bot = await crud_manager.get(
+        Bot,
+        {"name": register_credential.name},
+        single_result=True,
+        load_options = [selectinload(Bot.credentials)]
+    )
+
+    if bot is None:
+        raise not_found(f"El bot '{register_credential.name}' no existe")
+
+    creating = bot.credentials is None
+
+    if creating:
+        bot_credential = await crud_manager.add(
+            BotCredential(
+                bot_id=bot.id,
+                hashed_password=register_credential.password
+            )
+        )
+        action = "creadas"
+    else:
+        bot_credential = await crud_manager.update(
+            model=BotCredential,
+            filters={"bot_id": bot.id},
+            data={"hashed_password": register_credential.password}
+        )
+        action = f"actualizadas"
+
+    print_panel(
+        title=f"Credenciales del bot {bot.name} {action}",
+        messages=[
+            (
+                BotCredential.__tablename__,
+                f"id: {bot_credential.id}, bot_id: {bot_credential.bot_id}"
+            ),
+        ],
+        style="check arrow",
+    )
+
+
+    return {"message": f"Las credenciales del bot '{bot.name}' han sido {action} exitosamente."}
 
 # @router.post("/register_bot")
 # async def register_bot(
 #     register_bot: RegisterBot,
 #     token: str = Depends(oauth2_schema),
-#     crud_manager: CRUDManager  = Depends(get_bot_crud),
+#     # crud_manager: CRUDManager  = Depends(get_bot_crud),
 # ):
 #     """
 #     Registra un bot en el sistema.
