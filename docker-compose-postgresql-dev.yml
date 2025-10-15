@@ -21,7 +21,11 @@ services:
             traefik.tcp.services.postgresql-service.loadbalancer.server.port: "5432" # Puerto interno del contenedor
 
         # 📄 Variables de entorno - Modo Desarrollo
-        env_file: services/postgresql/.env.dev
+        environment:
+            - TZ=${TZ}
+            - POSTGRES_USER=${POSTGRES_USER_DEV}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_DEV}
+            - POSTGRES_DB=${POSTGRES_DB_DEV}
 
         # 🌍 Red asignada al servicio
         networks:
