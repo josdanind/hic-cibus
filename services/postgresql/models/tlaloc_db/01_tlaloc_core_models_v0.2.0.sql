@@ -1360,7 +1360,7 @@ CREATE TABLE processes (
                             AND code ~ '^[A-Z0-9_]{1,30}$'
                         ),
 
-    name                VARCHAR(100)                                NOT NULL UNIQUE
+    name                VARCHAR(100)                                NOT NULL
                         CHECK (char_length(TRIM(name)) > 0),
 
     is_active           BOOLEAN                                     NOT NULL DEFAULT TRUE,
