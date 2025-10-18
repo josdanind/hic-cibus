@@ -1398,7 +1398,7 @@ CREATE TABLE reels (
 
     -- Información general
     label               VARCHAR(100)                                NOT NULL
-                        CHECK (char_length(TRIM(name)) > 0),
+                        CHECK (char_length(TRIM(label)) > 0),
 
     description         TEXT,
 
