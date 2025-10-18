@@ -1402,7 +1402,7 @@ CREATE TABLE reels (
 
     description         TEXT,
 
-    is_active           BOOLEAN                                     NOT NULL DEFAULT TRUE.
+    is_active           BOOLEAN                                     NOT NULL DEFAULT TRUE,
 
     -- Auditoría
     created_at          TIMESTAMPTZ                                 NOT NULL DEFAULT now(),
