@@ -1422,7 +1422,7 @@ CREATE TABLE process_reel_links (
                         REFERENCES reels(id)
                         ON DELETE CASCADE,
 
-    process_name        VARCHAR(15)                 NOT NULL,
+    process_name        VARCHAR(25)                 NOT NULL,
 
     -- Auditoría
     created_at          TIMESTAMPTZ                 NOT NULL DEFAULT now(),
