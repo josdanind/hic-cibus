@@ -1555,7 +1555,7 @@ CREATE TABLE theaters (
     show_all_galleries      BOOLEAN                                         NOT NULL DEFAULT FALSE,
 
     -- 📝 Descripción opcional
-    description             TEXT
+    description             TEXT,
 
     -- 📆 Auditoría
     created_at          TIMESTAMPTZ     NOT NULL DEFAULT now(),
