@@ -1551,6 +1551,13 @@ CREATE TABLE theaters (
     -- 🪧 Botón principal (opcional)
     billboard               VARCHAR(15),
 
+    -- 🖼️ URL de la imagen de portada
+    cover_url               VARCHAR(255)                                    NOT NULL
+                            CHECK (
+                                char_length(TRIM(cover_url)) > 0
+                                AND cover_url ~* '^(https?|ftp)://'
+                            ),
+
     -- ⚙️ Estado
     is_active               BOOLEAN                                         NOT NULL DEFAULT TRUE,
 
