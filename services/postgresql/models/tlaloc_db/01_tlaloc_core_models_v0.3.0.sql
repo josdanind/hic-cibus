@@ -1,11 +1,11 @@
 -- tlaloc_core_models_v0.3.0.sql
 -- ==========================================
 -- 💾 CODE: TLALOC_CORE_MODELS
--- 📌 VERSIÓN: v0.2.0
+-- 📌 VERSIÓN: v0.3.0
 -- 📦 DESCRIPCIÓN:
 --      Modelos base del núcleo de datos de
 --      Tlaloc
--- 📅 FECHA: 2025-09-10
+-- 📅 FECHA: 2025-10-23
 -- ==========================================
 
 -- ╭──────────────────────────────────────────────────────╮
