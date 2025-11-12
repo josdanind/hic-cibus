@@ -9,7 +9,7 @@ services:
     image: tlaloc-crud:0.1.0
 
     # 🚀 Comando para iniciar el servidor FastAPI
-    command: uvicorn main:app --host 0.0.0.0 --port ${FASTAPI_PORT} --reload
+    command: uvicorn main:app --host 0.0.0.0 --port ${APICRUD_PORT_DEV} --reload
 
     # 📂 Montaje de volúmenes
     volumes:
@@ -22,9 +22,9 @@ services:
 
       # 🌐 Router para FastAPI (HTTP)
       traefik.http.routers.fastapi-router.entrypoints: http
-      traefik.http.routers.fastapi-router.rule: Host(`${API_DEV_DOMAIN}`)
+      traefik.http.routers.fastapi-router.rule: Host(`${APICRUD_DOMAIN_DEV}`)
       traefik.http.routers.fastapi-router.service: fastapi-service
-      traefik.http.services.fastapi-service.loadbalancer.server.port: ${FASTAPI_PORT}
+      traefik.http.services.fastapi-service.loadbalancer.server.port: ${APICRUD_PORT_DEV}
 
     # 🔄 Política de reinicio
     restart: unless-stopped
