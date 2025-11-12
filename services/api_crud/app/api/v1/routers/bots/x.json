@@ -1,0 +1,16 @@
+{
+    "HIC-CIBUS":{
+        "suscription_status": true,
+        "reels": [
+            {
+                "label": "Huertas",
+                "processes": [
+                    {
+                        "id": 1,
+                        "alias": "Habanero chocolate"
+                    }
+                ]
+            }
+        ]
+    }
+}

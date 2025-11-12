@@ -68,3 +68,7 @@ class BotCredential(HashedPasswordMixin):
     model_config = ConfigDict(populate_by_name=True)
 
     name: str
+
+class BotTokenPayload(BaseModel):
+    sub: str
+    is_active: bool

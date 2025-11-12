@@ -74,6 +74,17 @@ from .models import (
     ActuatorModelMagnitudeLink
 )
 
+#  ╭──────────────────────────────────────────────────────╮
+#  │ 🎭 1. TABLAS - Theater                               │
+#  ╰──────────────────────────────────────────────────────╯
+from .models import (
+    ProcessReelLinks,
+    FrameTemplate,
+    Query,
+    Reel,
+    Gallery
+)
+
 # ╭──────────────────────────────────────────────────────╮
 # │ ⚙️ 5. TABLAS - Uso y operación                       │
 # ╰──────────────────────────────────────────────────────╯

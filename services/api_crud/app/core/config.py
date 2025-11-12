@@ -4,9 +4,7 @@ from pydantic import computed_field, Field
 
 class Settings(BaseSettings):
     # Configuración general
-    PORT: int
-    API_DOMAIN: str
-    ENVIRONMENT: str
+    DEVELOPMENT_MODE: bool
 
     # Configuración de seguridad y autenticación JWT
     SECRET_KEY: str

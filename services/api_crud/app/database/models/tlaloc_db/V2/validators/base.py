@@ -92,3 +92,18 @@ MqttTopicStr = Annotated[
         max_length=255
     )
 ]
+
+# ---------------------------------------------------------------------------
+# 36. 📝 Validaciones relacionadas con el bot de telegram
+# ---------------------------------------------------------------------------
+
+InlineButtonText = Annotated[
+    str,
+    StringConstraints(
+        strip_whitespace=True,
+        min_length=1,
+        max_length=64
+    )
+]
+
+

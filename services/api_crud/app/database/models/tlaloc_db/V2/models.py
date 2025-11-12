@@ -18,7 +18,7 @@ from sqlalchemy.orm import registry
 from pydantic import model_validator, ConfigDict
 
 # Validadores
-from .validators import (
+from .validators.base import (
     CodeStr,
     NameStr,
     VersionStr,
@@ -26,7 +26,10 @@ from .validators import (
     EmailStr,
     HashedStr,
     MacAddressStr,
-    MqttTopicStr
+    MqttTopicStr,
+)
+from .validators.theater_handler import(
+    ButtonText
 )
 
 metadata = MetaData()
@@ -127,6 +130,85 @@ class BotCategoryLink(TlalocDB_Base, table=True):
         )
     )
     updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
+# ---------------------------------------------------------------------------
+# x. 🔗 process_reel_links
+# ---------------------------------------------------------------------------
+class ProcessReelLinks(TlalocDB_Base, table=True):
+    """
+    Tabla: process_reel_links
+    Relación muchos-a-muchos entre processes y reels.
+    PK compuesta: (process_id, reel_id).
+    """
+    __tablename__ = "process_reel_links"
+    __table_args__ = (
+        UniqueConstraint("process_id", "reel_id"),
+    )
+
+    metadata = metadata
+
+
+    # 🔗 Claves compuestas (PK)
+    process_id: int = Field(
+        primary_key=True,
+        ondelete="CASCADE",
+        foreign_key="processes.id"
+    )
+    reel_id: int = Field(
+        primary_key=True,
+        ondelete="CASCADE",
+        foreign_key="reels.id"
+    )
+
+    process_name: ButtonText =Field(
+        description="Nombre representativo del proceso para el contexto del reel"
+    )
+
+    # 🔗 Relación con `Process`
+    process: "Process" = Relationship(back_populates="reel_links")
+
+    # 🔗 Relación con `Reel`
+    reel: "Reel" = Relationship(back_populates="process_links")
+
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
+# ---------------------------------------------------------------------------
+# x. 🔗 theater_gallery_links
+# ---------------------------------------------------------------------------
+class TheaterGalleryLink(TlalocDB_Base, table=True):
+    __tablename__ = "theater_gallery_links"
+    metadata = metadata
+
+    # 🔑 PK
+    id: int = Field(primary_key=True)
+
+    # 🔗 Relación con `Theater`
+    theater_id: int = Field(
+        foreign_key="theaters.id",
+        ondelete="CASCADE"
+    )
+
+    # 🔗 Relación con `Gallery`
+    gallery_id: int = Field(
+        foreign_key="galleries.id",
+        ondelete="CASCADE"
+    )
+
+    # 📆 Auditoría
+    created_at: datetime = Field(
         sa_column=Column(
             DateTime(timezone=True),
             server_default=func.now(),
@@ -2050,7 +2132,7 @@ class Bot(TlalocDB_Base, table=True):
         back_populates="bots"
     )
 
-    # 🔗 Relación con `BotCredential`
+    # 🔗 Relación 1:1 con `BotCredential`
     credentials: Optional["BotCredential"] = Relationship(
         back_populates="bot",
         passive_deletes="all",
@@ -2330,6 +2412,266 @@ class OperationalUnit(TlalocDB_Base, table=True):
             nullable=False,
         )
     )
+# ---------------------------------------------------------------------------
+#  x. 🎑. frame_templates
+# ---------------------------------------------------------------------------
+class FrameTemplate(TlalocDB_Base, table=True):
+    __tablename__ = "frame_templates"
+    metadata = metadata
+
+    # 🔑 PK
+    id: int = Field(primary_key=True)
+
+    name: str = Field(unique=True)
+    description: str | None = Field(default = None)
+
+    # 🔗 Relación con `Gallery`
+    galleries: list["Gallery"] = Relationship(
+        back_populates="frame_template",
+        passive_deletes="all"
+    )
+
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
+# ---------------------------------------------------------------------------
+#  x. 🔍 queries
+# ---------------------------------------------------------------------------
+class Query(TlalocDB_Base, table=True):
+    __tablename__ = "queries"
+    metadata = metadata
+
+    # 🔑 PK
+    id: int = Field(primary_key=True)
+
+    # Nombre único de la consulta
+    name: str = Field(unique=True,index=True)
+
+    # Plantilla SQL
+    sql_template: str
+
+    #  Lista blanca opcional
+    whitelist: dict[str, list[str]] | None  = Field(
+        default=None,
+        sa_column=Column(JSONB, nullable=True)
+    )
+
+    # Descripción opcional de la consulta
+    description: str | None = Field(default=None)
+
+    # 🔗 Relación con `Gallery`
+    galleries: list["Gallery"] = Relationship(
+        back_populates="query",
+        passive_deletes="all"
+    )
+
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
+
+# ---------------------------------------------------------------------------
+#  x. 📽️ reels
+# ---------------------------------------------------------------------------
+class Reel(TlalocDB_Base, table=True):
+    __tablename__ = "reels"
+    metadata = metadata
+
+    # 🔑 PK
+    id: int = Field(primary_key=True)
+
+    # 🏷️ Etiqueta del reel
+    label: ButtonText = Field(
+        unique=True,
+        description="Texto del botón que enlaza al theater."
+    )
+
+    # 📄 Descripción opcional
+    description: str | None = Field(
+        default=None,
+        description="Descripción de la naturaleza de los procesos que almacena"
+    )
+
+    is_active: bool = Field(
+        default=True,
+        description="Indica si el reel está activo."
+    )
+
+    # 🔗 Relación con `Process`
+    process_links: list["ProcessReelLinks"] = Relationship(
+        back_populates="reel",
+        passive_deletes="all"
+    )
+
+    # 🔗 Relación con `Gallery`
+    galleries: list["Gallery"] = Relationship(
+        back_populates="reel",
+        passive_deletes="all"
+    )
+
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
+# ---------------------------------------------------------------------------
+# x. 🎪 Gallery
+# ---------------------------------------------------------------------------
+class Gallery(TlalocDB_Base, table=True):
+    __tablename__ = "galleries"
+    metadata = metadata
+
+    # 🔑 PK
+    id: int = Field(primary_key=True)
+
+    name: str = Field(unique=True,index=True)
+
+    # 🪧 Nombre del botón que lleva a la galería
+    poster: ButtonText
+
+    description: Optional[str] = Field(default=None)
+
+    # ⚙️ Estado
+    is_active: bool = Field(default=True)
+
+    # ⚙️ Configuraciones
+    settings: dict[str, Any] = Field(
+        default_factory=dict,
+        sa_column=Column(JSONB, nullable=False, server_default="{}")
+    )
+
+    # 🔗 Relación con `Reel`
+    reel_id: int = Field(
+        foreign_key="reels.id",
+        ondelete="CASCADE"
+    )
+
+    reel: Reel = Relationship(
+        back_populates="galleries"
+    )
+
+    # 🔗 Relación con `FrameTemplate`
+    frame_template_id: int = Field(
+        foreign_key="frame_templates.id",
+        ondelete="RESTRICT",
+        description="Estilo del frame"
+    )
+
+    frame_template: FrameTemplate = Relationship(
+        back_populates="galleries"
+    )
+
+    # 🔗 Relación con `Query`
+    query_id: int = Field(
+        foreign_key="queries.id",
+        ondelete="RESTRICT",
+        description="Filtro que se aplica a los procesos"
+    )
+
+    query: Query = Relationship(
+        back_populates="galleries"
+    )
+
+    # 🔗 Relación con `Theater`
+    theaters: list["Theater"] = Relationship(
+        back_populates="galleries",
+        link_model=TheaterGalleryLink,
+    )
+
+    # 📆 Auditoría
+    created_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            nullable=False,
+        )
+    )
+
+# ---------------------------------------------------------------------------
+# x. 🎪 Theater
+# ---------------------------------------------------------------------------
+class Theater(TlalocDB_Base, table=True):
+    __tablename__ = "theaters"
+    metadata = metadata
+
+    # 🔑 PK
+    id: int = Field(primary_key=True)
+
+    code: CodeStr = Field(
+        unique=True,
+        description="Código único del theater."
+    )
+
+    billboard: ButtonText | None = Field(
+        default=None,
+        description="Texto del botón principal del theater."
+    )
+
+    cover_url: str
+
+    is_active: bool = Field(
+        default=True,
+        description="Indica si el theater está activo."
+    )
+
+    show_all_galleries:bool = Field(
+        default=False,
+        description="Indica si se muestran todas las galerías asociadas."
+    )
+
+    description: str | None = Field(
+        default=None,
+        description="Descripción del theater."
+    )
+
+    # 🔗 Relación con `Gallery`
+    galleries: list["Gallery"] = Relationship(
+        back_populates="theaters",
+        link_model=TheaterGalleryLink,
+    )
 
 # ---------------------------------------------------------------------------
 # 36. 📝 processes
@@ -2403,6 +2745,12 @@ class Process(TlalocDB_Base, table=True):
 
     # 🔗 Relación con `BotProcess`
     subscription_links: list["BotProcess"] = Relationship(
+        back_populates="process",
+        passive_deletes="all"
+    )
+
+    # 🔗 Relación con `Reel`
+    reel_links: list[ProcessReelLinks] = Relationship(
         back_populates="process",
         passive_deletes="all"
     )

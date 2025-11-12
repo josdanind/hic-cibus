@@ -3,7 +3,7 @@
 # ─────────────────
 # 🧩 Terceros
 from sqlalchemy.orm import selectinload
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 import aiohttp
 
@@ -11,7 +11,7 @@ import aiohttp
 from app.schemas.auth import Token
 from app.schemas.bot import BotCredential as BotCredentialSchema
 from app.libraries.CRUDManager import CRUDManager
-from app.database import get_tlaloc_crud
+from app.database import get_tlaloc_crud, get_user_crud
 from app.database import DATABASES
 from app.utils.rich_format import print_panel
 from app.utils.http_exceptions import not_found
@@ -106,6 +106,47 @@ async def create_bot_credential(
 
     return {"message": f"Las credenciales del bot '{bot.name}' han sido {action} exitosamente."}
 
+
+@router.post("/ping_bot/")
+async def ping_bot(
+    bot_name:str,
+    token: str = Depends(oauth2_schema),
+    crud_manager: CRUDManager  = Depends(get_tlaloc_crud)
+):
+    await user_crud_decode_token(token=token)
+
+    bot_data = await crud_manager.get(
+        Bot,
+        {"name": bot_name},
+        single_result=True,
+        load_options = [selectinload(Bot.credentials)]
+    )
+
+    if not bot_data:
+        raise not_found(f"El bot '{bot_name}' no existe")
+
+    bot_url = bot_data.api_url + "/ping"
+    credential = bot_data.credentials
+
+    headers = {
+        "Hashed-Token": credential.hashed_api_access_token
+    }
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(bot_url, headers=headers) as response:
+            if response.status >= 400:
+                # 🔴 Token inválido u otro error
+                try:
+                    error_data = await response.json()
+                    detail = error_data.get("detail", "Error desconocido")
+                except Exception:
+                    detail = await response.text()
+
+                raise HTTPException(status_code=response.status, detail=detail)
+
+            # ✅ Token válido
+            return await response.json()
+
 # @router.post("/register_bot")
 # async def register_bot(
 #     register_bot: RegisterBot,
@@ -164,43 +205,3 @@ async def create_bot_credential(
 #         message = f"El Bot {bot_data.name} ya está registrado."
 
 #     return {"message": message}
-
-# @router.post("/ping_bot/")
-# async def ping_bot(
-#     bot_name:str,
-#     token: str = Depends(oauth2_schema),
-#     crud_manager: CRUDManager  = Depends(get_bot_crud)
-# ):
-#     await user_crud_decode_token(token=token)
-
-#     bot_data = await crud_manager.get(
-#         BotModel,
-#         {"name": bot_name},
-#         single_result=True,
-#         load_options = [selectinload(BotModel.credentials)]
-#     )
-
-#     if not bot_data:
-#         raise not_found(f"El bot '{bot_name}' no existe")
-
-#     bot_url = bot_data.api_url + "/ping"
-#     credential = bot_data.credentials
-
-#     headers = {
-#         "Hashed-Token": credential.hashed_api_access_token
-#     }
-
-#     async with aiohttp.ClientSession() as session:
-#         async with session.get(bot_url, headers=headers) as response:
-#             if response.status >= 400:
-#                 # 🔴 Token inválido u otro error
-#                 try:
-#                     error_data = await response.json()
-#                     detail = error_data.get("detail", "Error desconocido")
-#                 except Exception:
-#                     detail = await response.text()
-
-#                 raise HTTPException(status_code=response.status, detail=detail)
-
-#             # ✅ Token válido
-#             return await response.json()
