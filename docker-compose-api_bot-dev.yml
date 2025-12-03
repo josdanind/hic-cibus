@@ -6,27 +6,7 @@ services:
       dockerfile: Dockerfile.dev
 
     # 🚀 Comando para iniciar la aplicación FastAPI
-    command: uvicorn main:app --host 0.0.0.0 --port ${API_BOT_PORT} --reload
-
-    # 🌍 Variables de entorno directas
-    environment:
-      # 🌍 Entorno de ejecución
-      - DEVELOPMENT_MODE=true
-      - PORT=${API_BOT_PORT}
-      - API_DOMAIN=${API_BOT_DEV_DOMAIN}
-      # Credenciales del bot de Telegram
-      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
-      - TELEGRAM_BOT_NAME=${TELEGRAM_BOT_NAME_DEV}
-      - TELEGRAM_BOT_PASSWORD=${TELEGRAM_BOT_PASSWORD_DEV}
-      - TELEGRAM_SECRET_TOKEN=${TELEGRAM_SECRET_TOKEN}
-      # 🔑 Clave de acceso para Valkey
-      - VALKEY_PASSWORD=${VALKEY_PASSWORD_DEV}
-      - VALKEY_HOST=${VALKEY_HOST_DEV}
-      - VALKEY_PORT=${VALKEY_PORT_DEV}
-      # 🌐 URL base del servicio API CRUD
-      - API_CRUD_URL=http://${API_CRUD_DEV_DOMAIN}:${API_CRUD_PORT_DEV}/bots
-      # Ngrok
-      - NGROK_TOKEN=${NGROK_TOKEN}
+    command: uvicorn main:app --host 0.0.0.0 --port ${TLALOC_BOT_PORT_DEV} --reload
 
     # 📂 Montaje de volúmenes
     volumes:
@@ -39,12 +19,19 @@ services:
 
       # 🌐 Router para FastAPI (HTTP)
       traefik.http.routers.bot-router.entrypoints: http
-      traefik.http.routers.bot-router.rule: Host(`${API_BOT_DEV_DOMAIN}`)
+      traefik.http.routers.bot-router.rule: Host(`${TLALOC_BOT_DOMAIN_DEV}`)
       traefik.http.routers.bot-router.service: bot-service
-      traefik.http.services.bot-service.loadbalancer.server.port: ${API_BOT_PORT}
+      traefik.http.services.bot-service.loadbalancer.server.port: ${TLALOC_BOT_PORT_DEV}
 
     # 🔄 Política de reinicio
     restart: unless-stopped
+
+    # 📄 Variables de entorno
+    env_file: services/api_bot/.env.dev
+    environment:
+      - API_DOMAIN=${TLALOC_BOT_DOMAIN_DEV}
+      - PORT=${TLALOC_BOT_PORT_DEV}
+
 
     # 🌐 Red asociada
     networks:
@@ -70,8 +57,7 @@ services:
       - valkey_data-dev:/data
 
     # 🗝️ Variables de entorno
-    environment:
-      - VALKEY_PASSWORD=${VALKEY_PASSWORD_DEV}
+    env_file: services/api_bot/.env.dev
 
     # 🔄 Política de reinicio
     restart: unless-stopped

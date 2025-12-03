@@ -27,7 +27,8 @@ from app.database import (
     get_valkey,
     close_valkey
 )
-from app.TheaterHandler import theater_handler
+from app.TheaterHandler import theater_handler_context
+from app.TheaterHandler.handlers import register_commands
 
 # ─────────────────────────────
 # ⚙️ METADATOS DE LA APP
@@ -43,37 +44,58 @@ APP_VER:   Final[str] = "0.1.0"
 async def lifespan(app: FastAPI):
     """Gestiona la fase de ARRANQUE y APAGADO de la aplicación."""
     # ──────── ARRANQUE ────────
-    # 1. Conexión Valkey
-    app.state.valkey = await get_valkey()
+    # 1. Valkey (singleton por proceso)
+    valkey_client = await get_valkey()
 
     # 2. Precarga de token
-    await init_token_cache()
+    await init_token_cache(valkey_client)
 
-    # 3. Determina la URL que usará el bot
-    if settings.DEVELOPMENT_MODE:
-        api_bot_url = init_ngrok(settings.NGROK_TOKEN)
-    else:
-        api_bot_url = settings.API_DOMAIN
+    # 3. Construye el TheaterHandler
+    async with theater_handler_context(
+        valkey_client=valkey_client,
+    ) as theater_handler:
+        app.state.theater_handler = theater_handler
+        app.state.valkey = valkey_client
 
-    # 4. Establece el webhook
-    await theater_handler.set_webhook(
-        f"{api_bot_url}/webhook",
-        secret_token=settings.TELEGRAM_SECRET_TOKEN
-    )
+        # 4. Registra handlers
+        register_commands(app.state.theater_handler)
 
-    yield
+        # 5. Determina la URL que usará el bot
+        api_bot_url = (
+            init_ngrok(settings.NGROK_TOKEN)
+            if settings.DEVELOPMENT_MODE else
+            settings.API_DOMAIN
+        )
 
-    # ──────── APAGADO ────────
-    # 1. Cierra Ngrok (si existía)
-    if settings.DEVELOPMENT_MODE:
-        close_ngrok()
+        # 6. Setea el webhook
+        await app.state.theater_handler.set_webhook(
+            f"{api_bot_url}/webhook",
+            secret_token=settings.TELEGRAM_SECRET_TOKEN
+        )
 
-    # 2. Elimina el webhook del bot
-    await theater_handler.delete_webhook()
+        try:
+            # ⬇️ A partir de aquí FastAPI empieza a atender requests
+            yield
+        finally:
+            # ──────── APAGADO ────────
+            # 1. Quitar webhook
+            try:
+                await app.state.theater_handler.delete_webhook()
+            except Exception:
+                pass # evita que un fallo en Telegram bloquee el cierre
 
-    # 3. Desconexión Valkey
-    await close_valkey()
+            # 2. Cerrar Ngrok
+            if settings.DEVELOPMENT_MODE:
+                try:
+                    close_ngrok()
+                except Exception:
+                    pass # evita que un fallo en Ngrok bloquee el cierre
 
+            # 3. Cerrar Valkey
+            try:
+                await close_valkey()
+            except Exception:
+                pass # evita que un fallo en Valkey bloquee el cierre
 
 
 # ─────────────────────────────

@@ -15,7 +15,7 @@ async def cb_unknown(call: types.CallbackQuery):
     """
     Manejador de callbacks para callbacks desconocidos.
     """
-    await theater_handler.bot.answer_callback_query(
+    await theater_handler.answer_callback_query(
         call.id,
         "⚠️ Botón no soportado"
     )

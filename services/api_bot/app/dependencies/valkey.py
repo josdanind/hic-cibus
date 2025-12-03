@@ -1,10 +1,12 @@
 # ─────────────────
 # 📦 Importaciones
 # ─────────────────
+# 🐍 Librería estándar
+from typing import cast
+
 # 🧩 Terceros
 from fastapi import Request
 import redis.asyncio as aioredis
-import app.database.valkey as valkey_db
 
 async def get_valkey_client(request: Request) -> aioredis.Redis:
     """

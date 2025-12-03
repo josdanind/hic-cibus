@@ -1,2 +1,1 @@
-from .commands import *
-from .callbacks import *
+from .commands import register_commands

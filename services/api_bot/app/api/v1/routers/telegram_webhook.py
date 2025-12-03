@@ -5,11 +5,12 @@
 import json
 
 # 🧩 Terceros
-from fastapi import APIRouter, status, Request
+from fastapi import APIRouter, status, Request, Depends
 
 # 🏗️  Módulos internos de la aplicación
 from app.core.config import settings
-from app.TheaterHandler import theater_handler
+from app.libraries.TheaterHandler import TheaterHandler
+from app.dependencies.theater_handler import get_theater
 from app.utils.http_exceptions import (
     unsupported_media_type,
     internal_server_error,
@@ -31,7 +32,10 @@ X_TELEGRAM_TOKEN_HEADER: str = "X-Telegram-Bot-Api-Secret-Token"
     status_code=status.HTTP_200_OK,
     summary="Recibe y reenvía actualizaciones de Telegram al bot",
 )
-async def telegram_webhook(request: Request) -> dict[str, bool]:
+async def telegram_webhook(
+    request: Request,
+    theater_handler: TheaterHandler = Depends(get_theater)
+) -> dict[str, bool]:
     """
     Valida el token secreto de Telegram, verifica el tipo de contenido
     y reenvía el cuerpo del mensaje al bot asíncrono.
@@ -50,7 +54,7 @@ async def telegram_webhook(request: Request) -> dict[str, bool]:
         # Decodifica y procesa el cuerpo de la solicitud
         raw_body: bytes = await request.body()
         print(raw_body)
-        theater_handler.process_update(raw_body.decode())
+        await theater_handler.process_update(raw_body.decode())
 
         return {"ok": True}
     except Exception as exc:

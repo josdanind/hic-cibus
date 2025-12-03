@@ -1,6 +1,9 @@
 # Librerías de terceros
 from pydantic_settings import BaseSettings
+import os
 
+api_key = os.getenv("TLALOC_BOT_DOMAIN_DEV")
+print("API_KEY:", api_key)
 class Settings(BaseSettings):
     # Configuración general
     PORT: int
@@ -9,9 +12,9 @@ class Settings(BaseSettings):
 
     # 🔑 Credenciales del Bot
     TELEGRAM_BOT_TOKEN: str
+    TELEGRAM_SECRET_TOKEN: str
     TELEGRAM_BOT_NAME: str
     TELEGRAM_BOT_PASSWORD: str
-    TELEGRAM_SECRET_TOKEN: str
 
     # 🔑 Clave de acceso para Valkey
     VALKEY_HOST:str

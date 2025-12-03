@@ -10,7 +10,7 @@ import redis.asyncio as aioredis
 
 # 🏗️  Módulos internos de la aplicación
 from app.core.config import settings
-from app.utils.rich_format import print_panel
+from app.utils.rich_format import print_panel, print_success_message
 
 # ────────────────────────────────
 # ⚙️  Configuración
