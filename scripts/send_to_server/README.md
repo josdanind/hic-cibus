@@ -1,69 +1,103 @@
 # 📂 Script de sincronización de configuraciones
+## sync-config-files.sh
 
-Este script permite **sincronizar (subir)** los archivos de configuración locales —por ejemplo `.env` o configuraciones asociadas a contenedores— hacia un directorio remoto en un servidor, **manteniendo la misma estructura de carpetas** del proyecto.
+Este script permite **sincronizar archivos de configuración locales** hacia un servidor remoto usando **rsync sobre SSH**, manteniendo **exactamente la misma estructura de carpetas** entre el entorno local y el servidor.
+
+Está diseñado para proyectos con **múltiples servicios** (Traefik, base de datos, APIs, bots, etc.), donde cada servicio posee sus propios archivos de configuración como `.env`, `docker-compose.yml`, archivos YAML, entre otros.
 
 ---
+
+## 🎯 Objetivo
+
+Disponer de una forma **simple, segura e interactiva** de enviar configuraciones al servidor remoto sin:
+
+- Copiar archivos manualmente
+- Romper la estructura del proyecto
+- Subir archivos innecesarios
+- Afectar el código fuente
+
+---
+
+## 🗂️ Estructura esperada del proyecto
+
+El script debe ubicarse en la **raíz del proyecto**, junto a las carpetas de cada servicio.
+
+```text
+.
+├── traefik/
+│   └── .env
+├── database/
+│   └── .env
+├── crud-api/
+│   └── .env
+├── telegram-bot-api/
+│   └── .env
+└── sync-config-files.sh
+```
+
+El servidor remoto debe mantener la misma estructura base:
+
+```text
+/home/usuario/Tlaloc/
+├── traefik/
+├── database/
+├── crud-api/
+└── telegram-bot-api/
+```
+
 
 ## 🚀 Cómo usarlo
 
-1. **Ubicación**
-   Coloca el script en la **raíz del proyecto local**, donde tengas la misma estructura que en el servidor.
-   Ejemplo:
-   ```
-   services/postgresql/.env
-   services/api/.env
-   send_to_server.sh
-   ```
+### 1️⃣ Configuración de conexión
 
-2. **Configura los parámetros de conexión en el script:**
-   ```bash
-   REMOTE_USER="usuario"          # usuario remoto del servidor
-   REMOTE_HOST="mi-servidor.com"  # dominio o IP del servidor
-   SSH_PORT=22                    # puerto SSH (22 por defecto)
-   REMOTE_DIR="/home/usuario/mi-repo"  # ruta en el servidor donde se subirán los archivos
-   ```
+Edita la sección CONFIG dentro del script:
 
-3. **Dale permisos de ejecución al script:**
-   ```bash
-   chmod +x send_to_server.sh
-   ```
+```bash
+REMOTE_USER="usuario"
+REMOTE_HOST="mi-servidor.com"
+SSH_PORT=22
+REMOTE_DIR="/home/usuario/Tlaloc"
+```
 
-4. **Ejecuta el script:**
-   ```bash
-   ./send_to_server.sh
-   ```
+### 2️⃣ Dar permisos de ejecución
 
-   Esto iniciará la sincronización de todos los archivos del directorio donde se encuentra el script hacia el servidor remoto, usando `rsync` sobre SSH.
+```bash
+chmod +x sync-config-files.sh
+```
 
----
+### 3️⃣ Ejecutar el script
+
+```bash
+./sync-config-files.sh
+```
+
+Se mostrará un menú interactivo:
+
+```text
+🚀 Enviar configuración de:
+   1) Traefik
+   2) Database
+   3) CRUD API
+   4) Bot API
+   5) Todos
+```
+
+Selecciona la opción deseada y el script sincronizará solo el servicio elegido o todos.
 
 ## 📌 Qué hace
 
-- Usa `rsync` para copiar todos los archivos del proyecto local al servidor remoto.
-- Mantiene intacta la **estructura de carpetas**.
-- Excluye automáticamente el propio script (`send_to_server.sh`).
-- Muestra progreso detallado y estadísticas de transferencia.
-- Si el directorio remoto no existe, `rsync` lo crea (si tienes permisos suficientes).
+- Sincroniza archivos de configuración usando rsync
 
-Ejemplo:
+- Mantiene permisos, fechas y estructura de carpetas
+
+- Excluye automáticamente el propio script
+
+- Muestra progreso y estadísticas de transferencia
+
+Ejemplo de sincronización:
+
+```text
+local/traefik/.env
+→
+remoto:/home/usuario/Tlaloc/traefik/.env
 ```
-local/services/postgresql/.env  →  remoto:/home/usuario/mi-repo/services/postgresql/.env
-```
-
----
-
-## 🛡️ Seguridad y robustez
-
-- El script usa las opciones:
-  - `set -e` → detiene la ejecución si un comando falla.
-  - `set -u` → error si se usa una variable no definida.
-  - `set -o pipefail` → falla si cualquier comando dentro de un *pipe* falla.
-- Usa `ssh` con autenticación por clave o contraseña.
-- Puedes incluir exclusiones adicionales con más `--exclude` en la lista `RSYNC_FLAGS`.
-
----
-
-## 🧩 Requisitos
-
-- Tener `rsync` instalado tanto en el equipo local como en el servidor.
-- Acceso SSH válido al servidor remoto.

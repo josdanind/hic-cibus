@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # DESCRIPCIÓN
-#   Este script sincroniza (sube) el contenido del directorio donde se encuentra
-#   el propio script hacia un directorio remto en un servido, usando rsync.
+#   Script interactivo para sincronizar archivos de configuración locales hacia
+#   un servidor remoto mediante rsync sobre SSH.
 #
 # USO
-#   1) Ajusta las variables de la sección CONFIG.
-#   2) Dale permisos de ejecución:
-#        chmod +x send_to_server.sh
-#   2) Ejecuta el script:
-#        ./send_to_server.sh
+#   1) Ajusta las variables de la sección CONFIG según tu servidor.
+#   2) Da permisos de ejecución al script:
+#        chmod +x sync-config-files.sh
+#   3) Ejecuta el script:
+#        ./sync-config-files.sh
+#   4) Selecciona el componente que deseas sincronizar.
 #
 # SEGURIDAD/ROBUSTEZ
 #   - set -euo pipefail:
@@ -35,11 +36,10 @@ REMOTE_DIR="directorio_remoto"
 # ==============================================================================
 
 # Directorio local a sincronizar = carpeta donde está este script
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-LOCAL_ROOT="$SCRIPT_DIR"
+LOCAL_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
-# Nombre del propio script (para excluirlo)
-SELF_NAME="$(basename "$0")"
+# Nombre del script (para excluirlo)
+SCRIPT_NAME="$(basename "$0")"
 
 # Flags para rsync
 RSYNC_FLAGS=(
@@ -47,18 +47,45 @@ RSYNC_FLAGS=(
     --human-readable              # tamaños legibles
     --info=progress2,stats2       # progreso global + estadísticas
     --rsh="ssh -p $SSH_PORT"      # usa SSH con el puerto indicado
-    --exclude="$SELF_NAME"        # ⛔ no subir este script
+    --exclude="$SCRIPT_NAME"        # ⛔ no subir este script
 )
 
-echo "🚀 Sincronizando archivos"
-echo "   Local : $LOCAL_DIR"
-echo "   Remoto: $REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR"
+echo "🚀 Enviar configuración de:"
+echo "   1) Traefik"
+echo "   2) Database"
+echo "   3) CRUD API"
+echo "   4) Bot API"
+echo "   5) Todos"
 echo
 
+read -p "Seleccione una opción: " CONTAINER
 
-# IMPORTANTE:
-# - "$LOCAL_DIR"/ con slash final => copia SOLO el contenido del directorio local.
-# - "$REMOTE_DIR"/ puede crearse si la ruta padre existe y tienes permisos.
-rsync "${RSYNC_FLAGS[@]}" "$LOCAL_DIR"/ "$REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR/"
+case $CONTAINER in
+  1)
+    FOLDER="traefik"
+    LOCAL_DIR="$LOCAL_DIR/$FOLDER"
+    ;;
+  2)
+    FOLDER="database"
+    LOCAL_DIR="$LOCAL_DIR/$FOLDER"
+    ;;
+  3)
+    FOLDER="crud-api"
+    LOCAL_DIR="$LOCAL_DIR/$FOLDER"
+    ;;
+  4)
+    FOLDER="telegram-bot-api"
+    LOCAL_DIR="$LOCAL_DIR/$FOLDER"
+    ;;
+  5)
+    FOLDER=""
+    LOCAL_DIR="$LOCAL_DIR"
+    ;;
+  *)
+    echo "Opción inválida"
+    exit 1
+    ;;
+esac
 
-# Fin
+echo $LOCAL_DIR
+rsync "${RSYNC_FLAGS[@]}" "$LOCAL_DIR/" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR/$FOLDER/"
