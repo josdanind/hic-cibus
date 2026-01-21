@@ -1,70 +1,278 @@
-body, html {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f9fafc;
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.container {
-    text-align: center;
-    max-width: 600px;
-    padding: 20px;
+/* ===== BODY / FONDO ===== */
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(90, 100, 255, 0.18), transparent 60%),
+    radial-gradient(circle at bottom, rgba(30, 40, 140, 0.28), transparent 70%),
+    #05060f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color: #ffffff;
 }
 
-.title {
-    font-size: 2em;
-    margin-bottom: 20px;
-    color: #2c3e50;
+/* ===== CARD PRINCIPAL ===== */
+.hero-card {
+  position: relative;
+  width: 1100px;
+  max-width: 95%;
+  min-height: 520px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  background: linear-gradient(135deg, #0f1338, #070814);
+  border-radius: 28px;
+  overflow: hidden;
+
+  box-shadow:
+    0 40px 120px rgba(0, 0, 0, 0.75),
+    0 0 0 1px rgba(140, 150, 255, 0.08);
 }
 
-.image {
-    width: 100%;
-    height: auto;
-    max-width: 400px;
-    border-radius: 10px;
-    margin-bottom: 20px;
+/* Halo sutil */
+.hero-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(120, 130, 255, 0.25),
+    transparent
+  );
+  pointer-events: none;
 }
 
-.description {
-    font-size: 1em;
-    color: #555;
-    line-height: 1.5;
-    margin-bottom: 20px;
+/* ===== COLUMNA IZQUIERDA ===== */
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  text-align: center;
 }
 
-.new-year-message {
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-    color: #fff;
-    font-size: 1.2em;
-    font-weight: bold;
-    padding: 15px 20px;
-    border-radius: 25px;
-    margin-top: 30px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    animation: bounce 2s infinite;
+.hero-image {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  transform: scale(1.35); /* 👈 agranda ~8% */
 }
 
-@keyframes bounce {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
+/* Texto debajo de la imagen */
+.image-caption {
+  margin-top: 28px;
+  padding: 14px 0;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(220, 225, 255, 0.9);
+  position: relative;
 }
 
-@media (max-width: 480px) {
-    .title {
-        font-size: 1.5em;
-    }
-    .description {
-        font-size: 0.9em;
-    }
-    .new-year-message {
-        font-size: 1em;
-    }
+/* Líneas decorativas */
+.image-caption::before,
+.image-caption::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(127, 140, 255, 0.6),
+    transparent
+  );
+}
+
+.image-caption::before {
+  top: 0;
+}
+
+.image-caption::after {
+  bottom: 0;
+}
+
+/* ===== COLUMNA DERECHA ===== */
+.hero-right {
+  padding: 64px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Badge */
+.badge {
+  display: inline-block;
+  align-self: flex-start;
+  margin-bottom: 24px;
+
+  padding: 10px 18px;
+
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+
+  color: #e6e9ff;
+
+  background: linear-gradient(
+    135deg,
+    rgba(110, 120, 255, 0.35),
+    rgba(80, 90, 200, 0.35)
+  );
+
+  border: 1px solid rgba(140, 150, 255, 0.65);
+  border-radius: 10px; /* 👈 menos redondeado */
+
+  box-shadow:
+    0 6px 18px rgba(90, 100, 255, 0.35);
+}
+
+
+/* Título */
+.hero-title {
+  font-size: 42px;
+  font-weight: 600;
+  margin-bottom: 22px;
+  line-height: 1.2;
+}
+
+/* Texto */
+.hero-text {
+  font-size: 18px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.82);
+  margin-bottom: 36px;
+}
+
+/* Botón */
+.hero-btn {
+  align-self: flex-start;
+
+  padding: 14px 30px;
+
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+
+  color: #062a24;
+
+  background: linear-gradient(
+    135deg,
+    #4adec1,
+    #2dd4bf
+  );
+
+  border: none;
+  border-radius: 10px; /* coherente con el badge */
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 28px rgba(45, 212, 191, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+
+  transition: all 0.25s ease;
+}
+
+
+.hero-btn:hover {
+  transform: translateY(-1px);
+
+  background: linear-gradient(
+    135deg,
+    #5eead4,
+    #2dd4bf
+  );
+
+  box-shadow:
+    0 14px 36px rgba(45, 212, 191, 0.65),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+}
+
+
+/* ===== REDES SOCIALES ===== */
+.social-links {
+  position: absolute;
+  bottom: 28px;
+  right: 32px;
+  display: flex;
+  gap: 16px;
+}
+
+.social-icon {
+  width: 44px;
+  height: 44px;
+
+  border-radius: 12px; /* menos redondeado, más moderno */
+
+  background: rgba(120, 130, 255, 0.25);
+  border: 1px solid rgba(160, 170, 255, 0.6);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #ffffff;
+  text-decoration: none;
+
+  box-shadow:
+    0 8px 22px rgba(90, 100, 255, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+
+  transition: all 0.25s ease;
+}
+
+.social-icon i {
+  font-size: 19px;
+  opacity: 1; /* 👈 siempre visible */
+}
+
+
+.social-icon:hover {
+  background: rgba(140, 150, 255, 0.4);
+  box-shadow:
+    0 12px 30px rgba(120, 130, 255, 0.65),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+
+.social-icon:hover i {
+  opacity: 1;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .hero-card {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-right {
+    padding: 48px 40px;
+  }
+
+  .hero-title {
+    font-size: 34px;
+  }
+
+  .social-links {
+    bottom: 20px;
+    right: 20px;
+  }
 }
