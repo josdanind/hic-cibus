@@ -1,0 +1,47 @@
+services:
+  api_crud:
+    container_name: api_crud
+    build:
+      context: ./services/frontend
+
+    # 🐳 Imagen de Docker utilizada para este servicio
+    image: tlaloc-frontend:0.1.0
+
+    # 🚀 Comando para iniciar el servidor FastAPI
+    command: uvicorn main:app --host 0.0.0.0 --port ${FRONTEND_PORT}
+
+    # 🌍 Variables de entorno directas
+    environment:
+      - FRONTEND_DOMAIN=${FRONTEND_DOMAIN}
+
+    # 🏷️ Etiquetas para integración con Traefik
+    labels:
+      # 🌐 Habilitar Traefik
+      traefik.enable: "true"
+
+      # 🌐 Router para FastAPI (HTTP)
+      traefik.http.routers.fastapi_http-router.entrypoints: http
+      traefik.http.routers.fastapi_http-router.rule: Host(`${FRONTEND_DOMAIN}`)
+      traefik.http.routers.fastapi_http-router.service: fastapi_http-service
+      traefik.http.services.fastapi_http-service.loadbalancer.server.port: ${FRONTEND_PORT}
+      traefik.http.routers.fastapi_http-router.middlewares: redirect-to-https@file
+
+      # 🌐 Router para FastAPI (HTTPS)
+      traefik.http.routers.fastapi_https-router.entrypoints: https
+      traefik.http.routers.fastapi_https-router.rule: Host(`${FRONTEND_DOMAIN}`)
+      traefik.http.routers.fastapi_https-router.service: fastapi_https-service
+      traefik.http.services.fastapi_https-service.loadbalancer.server.port: ${FRONTEND_PORT}
+      traefik.http.routers.fastapi_https-router.tls: true
+      traefik.http.routers.fastapi_https-router.tls.certresolver: letsencrypt
+
+    # 🔄 Política de reinicio
+    restart: unless-stopped
+
+    # 🌐 Red asociada
+    networks:
+      - hic-cibus
+
+# 🌐 Redes utilizadas
+networks:
+  hic-cibus:
+    external: true
