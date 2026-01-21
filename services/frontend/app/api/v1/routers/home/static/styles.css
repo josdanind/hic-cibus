@@ -163,6 +163,7 @@ body {
 /* Botón */
 .hero-btn {
   align-self: flex-start;
+  text-decoration: none;
 
   padding: 14px 30px;
 
